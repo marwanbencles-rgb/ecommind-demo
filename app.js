@@ -1,0 +1,101 @@
+// ====== CONFIG ======
+const WHATSAPP_URL = "https://wa.me/212600000000?text=Je%20veux%20l%27automatisation%20Ecommind%20pour%20mon%20garage";
+document.addEventListener('DOMContentLoaded', () => {
+  const cta = document.getElementById("cta-pay");
+  if (cta) cta.href = WHATSAPP_URL;
+});
+
+const chatEl = document.getElementById("chat");
+const langEl = document.getElementById("lang");
+const orb = document.getElementById("orb");
+const btnPlay = document.getElementById("btnPlay");
+const btnStop = document.getElementById("btnStop");
+
+let synth = window.speechSynthesis;
+
+// KPI animation simple
+const stepCount = (el, to)=> {
+  const start = Number(el.textContent.replace('+',''))||0;
+  const diff = to - start; const steps = 24; let i=0;
+  const tick = ()=>{ i++; el.textContent = `+${Math.round(start + (diff*(i/steps)))}`; if(i<steps) requestAnimationFrame(tick); }
+  tick();
+};
+stepCount(document.getElementById("kpi-appts"), 17);
+stepCount(document.getElementById("kpi-replies"), 43);
+stepCount(document.getElementById("kpi-quotes"), 12);
+
+// Helpers
+function addMsg(role, text){
+  const item = document.createElement('div');
+  item.className = `msg ${role}`;
+  item.innerHTML = `<div class="role">${role === 'user' ? 'Vous' : 'Ecommind'}</div><div class="bubble">${text}</div>`;
+  chatEl.appendChild(item);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function speak(text, lang){
+  if(!('speechSynthesis' in window)) return;
+  synth.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = lang || 'fr-FR';
+  utter.rate = 1.02;
+  utter.pitch = 1.0;
+  utter.onstart = ()=> orb && orb.classList.add('talk');
+  utter.onend = ()=> orb && orb.classList.remove('talk');
+  speechSynthesis.speak(utter);
+}
+
+function systemPrompt(locale){
+  const tone = "prestige, clair, orienté conversion, concis, autorité bienveillante";
+  const sector = "garage automobile";
+  return `Tu es l'IA d'Ecommind Agency. Langue: ${locale}.
+Rôle: démontrer en 90-120 secondes comment tu automatise un ${sector}:
+- capter/qualifier les leads (téléphone, WhatsApp, Facebook, email),
+- proposer des créneaux, fixer le RDV, envoyer rappel SMS,
+- générer un devis simple et relance si pas de réponse,
+- taguer dans CRM et produire un mini reporting quotidien.
+Objectif: impressionner et pousser à cliquer sur "Je veux cette automatisation".
+Style: ${tone}. Ne parle pas de prix. Termine par une question fermée qui incite à agir.`;
+}
+
+async function askChatGPT(messages){
+  const res = await fetch('/.netlify/functions/chatgpt-proxy', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ messages })
+  });
+  if(!res.ok){ throw new Error('API error'); }
+  return await res.json(); // { reply }
+}
+
+async function runDemo(){
+  btnPlay.disabled = true;
+  const locale = langEl.value || 'fr-FR';
+
+  addMsg('user', 'Lancer la démo');
+
+  const messages = [
+    { role:'system', content: systemPrompt(locale) },
+    { role:'user', content: "Fais une démonstration parlée, rythmée, avec des phrases courtes. Intègre 2-3 exemples concrets pour un garage." }
+  ];
+
+  try{
+    const { reply } = await askChatGPT(messages);
+    addMsg('assistant', reply);
+    speak(reply, locale);
+  } catch(e){
+    addMsg('assistant', "Impossible de joindre l’IA. Vérifie la clé API et Netlify.");
+    console.error(e);
+  } finally {
+    btnPlay.disabled = false;
+  }
+}
+
+// Boutons
+btnPlay.addEventListener('click', runDemo);
+btnStop.addEventListener('click', ()=> speechSynthesis.cancel());
+
+// Glow pendant la parole
+const style = document.createElement('style');
+style.textContent = `.talk{animation:pulse 0.6s ease-in-out infinite; box-shadow:0 0 40px rgba(0,191,255,.9),0 0 140px rgba(0,191,255,.35)}`;
+document.head.appendChild(style);
