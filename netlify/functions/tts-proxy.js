@@ -26,19 +26,21 @@ export async function handler(event) {
       };
     }
 
-    const resp = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini-tts",
-        voice,
-        input: text,
-        format,
-      }),
-    });
+const resp = await fetch("https://api.openai.com/v1/audio/speech", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${OPENAI_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    // modèle TTS très compatible
+    model: "tts-1",          // <- important
+    voice,                   // "alloy", "verse", "aria"...
+    input: text,
+    format: "mp3",
+  }),
+});
+
 
     if (!resp.ok) {
       const err = await resp.text();
