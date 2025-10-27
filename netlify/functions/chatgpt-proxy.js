@@ -1,64 +1,73 @@
 // netlify/functions/chatgpt-proxy.js
-// Appelle l'API OpenAI côté serveur (sécurisé).
-// Nécessite la variable d'environnement OPENAI_API_KEY sur Netlify.
-
 export async function handler(event) {
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Method not allowed' })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Method not allowed" }),
+    };
+  }
+
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  if (!OPENAI_API_KEY) {
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Missing OPENAI_API_KEY_ECOMMIND" }),
     };
   }
 
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      return {
-        statusCode: 500,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Missing OPENAI_API_KEY' })
-      };
-    }
+    const { messages = [] } = JSON.parse(event.body || "{}");
 
-    const { messages } = JSON.parse(event.body || '{}');
+    // On convertit les messages "chat" en un seul prompt pour l'API Responses
+    const prompt = messages
+      .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
+      .join("\n");
 
-    const payload = {
-      model: 'gpt-4o-mini',       // tu peux changer en gpt-4.1-mini si besoin
-      temperature: 0.8,
-      messages: (messages || []).map(m => ({ role: m.role, content: m.content }))
-    };
-
-    const r = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    const resp = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        model: "gpt-4o-mini",       // modèle rapide & peu coûteux
+        input: prompt,              // format 'input' de l'API Responses
+      }),
     });
 
-    const text = await r.text();
-    if (!r.ok) {
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      // On remonte l’erreur réelle pour debug dans la console du site
       return {
-        statusCode: r.status,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: text })
+        statusCode: resp.status,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          error: data?.error?.message || "OpenAI error",
+          raw: data,
+        }),
       };
     }
 
-    const data = JSON.parse(text);
-    const reply = data?.choices?.[0]?.message?.content || '…';
+    // L’API Responses renvoie un raccourci 'output_text'
+    const reply =
+      data.output_text ??
+      (data.output?.[0]?.content
+        ?.map((c) => c?.text?.value || "")
+        .join("") || "");
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reply })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reply }),
     };
   } catch (e) {
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: e.message })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: e.message }),
     };
   }
 }

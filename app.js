@@ -33,20 +33,43 @@ function addMsg(role, text){
   chatEl.scrollTop = chatEl.scrollHeight;
 }
 
-function speak(text, lang){
-  if(!('speechSynthesis' in window)) return;
-  synth.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = lang || 'fr-FR';
-  utter.rate = 1.02;
-  utter.pitch = 1.0;
-  utter.onstart = ()=> orb && orb.classList.add('talk');
-  utter.onend = ()=> orb && orb.classList.remove('talk');
-  speechSynthesis.speak(utter);
+let __playingAudio = null;
+
+function stopSpeaking() {
+  try { if (__playingAudio) { __playingAudio.pause(); __playingAudio.currentTime = 0; } } catch(e){}
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+}
+
+async function speak(text, opts = {}) {
+  const voice = opts.voice || "alloy"; // "verse" dispo aussi
+  stopSpeaking();
+
+  try {
+    const res = await fetch("/.netlify/functions/tts-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, voice })
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+
+    const b64 = await res.text();
+    const url = `data:audio/mpeg;base64,${b64}`;
+    __playingAudio = new Audio(url);
+    await __playingAudio.play();
+  } catch (e) {
+    console.warn("TTS premium failed, fallback Web Speech:", e);
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang  = (window.__LOCALE__ === 'en' ? 'en-US' : 'fr-FR');
+    u.rate  = 1.03;
+    u.pitch = 1.05;
+    speechSynthesis.speak(u);
+  }
 }
 
 function systemPrompt(locale){
   const tone = "prestige, clair, orienté conversion, concis, autorité bienveillante";
+
   const sector = "garage automobile";
   return `Tu es l'IA d'Ecommind Agency. Langue: ${locale}.
 Rôle: démontrer en 90-120 secondes comment tu automatise un ${sector}:
