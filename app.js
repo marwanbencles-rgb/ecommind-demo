@@ -1,47 +1,25 @@
-// ====== CONFIG ======
-const WHATSAPP_URL = "https://wa.me/212600000000?text=Je%20veux%20l%27automatisation%20Ecommind%20pour%20mon%20garage";
-document.addEventListener('DOMContentLoaded', () => {
-  const cta = document.getElementById("cta-pay");
-  if (cta) cta.href = WHATSAPP_URL;
-});
+// ===================================================
+// ECOMMMIND DEMO - VOIX PERSUASIVE & INTELLIGENTE
+// ===================================================
+// Auteur : Marwan x Mentor GPT-5
+// Objectif : épater le prospect dès la première phrase.
+// ===================================================
 
-const chatEl = document.getElementById("chat");
-const langEl = document.getElementById("lang");
-const orb = document.getElementById("orb");
-const btnPlay = document.getElementById("btnPlay");
-const btnStop = document.getElementById("btnStop");
-
-let synth = window.speechSynthesis;
-
-// KPI animation simple
-const stepCount = (el, to)=> {
-  const start = Number(el.textContent.replace('+',''))||0;
-  const diff = to - start; const steps = 24; let i=0;
-  const tick = ()=>{ i++; el.textContent = `+${Math.round(start + (diff*(i/steps)))}`; if(i<steps) requestAnimationFrame(tick); }
-  tick();
-};
-stepCount(document.getElementById("kpi-appts"), 17);
-stepCount(document.getElementById("kpi-replies"), 43);
-stepCount(document.getElementById("kpi-quotes"), 12);
-
-// Helpers
-function addMsg(role, text){
-  const item = document.createElement('div');
-  item.className = `msg ${role}`;
-  item.innerHTML = `<div class="role">${role === 'user' ? 'Vous' : 'Ecommind'}</div><div class="bubble">${text}</div>`;
-  chatEl.appendChild(item);
-  chatEl.scrollTop = chatEl.scrollHeight;
-}
-
+// ===== VARIABLES GLOBALES =====
 let __playingAudio = null;
+window.__LOCALE__ = navigator.language.startsWith("fr") ? "fr" : "en";
 
+// ======= STOP LECTURE =======
 function stopSpeaking() {
-  try { if (__playingAudio) { __playingAudio.pause(); __playingAudio.currentTime = 0; } } catch(e){}
+  if (__playingAudio && typeof __playingAudio.stop === 'function') {
+    __playingAudio.stop();
+  }
   if ('speechSynthesis' in window) speechSynthesis.cancel();
 }
 
+// ======= LECTURE PREMIUM (TTS OPENAI) =======
 async function speak(text, opts = {}) {
-  const voice = opts.voice || "alloy"; // "verse" dispo aussi
+  const voice = opts.voice || "verse"; // alloy | verse | aria
   stopSpeaking();
 
   try {
@@ -51,74 +29,102 @@ async function speak(text, opts = {}) {
       body: JSON.stringify({ text, voice })
     });
 
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      const errMsg = await res.text();
+      throw new Error(errMsg);
+    }
 
-    const b64 = await res.text();
-    const url = `data:audio/mpeg;base64,${b64}`;
-    __playingAudio = new Audio(url);
-    await __playingAudio.play();
+    // Lecture en BLOB pour qualité audio maximale
+    const blob = await res.blob();
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const arrayBuf = await blob.arrayBuffer();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf);
+
+    const src = ctx.createBufferSource();
+    src.buffer = audioBuf;
+
+    const gain = ctx.createGain();
+    gain.gain.value = 1.22; // Légère amplification naturelle
+    src.connect(gain).connect(ctx.destination);
+    src.start(0);
+
+    __playingAudio = { stop: () => { try { src.stop(); ctx.close(); } catch (e) {} } };
+
   } catch (e) {
-    console.warn("TTS premium failed, fallback Web Speech:", e);
+    console.warn("TTS premium échoué, fallback local :", e);
     const u = new SpeechSynthesisUtterance(text);
-    u.lang  = (window.__LOCALE__ === 'en' ? 'en-US' : 'fr-FR');
-    u.rate  = 1.03;
+    u.lang = (window.__LOCALE__ === "fr") ? "fr-FR" : "en-US";
+    u.rate = 1.02;
     u.pitch = 1.05;
     speechSynthesis.speak(u);
   }
 }
 
-function systemPrompt(locale){
-  const tone = "prestige, clair, orienté conversion, concis, autorité bienveillante";
-
-  const sector = "garage automobile";
-  return `Tu es l'IA d'Ecommind Agency. Langue: ${locale}.
-Rôle: démontrer en 90-120 secondes comment tu automatise un ${sector}:
-- capter/qualifier les leads (téléphone, WhatsApp, Facebook, email),
-- proposer des créneaux, fixer le RDV, envoyer rappel SMS,
-- générer un devis simple et relance si pas de réponse,
-- taguer dans CRM et produire un mini reporting quotidien.
-Objectif: impressionner et pousser à cliquer sur "Je veux cette automatisation".
-Style: ${tone}. Ne parle pas de prix. Termine par une question fermée qui incite à agir.`;
-}
-
-async function askChatGPT(messages){
-  const res = await fetch('/.netlify/functions/chatgpt-proxy', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ messages })
-  });
-  if(!res.ok){ throw new Error('API error'); }
-  return await res.json(); // { reply }
-}
-
-async function runDemo(){
-  btnPlay.disabled = true;
-  const locale = langEl.value || 'fr-FR';
-
-  addMsg('user', 'Lancer la démo');
-
-  const messages = [
-    { role:'system', content: systemPrompt(locale) },
-    { role:'user', content: "Fais une démonstration parlée, rythmée, avec des phrases courtes. Intègre 2-3 exemples concrets pour un garage." }
-  ];
-
-  try{
-    const { reply } = await askChatGPT(messages);
-    addMsg('assistant', reply);
-    speak(reply, locale);
-  } catch(e){
-    addMsg('assistant', "Impossible de joindre l’IA. Vérifie la clé API et Netlify.");
-    console.error(e);
-  } finally {
-    btnPlay.disabled = false;
+// ======= REFORMULATION VOIX DE VENTE =======
+async function rewriteForSpeech(raw, lang = "fr") {
+  const system =
+    lang === "fr"
+      ? "Réécris ce texte pour une voix off persuasive et orale. Ton chaleureux, confiant et naturel. Rythme fluide. Pas de mots techniques. Doit donner envie de dire oui."
+      : "Rewrite this text for a persuasive, spoken voice-over. Warm and confident tone. Natural rhythm. No technical jargon. Must sound inspiring.";
+  try {
+    const res = await fetch("/.netlify/functions/chatgpt-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: raw },
+        ],
+      }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(JSON.stringify(json));
+    return json.reply || raw;
+  } catch (e) {
+    console.warn("Réécriture IA désactivée :", e);
+    return raw;
   }
 }
 
-// Boutons
-btnPlay.addEventListener('click', runDemo);
-btnStop.addEventListener('click', ()=> speechSynthesis.cancel());
+// ======= COMBINE LES DEUX : RÉÉCRIT + PARLE =======
+async function speakSales(raw, lang = "fr") {
+  const polished = await rewriteForSpeech(raw, lang);
+  await speak(polished, { voice: "verse" });
+}
 
-// Glow pendant la parole
-const style = document.createElement('style');
-style.textContent = `.talk{animation:pulse 0.6s ease-in-out infinite; box-shadow:0 0 40px rgba(0,191,255,.9),0 0 140px rgba(0,191,255,.35)}`;
-document.head.appendChild(style);
+// ======= DÉMONSTRATION AUTOMATIQUE =======
+async function launchDemo() {
+  stopSpeaking();
+
+  const demoTextFR = `
+  Bonjour — ici Ecommind.
+  Vous avez un commerce, un garage, un restaurant… et vous perdez du temps à gérer les appels ?
+  Imaginez une assistante vocale qui parle à vos clients, qui répond à leurs questions,
+  et qui cale automatiquement les rendez-vous.
+  Pas demain — aujourd’hui.
+  On lance la démonstration ?
+  `;
+
+  const demoTextEN = `
+  Hi there — this is Ecommind.
+  Imagine a smart assistant that speaks to your customers,
+  answers their questions, and books appointments automatically.
+  No delays. Just results.
+  Ready for the demo?
+  `;
+
+  const text = window.__LOCALE__ === "fr" ? demoTextFR : demoTextEN;
+  await speakSales(text, window.__LOCALE__);
+}
+
+// ======= EXÉCUTION AUTOMATIQUE AU LANCEMENT =======
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("Ecommind IA Demo Loaded ✅");
+  // Optionnel : lancement auto après 1s
+  setTimeout(launchDemo, 1200);
+});
+
+// ======= ÉCOUTE MANUELLE =======
+window.speakSales = speakSales;
+window.stopSpeaking = stopSpeaking;
+window.launchDemo = launchDemo;
