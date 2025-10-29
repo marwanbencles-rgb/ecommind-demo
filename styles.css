@@ -1,34 +1,125 @@
-:root{
-  --black:#000000; --secondary:#0D1B2A; --gold:#C9A55E; --blue:#00BFFF; --white:#FFFFFF;
+/* ================================
+   STYLE LUXE ECOMMIND AGENCY
+   ================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-*{box-sizing:border-box}
-html,body{height:100%;background:var(--black);color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #111;background:#000}
-.brand{font-weight:700;letter-spacing:.5px;color:var(--gold)}
-.tagline{opacity:.7}
-.wrap{max-width:1200px;margin:0 auto;padding:24px}
-.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:center}
-@media (max-width:960px){.hero{grid-template-columns:1fr;gap:16px}}
-.aura{position:relative;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(120px 120px at 50% 50%, rgba(0,191,255,.25), transparent 60%), #000;display:flex;align-items:center;justify-content:center;border:1px solid #0b1a28;box-shadow:0 0 120px rgba(0,191,255,.08) inset}
-.orb{width:200px;height:200px;border-radius:50%;background:var(--blue);filter:blur(2px);box-shadow:0 0 30px rgba(0,191,255,.6), 0 0 90px rgba(0,191,255,.25);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%{transform:scale(0.96)}50%{transform:scale(1.05)}100%{transform:scale(0.96)}}
-.panel{background:var(--secondary);border:1px solid #17293d;border-radius:20px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.kpis{display:flex;gap:12px;margin-bottom:10px}
-.kpi{flex:1;background:#0a1724;border:1px solid #13283b;border-radius:14px;padding:12px;text-align:center}
-.kpi span{display:block;font-size:20px;font-weight:700;color:var(--blue)}
-.kpi label{opacity:.7;font-size:12px}
-.controls{display:flex;gap:10px;align-items:center;margin:10px 0}
-select{background:#0a1724;color:var(--white);border:1px solid #13283b;border-radius:10px;padding:10px}
-.btn{border:1px solid #1a2f45;border-radius:12px;padding:10px 14px;background:#0a1724;color:#fff;cursor:pointer}
-.btn:hover{transform:translateY(-1px)}
-.btn.primary{border-color:#1b3b57}
-.btn.ghost{background:transparent}
-.btn.gold{background:var(--gold);color:#000;border-color:#9c8248}
-.chat{height:320px;overflow:auto;background:#07121e;border:1px solid #13283b;border-radius:14px;padding:12px;scroll-behavior:smooth}
-.msg{margin:10px 0;display:flex;gap:10px}
-.msg .role{min-width:54px;opacity:.8}
-.msg .bubble{background:#0b1a28;border:1px solid #17314b;border-radius:12px;padding:10px;flex:1}
-.msg.user .bubble{border-color:#214667}
-.cta{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-.foot{opacity:.6;text-align:center;padding:12px;border-top:1px solid #111}
-a.btn{text-decoration:none;text-align:center}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #000000;
+  color: #ffffff;
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+/* ----- Hero principale ----- */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Fond en dégradé subtil + particules */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(0,191,255,0.2), rgba(201,165,94,0.05), #000);
+  z-index: 0;
+}
+
+/* Logo & slogan */
+.header {
+  margin-top: 60px;
+  z-index: 2;
+}
+
+.logo {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #C9A55E;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: #00BFFF;
+}
+
+.slogan {
+  margin-top: 8px;
+  font-size: 1.1rem;
+  color: #ccc;
+}
+
+/* ----- Zone de démonstration ----- */
+.demo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 35px;
+  flex-grow: 1;
+  z-index: 2;
+}
+
+/* Cercle central pulsant */
+.pulse {
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, #00BFFF 0%, #006f9b 60%, #000 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 90px rgba(0,191,255,0.8);
+  animation: breathing 4s ease-in-out infinite;
+  transition: 0.4s;
+}
+
+/* Animation du cercle */
+@keyframes breathing {
+  0% { transform: scale(1); box-shadow: 0 0 80px rgba(0,191,255,0.7); }
+  50% { transform: scale(1.15); box-shadow: 0 0 120px rgba(201,165,94,0.5); }
+  100% { transform: scale(1); box-shadow: 0 0 80px rgba(0,191,255,0.7); }
+}
+
+/* Bouton principal */
+#launchDemoBtn {
+  padding: 14px 32px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background-color: transparent;
+  border: 2px solid #C9A55E;
+  color: #C9A55E;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+#launchDemoBtn:hover {
+  background-color: #C9A55E;
+  color: #000;
+  box-shadow: 0 0 25px #C9A55E;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  font-size: 0.9rem;
+  color: #666;
+  z-index: 2;
+}
+
+/* ----- Responsive ----- */
+@media screen and (max-width: 768px) {
+  .logo { font-size: 1.9rem; }
+  .pulse { width: 160px; height: 160px; }
+  #launchDemoBtn { font-size: 1rem; padding: 10px 24px; }
+}

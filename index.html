@@ -1,62 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecommind – Démo IA Garage</title>
-  <meta name="theme-color" content="#000000" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecommind – Démonstration IA</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">Ecommind</div>
-    <div class="tagline">Captiver. Déclencher. Convertir.</div>
-  </header>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="aura">
-        <div class="orb" id="orb"></div>
-      </div>
+  <div class="hero">
+    <div class="overlay"></div>
 
-      <div class="panel">
-        <div class="kpis">
-          <div class="kpi"><span id="kpi-appts">+0</span><label>RDV pris</label></div>
-          <div class="kpi"><span id="kpi-replies">+0</span><label>Réponses auto</label></div>
-          <div class="kpi"><span id="kpi-quotes">+0</span><label>Devis envoyés</label></div>
-        </div>
+    <header class="header">
+      <h1 class="logo">Ecommind<span> Agency</span></h1>
+      <p class="slogan">Captiver. Déclencher. Convertir.</p>
+    </header>
 
-        <div class="controls">
-          <select id="lang">
-            <option value="fr-FR" selected>Français</option>
-            <option value="en-US">English</option>
-            <option value="it-IT">Italiano</option>
-            <option value="es-ES">Español</option>
-            <option value="de-DE">Deutsch</option>
-          </select>
+    <main class="demo-section">
+      <div class="pulse"></div>
+      <button id="launchDemoBtn">🎧 Lancer la démonstration</button>
+    </main>
 
-          <button id="btnPlay" class="btn primary">▶️ Lancer la démo vocale</button>
-          <button id="btnStop" class="btn ghost">⏹️ Stop</button>
-        </div>
+    <footer class="footer">
+      <p>© 2025 Ecommind Agency – L’intelligence au service de votre croissance.</p>
+    </footer>
+  </div>
 
-        <div class="chat" id="chat"></div>
-
-        <div class="cta">
-          <a id="cta-pay" class="btn gold" href="https://wa.me/212600000000?text=Je%20veux%20l%27automatisation%20Ecommind%20pour%20mon%20garage" target="_blank" rel="noopener">
-            Je veux cette automatisation
-          </a>
-          <small>Sans engagement. Installation rapide.</small>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="foot">
-    <span>© Ecommind Agency</span>
-  </footer>
-
-  <script src="/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
