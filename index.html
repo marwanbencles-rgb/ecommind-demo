@@ -4,124 +4,78 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ecommind Agency — Démo IA vocale</title>
-  <meta name="description" content="Démo IA vocale Ecommind — multilingue, persuasive, conçue pour convertir sans friction.">
+  <meta name="description" content="Démo IA multilingue Ecommind — voix naturelle, scénario orienté conversion.">
+  <link rel="stylesheet" href="styles.css" />
   <style>
-    :root{
-      --gold:#C9A55E; --blue:#00BFFF; --black:#000000; --bg2:#0D1B2A; --white:#FFFFFF; --muted:#98A2B3;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--black);color:var(--white);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-    a{color:inherit;text-decoration:none}
-    .container{max-width:1100px;margin:0 auto;padding:20px}
-    /* Header */
-    .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
-    .brand{display:flex;align-items:center;gap:12px}
-    .dot{width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 16px var(--gold)}
-    .logo{font-weight:800;letter-spacing:.3px}
-    .tagline{opacity:.85;font-size:12px}
-    .hdr-cta{display:flex;gap:10px;flex-wrap:wrap}
+    /* petites classes utilitaires locales */
+    .highlight-gold{color:#C9A55E}
+    .highlight-blue{color:#00BFFF}
     .btn{border:1px solid rgba(255,255,255,.14);background:transparent;color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;transition:.2s}
-    .btn:hover{transform:translateY(-1px);border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,191,255,.08)}
-    .btn.gold{border-color:var(--gold)}
-    /* Hero */
-    .hero{display:grid;gap:14px;padding:24px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:var(--bg2)}
-    .h1{font-size:28px;margin:0;line-height:1.2}
-    .sub{opacity:.85;margin:0}
-    .kpis{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{border:1px solid rgba(255,255,255,.16);padding:6px 10px;border-radius:999px;font-size:12px;opacity:.95}
-    .badge{border:1px dashed rgba(255,255,255,.2);padding:6px 10px;border-radius:10px;font-size:12px}
-    /* Demo panel */
-    .panel{display:grid;gap:12px;margin-top:10px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn:hover{transform:translateY(-1px);border-color:#00BFFF;box-shadow:0 0 0 4px rgba(0,191,255,.08)}
+    .btn.gold{border-color:#C9A55E}
     .inp{flex:1;min-width:240px;background:transparent;border:1px solid rgba(255,255,255,.14);color:#fff;padding:12px 14px;border-radius:12px;outline:none}
-    .rec{border-color:rgba(201,165,94,.6)}
-    .stop{border-color:rgba(255,255,255,.35)}
-    .status{font-size:12px;opacity:.8}
-    .resp{white-space:pre-wrap;line-height:1.6;background:transparent;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px;min-height:84px}
-    .meta{display:flex;gap:10px;flex-wrap:wrap}
-    audio{width:100%}
-    /* Value & trust */
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .badge{border:1px dashed rgba(255,255,255,.2);padding:6px 10px;border-radius:10px;font-size:12px;color:#98A2B3}
+    .status{font-size:12px;opacity:.85}
+    .resp{white-space:pre-wrap;line-height:1.6;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px;min-height:84px}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    body{background:#000;color:#fff;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    .hero{display:grid;gap:14px;padding:24px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:#0D1B2A}
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
     .card{border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;background:#000}
-    .card h3{margin:0 0 6px 0;font-size:16px}
-    .muted{color:var(--muted);font-size:14px}
-    .price{font-weight:800}
-    /* Footer */
-    .ftr{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:var(--muted)}
-    .ftr .mini a{color:var(--blue)}
-    /* Micro animations */
-    .pulse{box-shadow:0 0 0 0 rgba(201,165,94,.6);animation:pulse 2s ease-out infinite}
-    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(201,165,94,.45)}70%{box-shadow:0 0 0 12px rgba(201,165,94,0)}100%{box-shadow:0 0 0 0 rgba(201,165,94,0)}}
-    /* Responsive */
-    @media (max-width:880px){ .grid{grid-template-columns:1fr 1fr} }
-    @media (max-width:620px){ .grid{grid-template-columns:1fr} .h1{font-size:22px} }
+    @media(max-width:880px){.grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:620px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- HEADER -->
-    <header class="hdr">
-      <div class="brand">
-        <div class="dot pulse" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="row" style="gap:12px">
+        <div style="width:12px;height:12px;border-radius:50%;background:#C9A55E;box-shadow:0 0 16px #C9A55E"></div>
         <div>
-          <div class="logo">Ecommind Agency</div>
-          <div class="tagline">Captiver. Déclencher. Convertir.</div>
+          <div style="font-weight:800;letter-spacing:.3px">Ecommind Agency</div>
+          <div style="opacity:.85;font-size:12px;color:#98A2B3">Captiver. Déclencher. Convertir.</div>
         </div>
       </div>
-      <div class="hdr-cta">
+      <div class="row">
         <a class="btn" href="https://ecommind-agency.com/pages/packs">Voir les packs</a>
         <a class="btn gold" href="https://ecommind-agency.com/pages/contact-ecommind">Parler à un expert</a>
       </div>
     </header>
 
-    <!-- HERO / DEMO -->
     <section class="hero" aria-label="Démo IA vocale">
-      <h1 class="h1">Votre prospect parle. <span style="color:var(--gold)">L’IA répond</span> dans sa langue. <span style="color:var(--blue)">Et le convainc</span>.</h1>
-      <p class="sub">Démo multilingue en temps réel — pensée pour lever les objections et amener la décision sans friction.</p>
+      <h1 style="margin:0;font-size:28px;line-height:1.2">
+        Votre assistant <span class="highlight-blue">premium</span> qui parle la langue du client
+        et <span class="highlight-gold">close</span> sans friction.
+      </h1>
+      <p style="margin:0;opacity:.9;color:#98A2B3">Démo multilingue — voix naturelle, réponses courtes, orientées décision.</p>
 
-      <div class="kpis">
-        <div class="pill">Auto-détection de langue</div>
-        <div class="pill">Voix native ElevenLabs</div>
-        <div class="pill">Réponses concises & orientées achat</div>
+      <!-- Controls -->
+      <div class="row">
+        <button id="recBtn" class="btn" style="border-color:rgba(201,165,94,.6)">🎤 Enregistrer</button>
+        <button id="stopBtn" class="btn" disabled>■ Stop</button>
+        <input id="textInput" class="inp" placeholder="…ou écrivez une question (FR / EN / AR / ES)"/>
+        <button id="sendBtn" class="btn">Envoyer</button>
       </div>
 
-      <!-- CONTROLS -->
-      <div class="panel">
-        <div class="row">
-          <button id="recBtn" class="btn rec">🎤 Enregistrer</button>
-          <button id="stopBtn" class="btn stop" disabled>■ Stop</button>
-          <input id="textInput" class="inp" placeholder="…ou écrivez une question (FR / EN / AR / ES)"/>
-          <button id="sendBtn" class="btn">Envoyer</button>
-        </div>
-        <div class="meta">
-          <div class="badge">Langue détectée : <b id="lang">—</b></div>
-          <div class="badge">Statut : <span id="status">Prêt</span></div>
-        </div>
-        <div class="resp" id="output" aria-live="polite">La réponse s’affichera ici…</div>
-        <audio id="player" controls aria-label="Lecture de la réponse vocale"></audio>
+      <div class="row">
+        <div class="badge">Langue détectée : <b id="lang">—</b></div>
+        <div class="badge status">Statut : <span id="status">Prêt</span></div>
       </div>
 
-      <!-- VALUE/PROOF -->
+      <div id="output" class="resp" aria-live="polite">La réponse s’affichera ici…</div>
+      <audio id="player" controls style="width:100%"></audio>
+
       <div class="grid" aria-label="Arguments clés">
-        <div class="card">
-          <h3>Clarté qui rassure</h3>
-          <div class="muted">Messages courts, ton premium. L’IA élimine le bruit, garde l’essentiel, parle comme un conseiller.</div>
-        </div>
-        <div class="card">
-          <h3>Langue & contexte</h3>
-          <div class="muted">Détection automatique (FR/EN/AR/ES/…). Réponse et voix natives pour une compréhension immédiate.</div>
-        </div>
-        <div class="card">
-          <h3>Prêt à closer</h3>
-          <div class="muted">Scénario maîtrisé : objection → bénéfice → next-step. CTA directs vers RDV ou achat.</div>
-        </div>
+        <div class="card"><h3 style="margin:0 0 6px 0;color:#C9A55E">Clarté qui rassure</h3><div style="color:#98A2B3">Messages courts, ton premium. L’IA garde le cadre et propose la suite.</div></div>
+        <div class="card"><h3 style="margin:0 0 6px 0;color:#C9A55E">Langue & voix natives</h3><div style="color:#98A2B3">Détection automatique. Voix ElevenLabs adaptées à chaque langue.</div></div>
+        <div class="card"><h3 style="margin:0 0 6px 0;color:#C9A55E">Prêt à closer</h3><div style="color:#98A2B3">Objection → bénéfice → next-step. CTA discrets mais efficaces.</div></div>
       </div>
 
-      <!-- OFFER -->
       <div class="card" style="margin-top:12px">
-        <h3 style="margin:0 0 8px 0;">Offre de déploiement</h3>
-        <div class="muted">Mise en place initiale <span class="price" style="color:var(--gold)">2490€</span> · Accompagnement <span class="price" style="color:var(--blue)">490€/mois</span> à partir du 3ᵉ mois.</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <h3 style="margin:0 0 8px 0;color:#C9A55E">Offre de déploiement</h3>
+        <div style="color:#98A2B3">Mise en place <b class="highlight-gold">2490€</b> · Accompagnement <b class="highlight-blue">490€/mois</b> (dès M3).</div>
+        <div class="row" style="margin-top:10px">
           <a class="btn gold" href="https://ecommind-agency.com/pages/offre-royale-buisness">Pack Royal</a>
           <a class="btn" href="https://ecommind-agency.com/pages/offre-elegance">Pack Élégance</a>
           <a class="btn" href="https://ecommind-agency.com/pages/offre-buisness">Pack Business</a>
@@ -129,133 +83,133 @@
       </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="ftr">
+    <footer style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:#98A2B3">
       <div>© 2025 Ecommind Agency. Tous droits réservés.</div>
-      <div class="mini">
-        <a href="https://ecommind-agency.com/pages/a-propos">À propos</a> ·
-        <a href="https://ecommind-agency.com/pages/contact-ecommind">Contact</a>
-      </div>
+      <div><a href="https://ecommind-agency.com/pages/a-propos" style="color:#00BFFF">À propos</a> · <a href="https://ecommind-agency.com/pages/contact-ecommind" style="color:#00BFFF">Contact</a></div>
     </footer>
   </div>
 
-  <script>
-    const apiBase = ""; // même origine (servi par Express)
+  <!-- ================== Script ================== -->
+  <script type="module">
+    import { VoiceController } from './voice-controller.js';
 
+    // Elements
     const recBtn = document.getElementById("recBtn");
     const stopBtn = document.getElementById("stopBtn");
     const sendBtn = document.getElementById("sendBtn");
     const textInput = document.getElementById("textInput");
-    const statusEl = document.getElementById("status");
     const langEl = document.getElementById("lang");
+    const statusEl = document.getElementById("status");
     const outEl = document.getElementById("output");
     const player = document.getElementById("player");
 
-    let mediaRecorder, chunks = [];
-    let lastLang = null;
-
+    // Helpers
     const setStatus = (t)=> statusEl.textContent = t;
     const setLang = (t)=> langEl.textContent = t || "—";
 
-    // --- AUDIO FLOW (Whisper -> Chat -> TTS) ---
+    // Voice controller (anti-chevauchement)
+    const VC = new VoiceController({ audioEl: player, apiBase: "" });
+    await VC.initVoices();
+
+    // --- AUDIO RECORDING (Netlify: STT en base64) ---
+    let mediaRecorder, chunks = [];
+
     recBtn.onclick = async () => {
-      try{
-        chunks = [];
+      try {
+        VC.stop(); // coupe toute voix active
+        setStatus("Enregistrement…");
         const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
         mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.ondataavailable = e => chunks.push(e.data);
+        chunks = [];
+        mediaRecorder.ondataavailable = (e)=> chunks.push(e.data);
         mediaRecorder.onstop = onStopRecord;
         mediaRecorder.start();
         recBtn.disabled = true; stopBtn.disabled = false;
-        setStatus("Enregistrement…");
-      }catch(e){
-        setStatus("Micro refusé");
-        console.error(e);
+      } catch (e) {
+        setStatus("Micro refusé"); console.error(e);
       }
     };
 
     stopBtn.onclick = () => {
-      if(mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+      if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
       recBtn.disabled = false; stopBtn.disabled = true;
-      setStatus("Traitement audio…");
+      setStatus("Traitement…");
     };
 
     async function onStopRecord(){
+      // 1) Encode audio -> base64 (Netlify friendly)
       const blob = new Blob(chunks, { type: "audio/webm" });
-      const form = new FormData();
-      form.append("audio", blob, "audio.webm");
-      const r = await fetch(`${apiBase}/api/stt`, { method:"POST", body: form });
-      const data = await r.json();
-      if(data.error){ setStatus("Erreur STT"); console.error(data.error); return; }
-      const { text, language } = data;
-      lastLang = language || "en";
-      setLang(lastLang);
-      setStatus("Génération…");
-      await handleChatAndTTS(text);
-    }
+      const ab = await blob.arrayBuffer();
+      const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(ab)));
 
-    // --- TEXT FLOW (LangDetect -> Chat -> TTS) ---
-    sendBtn.onclick = async () => {
-      const userText = (textInput.value || "").trim();
-      if(!userText) return;
-
-      setStatus("Détection de langue…");
-      let detLang = "en";
-      try{
-        const r = await fetch(`${apiBase}/api/lang-detect`, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ text: userText })
-        });
-        const d = await r.json();
-        detLang = d.lang || "en";
-      }catch(e){
-        // fallback si le service est indispo
-        detLang = quickFallback(userText);
-      }
-
-      lastLang = detLang;
-      setLang(lastLang);
-      setStatus("Génération…");
-      await handleChatAndTTS(userText);
-    };
-
-    // --- COMMON: Chat + TTS ---
-    async function handleChatAndTTS(userText){
-      // 1) Chat
-      const r = await fetch(`${apiBase}/api/chat`, {
+      // 2) STT
+      const stt = await fetch(`/api/stt`, {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ userText, langHint:lastLang })
-      });
-      const data = await r.json();
-      if(data.error){ setStatus("Erreur LLM"); console.error(data.error); return; }
-      outEl.textContent = data.reply || "";
+        body: JSON.stringify({ audioBase64 })
+      }).then(r=>r.json()).catch(console.error);
 
-      // 2) TTS
-      setStatus("Synthèse vocale…");
-      const r2 = await fetch(`${apiBase}/api/tts`, {
+      if (!stt || stt.error) { setStatus("Erreur STT"); return; }
+      const userText = stt.text || "";
+      const lang = (stt.language || "en").slice(0,2).toLowerCase();
+      setLang(lang);
+
+      // 3) CHAT
+      setStatus("Génération…");
+      const chat = await fetch(`/api/chat`, {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ text:data.reply, lang:lastLang })
-      });
-      if(!r2.ok){ setStatus("Erreur TTS"); console.error(await r2.text()); return; }
-      const buf = await r2.arrayBuffer();
-      const blob = new Blob([buf], { type: "audio/mpeg" });
-      player.src = URL.createObjectURL(blob);
-      player.play().catch(()=>{});
+        body: JSON.stringify({ userText, langHint: lang })
+      }).then(r=>r.json()).catch(console.error);
+
+      if (!chat || chat.error) { setStatus("Erreur LLM"); return; }
+      outEl.textContent = chat.reply || "";
+
+      // 4) TTS (anti-overlap)
+      setStatus("🔊 Parole IA…");
+      recBtn.disabled = true; sendBtn.disabled = true;
+      await VC.speak(chat.reply || "", lang);
+      recBtn.disabled = false; sendBtn.disabled = false;
       setStatus("Prêt");
     }
 
-    // Fallback ultra-simple si /api/lang-detect est KO
-    function quickFallback(t){
-      if (/[اأإآء-ي]/.test(t)) return "ar";
-      if (/[àâçéèêëîïôûùüÿœ]/i.test(t)) return "fr";
-      if (/[ñáéíóúü]/i.test(t)) return "es";
-      if (/[äöüß]/i.test(t)) return "de";
-      if (/[àèéìíîòóù]/i.test(t)) return "it";
-      return "en";
-    }
+    // --- TEXT FLOW (lang detect -> chat -> tts) ---
+    sendBtn.onclick = async () => {
+      VC.stop(); // coupe la voix au cas où
+      const userText = (textInput.value || "").trim();
+      if (!userText) return;
+
+      setStatus("Détection de langue…");
+      const det = await fetch(`/api/lang-detect`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ text: userText })
+      }).then(r=>r.json()).catch(console.error);
+
+      const lang = (det?.lang || "en").slice(0,2).toLowerCase();
+      setLang(lang);
+
+      setStatus("Génération…");
+      const chat = await fetch(`/api/chat`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ userText, langHint: lang })
+      }).then(r=>r.json()).catch(console.error);
+
+      if (!chat || chat.error) { setStatus("Erreur LLM"); return; }
+      outEl.textContent = chat.reply || "";
+
+      setStatus("🔊 Parole IA…");
+      recBtn.disabled = true; sendBtn.disabled = true;
+      await VC.speak(chat.reply || "", lang);
+      recBtn.disabled = false; sendBtn.disabled = false;
+      setStatus("Prêt");
+    };
+
+    // Lancement de bienvenue (facultatif)
+    setTimeout(() => {
+      VC.speak("Bienvenue dans la démo Ecommind. Parlez, l’IA s’adapte à votre langue et propose la suite.", "fr");
+    }, 1200);
   </script>
 </body>
 </html>

@@ -2,9 +2,28 @@
   publish = "."
   functions = "netlify/functions"
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    X-Content-Type-Options = "nosniff"
+# Routes API -> Functions
+[[redirects]]
+  from = "/api/tts"
+  to = "/.netlify/functions/tts"
+  status = 200
+
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200
+
+[[redirects]]
+  from = "/api/lang-detect"
+  to = "/.netlify/functions/lang-detect"
+  status = 200
+
+[[redirects]]
+  from = "/api/voices"
+  to = "/.netlify/functions/voices"
+  status = 200
+
+[[redirects]]
+  from = "/api/stt"
+  to = "/.netlify/functions/stt"
+  status = 200
