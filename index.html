@@ -1,31 +1,344 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ecommind – Démonstration IA</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ecommind Agency – Démonstration IA</title>
+  <meta name="theme-color" content="#000000" />
+  <style>
+    :root{
+      --black:#000000;
+      --gold:#C9A55E;
+      --tech:#00BFFF;
+      --muted:#9aa0a6;
+      --soft:#101418;
+      --ring: 0 0 0 2px rgba(201,165,94,.25), 0 0 40px rgba(0,191,255,.15);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color:#fff;background: radial-gradient(1200px 800px at 70% -10%, rgba(0,191,255,.12), transparent 40%),
+               radial-gradient(900px 700px at -10% 20%, rgba(201,165,94,.10), transparent 45%),
+               #000;
+      overflow-x:hidden;
+    }
+
+    /* ---------- Header ---------- */
+    .wrap{max-width:1200px;margin:0 auto;padding:28px 22px}
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;gap:18px;
+    }
+    .brand{
+      display:flex;align-items:baseline;gap:10px;
+      font-weight:700;letter-spacing:.5px;
+    }
+    .brand__title{font-size:1.6rem;color:var(--gold)}
+    .brand__tag{font-size:.95rem;color:var(--tech);opacity:.9}
+    .tagline{color:#cfcfcf;opacity:.85;font-size:.95rem}
+
+    /* ---------- Hero ---------- */
+    .hero{
+      position:relative;isolation:isolate;
+      display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;
+      padding:40px 22px 24px;
+    }
+    .hero__left h1{
+      font-size:clamp(2.1rem,4.5vw,3.2rem);
+      line-height:1.08;font-weight:800;letter-spacing:.2px;
+    }
+    .gradient{
+      background: linear-gradient(90deg, var(--gold), var(--tech));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .hero__copy{
+      margin-top:14px;color:#d8d8d8;max-width:600px;line-height:1.55;font-size:1.05rem;
+    }
+
+    .cta{
+      display:flex;gap:14px;flex-wrap:wrap;margin-top:26px;
+    }
+    .btn{
+      appearance:none;border:0;cursor:pointer;border-radius:999px;
+      padding:14px 22px;font-weight:700;font-size:1rem;letter-spacing:.2px;
+      transition:.28s transform, .28s box-shadow, .28s opacity;
+      will-change:transform;
+    }
+    .btn--gold{background:var(--gold);color:#000;box-shadow:var(--ring)}
+    .btn--gold:hover{transform:translateY(-1px);box-shadow:0 0 0 2px rgba(201,165,94,.35), 0 20px 50px rgba(201,165,94,.25)}
+    .btn--ghost{border:1.5px solid rgba(255,255,255,.12);color:#fff;background:rgba(255,255,255,.02)}
+    .btn--ghost:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.06)}
+
+    /* Proof chips */
+    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .chip{
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.02);
+      padding:8px 12px;border-radius:999px;color:#d9d9d9;font-size:.9rem
+    }
+
+    /* Orb visuel */
+    .hero__orb{
+      position:relative;display:grid;place-items:center;
+      aspect-ratio:1/1;max-width:520px;margin-inline:auto;
+    }
+    .orb{
+      width:100%;height:100%;border-radius:50%;
+      background: radial-gradient(circle at 45% 40%, #00BFFF 0%, #009bd1 40%, rgba(0,0,0,.9) 62% 70%),
+                  radial-gradient(circle at 60% 65%, rgba(201,165,94,.4), transparent 45%);
+      filter: drop-shadow(0 0 60px rgba(0,191,255,.35));
+      animation: breathe 4.8s ease-in-out infinite;
+    }
+    .ring, .ring2{
+      position:absolute;inset:-8%;
+      border-radius:50%;
+      box-shadow:0 0 0 2px rgba(0,191,255,.12) inset, 0 0 120px rgba(0,191,255,.10);
+      animation: ripple 7s ease-in-out infinite;
+    }
+    .ring2{inset:-16%;animation-delay:1.4s;box-shadow:0 0 0 2px rgba(201,165,94,.12) inset, 0 0 120px rgba(201,165,94,.10)}
+
+    @keyframes breathe{
+      0%{transform:scale(1)}
+      50%{transform:scale(1.07)}
+      100%{transform:scale(1)}
+    }
+    @keyframes ripple{
+      0%{transform:scale(1);opacity:.9}
+      70%{transform:scale(1.08);opacity:.25}
+      100%{transform:scale(1);opacity:.9}
+    }
+
+    /* ---------- Bande bénéfices ---------- */
+    .benefits{
+      margin-top:36px;border-top:1px solid rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(0deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+    .bgrid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+      padding:22px;
+    }
+    .bcard{
+      background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);
+      padding:16px;border-radius:14px;min-height:88px;
+    }
+    .btitle{font-weight:700;margin-bottom:6px}
+    .bcopy{color:#cfcfcf;font-size:.95rem;line-height:1.45}
+
+    /* ---------- Bande démo ---------- */
+    .strip{
+      margin:40px 0 10px;
+      display:flex;gap:18px;white-space:nowrap;overflow:hidden;
+      mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .strip span{
+      padding:10px 16px;border:1px solid rgba(255,255,255,.08);
+      border-radius:999px;color:#dcdcdc;background:rgba(255,255,255,.02);
+      transform:translateX(0);animation: marquee 22s linear infinite;
+      display:inline-flex;gap:10px;align-items:center
+    }
+    .strip span:nth-child(odd){animation-duration:26s}
+    @keyframes marquee{to{transform:translateX(-50%)}}
+
+    /* ---------- Footer ---------- */
+    footer{
+      padding:30px 22px;color:#bdbdbd;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      border-top:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+    }
+    .credit strong{color:var(--gold)}
+    .notice{color:#9aa0a6}
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 980px){
+      .hero{grid-template-columns:1fr;gap:28px}
+      .hero__left{text-align:center}
+      .cta{justify-content:center}
+      .chips{justify-content:center}
+      .hero__orb{max-width:420px}
+      .bgrid{grid-template-columns:1fr;gap:12px}
+    }
+  </style>
 </head>
 <body>
 
-  <div class="hero">
-    <div class="overlay"></div>
+  <div class="wrap">
+    <!-- ======= Header ======= -->
+    <div class="nav" role="navigation" aria-label="Navigation principale">
+      <div class="brand">
+        <div class="brand__title">Ecommind</div>
+        <div class="brand__tag">Agency</div>
+      </div>
+      <div class="tagline">Captiver. Déclencher. Convertir.</div>
+    </div>
 
-    <header class="header">
-      <h1 class="logo">Ecommind<span> Agency</span></h1>
-      <p class="slogan">Captiver. Déclencher. Convertir.</p>
-    </header>
+    <!-- ======= Hero / Demo ======= -->
+    <section class="hero" aria-labelledby="titre-hero">
+      <div class="hero__left">
+        <h1 id="titre-hero">
+          Votre <span class="gradient">assistant IA premium</span>,
+          qui attire, qualifie et <span class="gradient">close</span> vos clients
+          pendant que vous vivez.
+        </h1>
+        <p class="hero__copy">
+          Démo cinématique. Voix naturelle. Scénario orienté vente.
+          Pas de blabla, une expérience qui donne immédiatement envie de travailler avec vous.
+        </p>
 
-    <main class="demo-section">
-      <div class="pulse"></div>
-      <button id="launchDemoBtn">🎧 Lancer la démonstration</button>
-    </main>
+        <div class="cta">
+          <!-- ⚠️ CE BOUTON DOIT GARDER CET ID pour ton app.js -->
+          <button id="launchDemoBtn" class="btn btn--gold">🎧 Lancer la démonstration</button>
+          <button class="btn btn--ghost" onclick="document.getElementById('track').scrollIntoView({behavior:'smooth'})">
+            Voir ce que l’IA prouve
+          </button>
+        </div>
 
-    <footer class="footer">
-      <p>© 2025 Ecommind Agency – L’intelligence au service de votre croissance.</p>
-    </footer>
+        <div class="chips" aria-label="preuves sociales">
+          <div class="chip">+17 RDV pris automatiquement</div>
+          <div class="chip">+43 réponses IA qualifiées</div>
+          <div class="chip">+12 devis envoyés</div>
+        </div>
+      </div>
+
+      <div class="hero__orb" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="ring2"></div>
+        <div class="orb" id="orb"></div>
+      </div>
+    </section>
+
+    <!-- ======= Bande bénéfices ======= -->
+    <section id="track" class="benefits" aria-label="Bénéfices clés">
+      <div class="bgrid">
+        <div class="bcard">
+          <div class="btitle">Marketing qui convertit</div>
+          <div class="bcopy">Messages qui frappent juste, preuve sociale, argumentaire calibré. L’IA garde le cadre et emmène au oui.</div>
+        </div>
+        <div class="bcard">
+          <div class="btitle">Zéro friction</div>
+          <div class="bcopy">Démo disponible 24/7. La voix répond, rassure, et propose le créneau de RDV sans effort.</div>
+        </div>
+        <div class="bcard">
+          <div class="btitle">Image CAC40</div>
+          <div class="bcopy">Design noir/or/bleu tech, transitions premium. Vous paraissez haut de gamme sans une équipe de 10.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= Mots-clés hypnotiques ======= -->
+    <div class="strip" aria-hidden="true">
+      <span>⚡ Automatisation</span>
+      <span>🎯 Qualification</span>
+      <span>🧠 Voix humaine</span>
+      <span>💼 Prestation premium</span>
+      <span>📈 Conversion</span>
+      <span>🔒 Confiance</span>
+      <span>⚡ Automatisation</span>
+      <span>🎯 Qualification</span>
+      <span>🧠 Voix humaine</span>
+      <span>💼 Prestation premium</span>
+      <span>📈 Conversion</span>
+      <span>🔒 Confiance</span>
+    </div>
   </div>
 
+  <!-- ======= Footer ======= -->
+  <footer>
+    <div class="credit">© 2025 <strong>Ecommind Agency</strong></div>
+    <div class="notice">L’intelligence au service de votre croissance.</div>
+  </footer>
+
+  <!-- Micro animation pour renforcer l’aura de l’orb quand la démo démarre -->
+  <script>
+    // Effet visuel doux sur l’orbe quand on clique sur "Lancer la démonstration".
+    (function(){
+      const btn = document.getElementById('launchDemoBtn');
+      const orb = document.getElementById('orb');
+      if(!btn || !orb) return;
+
+      let pulseTimeout;
+      const pulse = () => {
+        orb.style.transition = 'transform .25s ease, filter .25s ease';
+        orb.style.transform = 'scale(1.1)';
+        orb.style.filter = 'drop-shadow(0 0 110px rgba(201,165,94,.45))';
+        clearTimeout(pulseTimeout);
+        pulseTimeout = setTimeout(()=>{
+          orb.style.transform = 'scale(1)';
+          orb.style.filter = 'drop-shadow(0 0 60px rgba(0,191,255,.35))';
+        }, 300);
+      };
+
+      btn.addEventListener('click', pulse);
+    })();
+  </script>
+
+  <!-- Ton moteur voix / logique métier -->
   <script src="app.js"></script>
+  <!-- ===== Barre sticky prestige (reste en haut en scroll) ===== -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-wrap">
+    <span class="sticky-badge">🎯 Offre Découverte 48h</span>
+    <span class="sticky-text">
+      Audit + démo personnalisée <strong>-100% aujourd’hui</strong> — 
+      <span id="stickyCountdown">--:--:--</span>
+    </span>
+    <button class="btn-cta btn-gold" id="stickyCta">Réserver mon créneau</button>
+  </div>
+</div>
+
+<!-- ===== Section Offre Découverte (ancre CTA) ===== -->
+<section id="offre" class="offer">
+  <div class="offer-card">
+    <h2>Offre Découverte – <span class="gold">48h</span></h2>
+    <p class="lead">
+      On configure votre démonstration <strong>sur vos données</strong> et on vous remet 
+      un <strong>plan d’automatisation</strong> prêt à déployer.
+    </p>
+
+    <ul class="offer-bullets">
+      <li>⚡ Mise en place express</li>
+      <li>🤖 Scripts IA orientés closing</li>
+      <li>📊 Check-list + plan d’action 30 jours</li>
+    </ul>
+
+    <div class="offer-cta">
+      <button class="btn-cta btn-gold" id="sectionCta">Je bloque mon créneau</button>
+      <div class="micro-proof">
+        <span id="proofTicker">42</span> réservations les 24h dernières ⏳
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modal Exit-Intent : capter l’email quand il s’apprête à partir ===== -->
+<div class="modal" id="exitModal" aria-hidden="true">
+  <div class="modal-backdrop" id="exitBackdrop"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="exitTitle">
+    <button class="modal-close" id="exitClose" aria-label="Fermer">×</button>
+    <h3 id="exitTitle">Avant de partir… 🎁</h3>
+    <p class="modal-text">
+      Profitez de l’<strong>Offre Découverte 48h</strong> : audit + démo personnalisée.  
+      Il reste <strong id="modalCountdown">--:--:--</strong>.
+    </p>
+    <form id="exitForm" class="modal-form" novalidate>
+      <input type="email" id="exitEmail" class="input" placeholder="Votre email professionnel" required />
+      <button class="btn-cta btn-gold" type="submit">Recevoir mon créneau</button>
+      <small class="form-note">Zéro spam. On confirme sous 10 min.</small>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Ancre de prise de rendez-vous (simple formulaire de capture) ===== -->
+<section id="booking" class="booking">
+  <h2>Bloquez votre créneau en 10 secondes</h2>
+  <form id="bookingForm" class="booking-form" novalidate>
+    <input type="text"  id="bName"  class="input" placeholder="Nom & Société" required />
+    <input type="email" id="bEmail" class="input" placeholder="Email pro" required />
+    <input type="tel"   id="bPhone" class="input" placeholder="Téléphone (optionnel)" />
+    <button class="btn-cta btn-blue" type="submit">Valider mon créneau</button>
+    <small class="form-note">Nous vous appelons dans l’heure pour confirmer.</small>
+  </form>
+</section>
+
 </body>
 </html>

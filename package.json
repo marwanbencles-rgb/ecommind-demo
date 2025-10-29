@@ -1,0 +1,9 @@
+{
+  "name": "ecommind-demo",
+  "version": "1.0.0",
+  "description": "Démo Ecommind Agency – IA, TTS, automatisation et capture intelligente",
+  "type": "module",
+  "dependencies": {
+    "nodemailer": "^6.9.8"
+  }
+}
