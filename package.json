@@ -1,15 +1,41 @@
 {
   "name": "ecommind-demo",
   "version": "1.0.0",
-  "description": "Demo Ecommind Agency — IA vocale multilingue",
+  "description": "Démo premium multilingue Ecommind Agency – IA + Voix + Automatisation.",
+  "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "build": "echo 'Build step not required' && exit 0",
+    "dev": "netlify dev"
   },
   "dependencies": {
+    "openai": "^4.56.0",
+    "dotenv": "^16.4.5",
     "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "express": "^4.21.2",
-    "multer": "^1.4.5-lts.1"
-  }
+    "express": "^4.18.3",
+    "multer": "^1.4.5-lts.1",
+    "form-data": "^4.0.0",
+    "node-fetch": "^3.3.2",
+    "elevenlabs-node": "^1.1.0",
+    "franc-min": "^6.1.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.33.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ecommind",
+    "netlify",
+    "openai",
+    "elevenlabs",
+    "multilingual",
+    "automation",
+    "chatgpt",
+    "demo"
+  ],
+  "author": "Ecommind Agency",
+  "license": "MIT"
 }

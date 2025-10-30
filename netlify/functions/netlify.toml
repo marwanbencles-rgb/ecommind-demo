@@ -1,29 +1,19 @@
 [build]
   publish = "."
   functions = "netlify/functions"
+  node_version = "18"
 
 # Routes API -> Functions
 [[redirects]]
-  from = "/api/tts"
-  to = "/.netlify/functions/tts"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
+  force = true
 
-[[redirects]]
-  from = "/api/chat"
-  to = "/.netlify/functions/chat"
-  status = 200
-
-[[redirects]]
-  from = "/api/lang-detect"
-  to = "/.netlify/functions/lang-detect"
-  status = 200
-
-[[redirects]]
-  from = "/api/voices"
-  to = "/.netlify/functions/voices"
-  status = 200
-
-[[redirects]]
-  from = "/api/stt"
-  to = "/.netlify/functions/stt"
-  status = 200
+# Sécurité basique (en prod)
+[headers]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

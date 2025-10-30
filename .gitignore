@@ -1,3 +1,4 @@
-ecommind-demo/package.json/
-# Secrets et variables d'environnement
+ecommind-demo/package.json
+# Secrets
 .env
+*.env

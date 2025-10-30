@@ -1,72 +1,57 @@
-// ============================================================================
-//  ECOMMIND AGENCY - CHAT FUNCTION
-//  Objectif : répondre au client dans sa langue, ton premium orienté closing.
-//  Utilise GPT-4o-mini (ou modèle précisé dans .env).
-// ============================================================================
+// Ecommind - Chat function robuste (Netlify)
+import OpenAI from "openai";
 
 export async function handler(event) {
   try {
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-    if (!OPENAI_API_KEY) {
-      return { statusCode: 500, body: "Clé OpenAI manquante." };
+    if (!process.env.OPENAI_API_KEY) {
+      return {
+        statusCode: 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: "MISSING_OPENAI_KEY", message: "OPENAI_API_KEY absente sur Netlify." })
+      };
     }
 
-    const { userText, langHint } = JSON.parse(event.body || "{}");
-    if (!userText) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Aucun texte reçu." }) };
+    const { userText = "", langHint = "fr" } = JSON.parse(event.body || "{}");
+    if (!userText.trim()) {
+      return { statusCode: 400, body: JSON.stringify({ code: "EMPTY_INPUT", message: "Texte vide." }) };
     }
 
-    // Langue détectée ou par défaut
-    const lang = (langHint || "en").slice(0, 2).toLowerCase();
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
-    // Système de personnalité Ecommind
-    const systemPrompt = `
-Tu es l'assistant de démonstration d'Ecommind Agency, une agence d'automatisation et de création de sites Shopify haut de gamme.
-Ton rôle est de répondre dans la langue du client (${lang}) avec un ton :
-- Professionnel, confiant, premium (style Harvey Specter / CAC40).
-- Phrases courtes, claires et à fort impact émotionnel.
-- Objectif : convaincre, rassurer, amener à réserver une démo ou un pack.
+    const system = `
+Tu es l'assistant commercial premium d'Ecommind Agency.
+Réponds dans la langue du client (${langHint.slice(0,2)}), ton bref, confiant, orienté décision.
+Pas de blabla technique inutile.
+    `.trim();
 
-Tu ne vends pas directement, tu inspires confiance et donnes envie.
-Pas de phrases robotisées, pas de "je suis un modèle d’IA", jamais.
-Si on te pose une question technique, explique avec pédagogie et clarté.
-
-Format de réponse : phrases naturelles dans la langue du client uniquement.
-    `;
-
-    // Requête API OpenAI
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-        temperature: 0.65,
-        max_tokens: 200,
-        messages: [
-          { role: "system", content: systemPrompt.trim() },
-          { role: "user", content: userText },
-        ],
-      }),
+    const resp = await client.chat.completions.create({
+      model,
+      temperature: 0.6,
+      max_tokens: 220,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: userText }
+      ]
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      return { statusCode: response.status, body: errText };
-    }
-
-    const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content?.trim() || "Je n'ai pas bien compris, peux-tu reformuler ?";
-
+    const reply = resp?.choices?.[0]?.message?.content?.trim() || "Pouvez-vous préciser votre demande ?";
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reply }),
+      body: JSON.stringify({ reply })
     };
-  } catch (e) {
-    console.error("Erreur Chat:", e);
-    return { statusCode: 500, body: JSON.stringify({ error: e.message }) };
+
+  } catch (err) {
+    // Log côté Netlify (visible dans Functions logs)
+    console.error("CHAT_FUNCTION_ERROR:", err?.response?.data || err?.message || err);
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: "CHAT_RUNTIME_ERROR",
+        message: err?.response?.data?.error?.message || err?.message || "Erreur serveur."
+      })
+    };
   }
 }
