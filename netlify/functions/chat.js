@@ -1,57 +1,93 @@
-// Ecommind - Chat function robuste (Netlify)
-import OpenAI from "openai";
-
+// netlify/functions/chat.js
 export async function handler(event) {
   try {
-    if (!process.env.OPENAI_API_KEY) {
+    // --- Parse input --------------------------------------------------------
+    const { userText = "", langHint = "fr" } =
+      (event.body && JSON.parse(event.body)) || {};
+
+    if (!userText.trim()) {
       return {
-        statusCode: 500,
+        statusCode: 400,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: "MISSING_OPENAI_KEY", message: "OPENAI_API_KEY absente sur Netlify." })
+        body: JSON.stringify({ code: "EMPTY_INPUT", message: "Texte vide." }),
       };
     }
 
-    const { userText = "", langHint = "fr" } = JSON.parse(event.body || "{}");
-    if (!userText.trim()) {
-      return { statusCode: 400, body: JSON.stringify({ code: "EMPTY_INPUT", message: "Texte vide." }) };
-    }
-
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    // --- Env checks (sans rien exposer) ------------------------------------
+    const haveOpenAI = Boolean(process.env.OPENAI_API_KEY);
     const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
-    const system = `
-Tu es l'assistant commercial premium d'Ecommind Agency.
-Réponds dans la langue du client (${langHint.slice(0,2)}), ton bref, confiant, orienté décision.
-Pas de blabla technique inutile.
-    `.trim();
+    if (!haveOpenAI) {
+      return {
+        statusCode: 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: "ENV_MISSING",
+          message: "OPENAI_API_KEY manquant côté serveur.",
+        }),
+      };
+    }
 
-    const resp = await client.chat.completions.create({
-      model,
-      temperature: 0.6,
-      max_tokens: 220,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: userText }
-      ]
+    // --- Appel OpenAI (REST, sans SDK) -------------------------------------
+    const sys = [
+      "Tu es l'assistant de vente d’Ecommind Agency.",
+      "Réponds de manière brève, claire et orientée décision.",
+      "Langue attendue: " + langHint,
+    ].join(" ");
+
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: sys },
+          { role: "user", content: userText },
+        ],
+        temperature: 0.5,
+        max_tokens: 300,
+      }),
     });
 
-    const reply = resp?.choices?.[0]?.message?.content?.trim() || "Pouvez-vous préciser votre demande ?";
+    if (!openaiRes.ok) {
+      const txt = await openaiRes.text().catch(() => "");
+      return {
+        statusCode: openaiRes.status || 502,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: "OPENAI_ERROR",
+          message: "Erreur OpenAI",
+          detail: txt?.slice(0, 500),
+        }),
+      };
+    }
+
+    const data = await openaiRes.json();
+    const reply =
+      data?.choices?.[0]?.message?.content?.trim() ||
+      "Désolé, je n’ai pas pu générer de réponse.";
+
+    // --- Réponse OK ---------------------------------------------------------
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reply })
+      body: JSON.stringify({ ok: true, model, reply }),
     };
-
   } catch (err) {
-    // Log côté Netlify (visible dans Functions logs)
-    console.error("CHAT_FUNCTION_ERROR:", err?.response?.data || err?.message || err);
+    // --- Sécurité: ne pas exposer de secrets --------------------------------
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        code: "CHAT_RUNTIME_ERROR",
-        message: err?.response?.data?.error?.message || err?.message || "Erreur serveur."
-      })
+        code: "SERVER_ERROR",
+        message:
+          err?.response?.data?.error?.message ||
+          err?.message ||
+          "Erreur serveur",
+      }),
     };
   }
 }
