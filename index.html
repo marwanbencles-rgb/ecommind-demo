@@ -1,305 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ecommind — Assistant IA</title>
-  <meta name="color-scheme" content="dark light" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <meta name="description" content="Assistant IA multilingue Ecommind : parle, comprend et close sans friction." />
+  <meta name="theme-color" content="#0b1220" />
+
+  <!-- (optionnel) Police système suffira, mais on garde un fallback propre -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Styles globaux + orb -->
   <link rel="stylesheet" href="./styles.css" />
-
-  <!-- Styles spécifiques de l’orb (autonomes pour ne rien casser ailleurs) -->
-  <style>
-    :root{
-      --bg:#0b1220;
-      --panel:#0e1626;
-      --text:#e8eefc;
-      --muted:#9bb0d3;
-      --accent:#00BFFF; /* bleu tech */
-      --gold:#C9A55E;  /* or */
-      --orb-core:#7cc8ff;
-      --orb-glow:#1e90ff;
-      --card:#0f1a2f;
-      --ok:#23d18b;
-      --danger:#ff7272;
-      --ring: 0 0 0 0 rgba(30,144,255,0.35);
-    }
-    html,body{height:100%}
-    body{
-      margin:0;
-      background:
-        radial-gradient(1200px 800px at 80% -10%, rgba(0,191,255,.08), transparent 70%),
-        radial-gradient(800px 700px at -10% 20%, rgba(201,165,94,.05), transparent 60%),
-        var(--bg);
-      color:var(--text);
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji",sans-serif;
-    }
-    .wrap{max-width:1200px;margin:0 auto;padding:32px}
-    .row{display:grid;grid-template-columns:1.2fr .9fr;gap:28px}
-    @media (max-width:1024px){.row{grid-template-columns:1fr}}
-    .card{
-      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.35);
-    }
-    h1{
-      font-size:clamp(28px,4.4vw,48px);
-      line-height:1.1;
-      margin:0 0 18px;
-      letter-spacing:.2px;
-    }
-    .title b{color:var(--accent)}
-    .title i{color:var(--gold);font-style:normal}
-    .subtitle{color:var(--muted);margin:6px 0 22px}
-
-    /* ---------- ORB parlant ---------- */
-    .orb-wrap{
-      position:relative;
-      display:flex;
-      align-items:center;
-      gap:28px;
-      padding:22px 22px 14px;
-      border-bottom:1px dashed rgba(255,255,255,.08);
-    }
-    .orb{
-      position:relative;
-      width:88px;height:88px;
-      min-width:88px;
-      border-radius:50%;
-      background:radial-gradient(45% 45% at 50% 40%, #bfe6ff, var(--orb-core) 60%, #469bff 100%);
-      filter:drop-shadow(0 0 16px rgba(30,144,255,.45));
-      box-shadow:0 0 0 0 rgba(30,144,255,0.0);
-      transition:transform .15s ease, box-shadow .2s ease;
-      will-change:transform, box-shadow;
-    }
-    .orb::before,
-    .orb::after{
-      content:"";
-      position:absolute;inset:-16px;
-      border-radius:50%;
-      background:radial-gradient(60% 60% at 50% 40%, rgba(0,191,255,.22), rgba(30,144,255,.0) 70%);
-      filter:blur(10px);
-      z-index:-1;
-      opacity:.8;
-    }
-    .orb.ring{
-      box-shadow:0 0 0 12px rgba(30,144,255,.08),0 0 0 28px rgba(30,144,255,.04);
-    }
-    .orb-speaking{
-      animation:float 4s ease-in-out infinite;
-    }
-    @keyframes float{
-      0%,100%{ transform:translateY(0) }
-      50%{ transform:translateY(-4px) }
-    }
-
-    .orb-legend{
-      display:flex;flex-direction:column;gap:6px;
-    }
-    .status-badges{
-      display:flex;flex-wrap:wrap;gap:8px;margin-top:6px
-    }
-    .badge{
-      font-size:12px;line-height:22px;
-      padding:0 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      color:var(--muted);
-      background:rgba(255,255,255,.03)
-    }
-    .badge.ok{color:#b6ffd9;border-color:rgba(35,209,139,.25);background:rgba(35,209,139,.08)}
-    .badge.err{color:#ffd0d0;border-color:rgba(255,114,114,.26);background:rgba(255,114,114,.06)}
-
-    /* zone saisie */
-    .bar{
-      display:flex;gap:10px;align-items:center;padding:16px;
-      border-top:1px dashed rgba(255,255,255,.08);
-    }
-    .inp{
-      flex:1;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:12px;
-      color:var(--text);
-      padding:12px 14px;
-      outline:0;
-      backdrop-filter:blur(6px);
-    }
-    .btn{
-      background:linear-gradient(180deg,#31c2ff,#0098e6);
-      color:#001018;border:0;border-radius:12px;
-      padding:12px 16px;font-weight:700;cursor:pointer
-    }
-    .toggle{
-      display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px
-    }
-    .toggle input{accent-color:var(--accent);width:22px;height:22px}
-
-    /* colonne droite */
-    .stack{display:grid;gap:14px;padding:16px}
-    .stack .item{
-      background:var(--card);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;padding:14px 16px;color:#cfe0ff
-    }
-
-    /* audio (masqué mais présent) */
-    #tts-audio{display:none}
-  </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="row">
-      <!-- ======= Colonne gauche : ORB + chat ======= -->
-      <section class="card">
-        <div class="orb-wrap">
-          <div id="voice-orb" class="orb orb-speaking ring" aria-hidden="true"></div>
-          <div class="orb-legend">
-            <h1 class="title">Votre assistant <b>multilingue</b> qui parle, comprend et <i>close</i> sans friction.</h1>
-            <div class="subtitle">Voix naturelle. Détection automatique de langue. Réponses orientées décision.</div>
-            <div class="status-badges">
-              <span id="env-badge" class="badge">Variables env…</span>
-              <span id="lang-badge" class="badge">Langue : —</span>
-              <span id="tts-badge" class="badge">TTS : prêt</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="stack" style="padding:16px 16px 0 16px">
-          <div class="item" id="preset-hello">
-            <strong>Prêt</strong><br/>
-            Bienvenue dans la démo Ecommind. Dites-moi votre besoin : site, automatisation, ou prise de rendez-vous ?
-          </div>
-        </div>
-
-        <div class="bar">
-          <input id="user-input" class="inp" placeholder="Écrivez un message (Entrée pour envoyer)…" />
-          <button id="send-btn" class="btn">Envoyer</button>
-          <label class="toggle">
-            <input id="mute-toggle" type="checkbox" />
-            Muet
-          </label>
-        </div>
-
-        <!-- lecteur audio TTS (écouté par l’orb) -->
-        <audio id="tts-audio" preload="auto"></audio>
-      </section>
-
-      <!-- ======= Colonne droite : promesse / checklist ======= -->
-      <aside class="card">
-        <div class="stack">
-          <div class="item">Présenter votre offre avec un ton premium et rassurant.</div>
-          <div class="item">Répondre en une phrase claire + proposer un créneau.</div>
-          <div class="item">Basculer automatiquement dans la langue du prospect.</div>
-          <div class="item">Éviter tout chevauchement vocal (file d’attente de lecture).</div>
-          <div class="item">Proposer le next-step discret (WhatsApp / RDV).</div>
-        </div>
-      </aside>
+  <noscript>
+    <div style="padding:12px;background:#222;color:#fff;text-align:center">
+      Cette démo nécessite JavaScript pour fonctionner.
     </div>
-  </div>
+  </noscript>
 
-  <!-- ==== App front existante ==== -->
-  <script src="./voice-controller.js"></script>
-  <script src="./app.js"></script>
+  <!-- ========= CONTENU ========= -->
+  <main class="wrap" role="main" aria-label="Assistant Ecommind">
+    <!-- Colonne gauche -->
+    <section class="hero" aria-labelledby="titre-hero">
+      <div class="kicker">Ecommind — Assistant IA</div>
 
-  <!-- ==== Script léger pour animer l’orb à partir du son du TTS (sans toucher ta logique) ==== -->
-  <script>
-    (function () {
-      const orb = document.getElementById('voice-orb');
-      const audio = document.getElementById('tts-audio');
-      const envBadge = document.getElementById('env-badge');
-      const langBadge = document.getElementById('lang-badge');
-      const ttsBadge = document.getElementById('tts-badge');
+      <div class="orb-wrap">
+        <!-- ORB principal (animé au rythme de la voix) -->
+        <div id="orb" class="talking-orb" aria-hidden="true"></div>
 
-      // 1) Vérif des variables env via la route /api/env-check (non bloquant)
-      fetch('/api/env-check').then(r => r.json()).then(j => {
-        const ok = j && j.ok;
-        envBadge.textContent = ok ? 'Variables env OK' : 'Variables env manquantes';
-        envBadge.classList.toggle('ok', !!ok);
-        envBadge.classList.toggle('err', !ok);
-      }).catch(() => {
-        envBadge.textContent = 'Env : non vérifiées';
-      });
+        <div>
+          <h1 id="titre-hero">
+            Votre assistant <span class="blue">multilingue</span><br />
+            parle, comprend et <span class="gold">close</span> sans friction.
+          </h1>
+        </div>
+      </div>
 
-      // 2) Mise à jour badge langue (si app.js déclenche cet event)
-      window.addEventListener('detected-language', (e) => {
-        const lang = e.detail?.lang || '—';
-        langBadge.textContent = 'Langue : ' + lang;
-      });
+      <p class="sub">
+        Voix naturelle. Détection automatique de langue. Réponses courtes orientées décision.
+        Démarrage instantané — pas de clic.
+      </p>
 
-      // 3) Analyseur audio pour “faire respirer” l’orb pendant la parole
-      let ctx, analyser, data, raf;
-      function ensureAnalyzer(){
-        if (ctx) return;
-        try{
-          ctx = new (window.AudioContext || window.webkitAudioContext)();
-          analyser = ctx.createAnalyser();
-          analyser.fftSize = 512;
-          data = new Uint8Array(analyser.frequencyBinCount);
-          const src = ctx.createMediaElementSource(audio);
-          src.connect(analyser);
-          analyser.connect(ctx.destination);
-        }catch(_){}
-      }
-      function animate(){
-        raf = requestAnimationFrame(animate);
-        if(!analyser) return;
-        analyser.getByteFrequencyData(data);
-        // amplitude simple
-        let sum = 0;
-        for(let i=0;i<data.length;i++) sum += data[i];
-        const amp = sum / (data.length*255); // 0-1
-        const scale = 1 + Math.min(.20, amp*.6);
-        orb.style.transform = `scale(${scale})`;
-        const glow = Math.min(24, 6 + amp*42);
-        orb.style.boxShadow = `0 0 0 12px rgba(30,144,255,.08), 0 0 ${glow}px ${glow/3}px rgba(30,144,255,.35)`;
-      }
+      <!-- Indicateurs d’état -->
+      <div class="chips" aria-label="Indicateurs de statut">
+        <div class="chip">Variables env <span id="envChip" class="mini">…</span></div>
+        <div class="chip">Langue : <span id="langChip" class="mini">—</span></div>
+        <div class="chip">TTS : <span id="ttsChip" class="mini err">erreur</span></div>
+      </div>
 
-      audio.addEventListener('play', async () => {
-        ttsBadge.textContent = 'TTS : lecture…';
-        ttsBadge.classList.remove('err'); ttsBadge.classList.add('ok');
-        ensureAnalyzer();
-        if (ctx && ctx.state === 'suspended') { try{ await ctx.resume(); }catch(_){ } }
-        cancelAnimationFrame(raf); animate();
-      });
-      function stopOrb(){
-        ttsBadge.textContent = 'TTS : prêt';
-        cancelAnimationFrame(raf);
-        orb.style.transform = 'scale(1)';
-        orb.style.boxShadow = '0 0 0 12px rgba(30,144,255,.08),0 0 0 0 rgba(30,144,255,0)';
-      }
-      audio.addEventListener('pause', stopOrb);
-      audio.addEventListener('ended', stopOrb);
+      <!-- Entrée utilisateur -->
+      <div class="input-row" aria-label="Messagerie">
+        <input
+          id="msg"
+          class="input"
+          type="text"
+          autocomplete="off"
+          placeholder="Écrivez un message (Entrée pour envoyer)…"
+          aria-label="Votre message"
+        />
+        <button id="send" class="btn" type="button" aria-label="Envoyer le message">Envoyer</button>
+        <label class="mini">
+          <input type="checkbox" id="mute" style="vertical-align:middle" />
+          Muet
+        </label>
+      </div>
 
-      // 4) Petit confort : Entrée pour envoyer (en laissant app.js gérer la requête)
-      const input = document.getElementById('user-input');
-      const btn = document.getElementById('send-btn');
-      input.addEventListener('keydown', (e)=>{
-        if(e.key === 'Enter' && !e.shiftKey){
-          e.preventDefault();
-          btn.click();
-        }
-      });
+      <!-- Cartes d’info / debug lisibles -->
+      <div class="card" aria-live="polite">
+        <h4>Prêt</h4>
+        <div class="pill">
+          Bienvenue dans la démo Ecommind. Dites-moi votre besoin : site, automatisation, ou prise de rendez-vous ?
+        </div>
+      </div>
 
-      // 5) Option muet (si ton app.js la lit déjà, on garde l’id)
-      const mute = document.getElementById('mute-toggle');
-      mute.addEventListener('change', ()=>{
-        // on émet un événement que ton app.js peut écouter
-        window.dispatchEvent(new CustomEvent('toggle-mute', { detail:{ muted: mute.checked }}));
-      });
+      <div class="card" aria-live="polite">
+        <h4>Langue détectée</h4>
+        <div id="langOut" class="pill">—</div>
+      </div>
 
-      // 6) En cas d’erreur TTS (ton app peut dispatch 'tts-error')
-      window.addEventListener('tts-error', ()=>{
-        ttsBadge.textContent = 'TTS : erreur';
-        ttsBadge.classList.remove('ok'); ttsBadge.classList.add('err');
-      });
+      <div class="card" aria-live="polite">
+        <h4>Lecture audio</h4>
+        <div id="ttsOut" class="pill">en attente…</div>
+      </div>
+    </section>
 
-      // 7) Hook doux : si ton app crée un autre Audio, tu peux quand même
-      //    mettre son blob dans #tts-audio pour profiter de l’orb :
-      //    document.getElementById('tts-audio').src = blobUrl;
-    })();
-  </script>
+    <!-- Colonne droite : règles / promesse -->
+    <aside class="panel" aria-labelledby="titre-panel">
+      <h3 id="titre-panel">Ce que fait l’assistant</h3>
+      <div class="rule">Présenter votre offre avec un ton premium et rassurant.</div>
+      <div class="rule">Répondre en une phrase claire + proposer un créneau.</div>
+      <div class="rule">Basculer automatiquement dans la langue du prospect.</div>
+      <div class="rule">Éviter tout chevauchement vocal (file d’attente de lecture).</div>
+      <div class="rule">Proposer le next-step discret (WhatsApp / RDV).</div>
+    </aside>
+  </main>
+
+  <!-- Scripts (déféré pour des perfs clean) -->
+  <script src="./app.js" defer></script>
 </body>
 </html>
