@@ -1,191 +1,172 @@
-// =========================================================
-//  ECOMMIND – Front IA vocal multilingue
-// =========================================================
+// ======== app.js — Ecommind Assistant IA ========
 
-// === endpoints ===
-// Si tu utilises le fichier `_redirects`, tu peux remplacer par `/api`
-const FN = (name) => `/.netlify/functions/${name}`;
+// Sélecteurs DOM
+const input = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const muteToggle = document.getElementById('mute-toggle');
+const preset = document.getElementById('preset-hello');
+const ttsAudio = document.getElementById('tts-audio');
+const langBadge = document.getElementById('lang-badge');
 
-// === sélecteurs ===
-const $ = (sel)=>document.querySelector(sel);
-const thread = $("#thread");
-const statusEl = $("#status");
-const langBadge = $("#langBadge");
-const playBadge = $("#playBadge");
-const envPill = $("#env-pill");
-const llmBadge = $("#llmBadge");
-const muteToggle = $("#muteToggle");
-const input = $("#msg");
-const sendBtn = $("#sendBtn");
+// États globaux
+let currentLang = "fr";
+let isMuted = false;
+let isSpeaking = false;
+let currentAudio = null;
 
-// === interface ===
-const UI = {
-  push(role, text){
-    const div = document.createElement("div");
-    div.className = "bubble " + (role === "user" ? "me":"ai");
-    div.textContent = text;
-    thread.appendChild(div);
-    thread.scrollTop = thread.scrollHeight;
-  },
-  setStatus(t){ statusEl.textContent = t; },
-  setLang(l){ langBadge.textContent = l || "—"; },
-  setPlay(t){ playBadge.textContent = t || "-"; },
-  setEnv(ok){
-    envPill.innerHTML = ok
-      ? `Variables env <b class="ok">OK</b>`
-      : `Variables env <b class="bad">manquantes</b>`;
-  }
-};
-
-// === VOICE CONTROLLER ===
-const VC = (() => {
-  let currentAudio = null;
-  let queue = [];
-  let playing = false;
-  let muted = false;
-
-  async function speak(text, lang) {
-    if (muted) return;
-    queue.push({text, lang});
-    UI.setPlay(`queue: ${queue.length}`);
-    if (!playing) _dequeue();
-  }
-
-  async function _dequeue(){
-    if (playing) return;
-    const item = queue.shift();
-    if (!item){ UI.setPlay("-"); return; }
-    playing = true;
-    UI.setPlay("synthèse…");
-
-    try{
-      const res = await fetch(FN('tts'), {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ text: item.text, lang: item.lang || 'fr' })
-      });
-
-      if (!res.ok){
-        console.warn("TTS error", await res.text());
-        UI.setPlay("erreur TTS");
-      } else {
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        if (currentAudio){ currentAudio.pause(); currentAudio.src=''; }
-        currentAudio = new Audio(url);
-        currentAudio.onended = () => {
-          playing = false;
-          URL.revokeObjectURL(url);
-          _dequeue();
-        };
-        currentAudio.play().catch(()=>{ playing=false; _dequeue(); });
-      }
-    }catch(e){
-      console.error(e);
-      UI.setPlay("erreur TTS");
-      playing = false;
-    }
-  }
-
-  function stopAll(){
-    queue = [];
-    if (currentAudio){ currentAudio.pause(); currentAudio.src=''; currentAudio=null; }
-    playing = false;
-    UI.setPlay("-");
-  }
-
-  function setMuted(v){
-    muted = v;
-    if (muted) stopAll();
-  }
-
-  return { speak, stopAll, setMuted };
-})();
-
-// === API WRAPPERS ===
-async function envCheck(){
-  try{
-    const r = await fetch(FN('env-check'));
-    if (!r.ok){ UI.setEnv(false); return; }
-    const js = await r.json().catch(()=> ({}));
-    const ok = js?.ok && js?.env?.OPENAI_API_KEY && js?.env?.ELEVEN_API_KEY;
-    UI.setEnv(!!ok);
-    if (js?.env?.OPENAI_MODEL) llmBadge.textContent = js.env.OPENAI_MODEL;
-  }catch{ UI.setEnv(false); }
+// Fonction utilitaire pour envoyer un événement global
+function dispatchEventCustom(name, detail = {}) {
+  window.dispatchEvent(new CustomEvent(name, { detail }));
 }
 
-async function detectLang(text){
-  try{
-    const r = await fetch(FN('lang-detect'),{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+// =============================
+// 🔍 1. Détection automatique de langue
+// =============================
+async function detectLanguage(text) {
+  try {
+    const res = await fetch('/api/lang-detect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text })
     });
-    const js = await r.json().catch(()=> ({}));
-    const lang = js?.lang || 'fr';
-    UI.setLang(lang);
+    const data = await res.json();
+    const lang = data?.lang || 'fr';
+    currentLang = lang;
+    langBadge.textContent = 'Langue : ' + lang;
+    dispatchEventCustom('detected-language', { lang });
     return lang;
-  }catch(e){
-    console.warn(e);
-    UI.setLang('fr');
+  } catch (e) {
+    console.warn('Erreur détection langue:', e);
     return 'fr';
   }
 }
 
-async function askLLM(userText, langHint){
-  try{
-    const r = await fetch(FN('chat'),{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ userText, langHint })
+// =============================
+// 🤖 2. Appel à GPT pour réponse
+// =============================
+async function getChatResponse(text, lang = "fr") {
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, lang })
     });
-    const js = await r.json().catch(()=> ({}));
-    return js?.reply || "Désolé, je n’ai pas saisi.";
-  }catch(e){
-    console.warn(e);
-    return "Un incident temporaire s’est produit.";
+    const data = await res.json();
+    return data?.reply || "Je n'ai pas compris, pouvez-vous reformuler ?";
+  } catch (e) {
+    console.error("Erreur API Chat:", e);
+    return "Erreur côté serveur.";
   }
 }
 
-// === flux principal ===
-async function handleSend(text){
-  const clean = (text||"").trim();
-  if (!clean) return;
+// =============================
+// 🗣️ 3. Lecture vocale TTS
+// =============================
+async function playTTS(text, lang = "fr") {
+  if (isMuted) return;
 
-  UI.push('user', clean);
-  input.value = "";
-  VC.stopAll();
+  // Stop toute lecture précédente
+  if (isSpeaking && currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    isSpeaking = false;
+  }
 
-  UI.setStatus("Détection langue…");
-  const lang = await detectLang(clean);
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, lang })
+    });
 
-  UI.setStatus("Réponse IA…");
-  const reply = await askLLM(clean, lang);
+    if (!res.ok) throw new Error(`TTS status ${res.status}`);
+    const buf = await res.arrayBuffer();
+    const blob = new Blob([buf], { type: 'audio/mpeg' });
+    const url = URL.createObjectURL(blob);
 
-  UI.push('ai', reply);
-  UI.setStatus("Synthèse vocale…");
-  await VC.speak(reply, lang);
-  UI.setStatus("Prêt");
+    // Assignation au lecteur audio global (orb)
+    currentAudio = ttsAudio;
+    currentAudio.src = url;
+    isSpeaking = true;
+    await currentAudio.play();
+
+    currentAudio.onended = () => {
+      isSpeaking = false;
+      URL.revokeObjectURL(url);
+    };
+
+  } catch (e) {
+    console.error("Erreur TTS:", e);
+    dispatchEventCustom('tts-error');
+  }
 }
 
-// === events ===
-sendBtn.addEventListener("click", ()=> handleSend(input.value));
-input.addEventListener("keydown", (e)=>{
-  if (e.key === "Enter" && !e.shiftKey){
+// =============================
+// 🧠 4. Gestion des messages
+// =============================
+async function handleMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+
+  // 1️⃣ Détecter la langue
+  const lang = await detectLanguage(text);
+
+  // 2️⃣ Afficher la question
+  appendMessage(text, "user");
+
+  // 3️⃣ Obtenir la réponse GPT
+  const reply = await getChatResponse(text, lang);
+
+  // 4️⃣ Afficher la réponse
+  appendMessage(reply, "bot");
+
+  // 5️⃣ Lecture audio
+  await playTTS(reply, lang);
+}
+
+// =============================
+// 💬 5. Ajout dynamique des messages
+// =============================
+function appendMessage(text, role = "bot") {
+  const container = document.querySelector(".stack");
+  if (!container) return;
+
+  const div = document.createElement("div");
+  div.classList.add("item");
+  if (role === "user") {
+    div.style.background = "rgba(0,191,255,0.08)";
+    div.style.border = "1px solid rgba(0,191,255,0.2)";
+  }
+  div.textContent = text;
+  container.appendChild(div);
+  container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+}
+
+// =============================
+// 🔇 6. Mode muet
+// =============================
+muteToggle.addEventListener("change", (e) => {
+  isMuted = e.target.checked;
+  dispatchEventCustom('toggle-mute', { muted: isMuted });
+});
+
+// =============================
+// 📨 7. Bouton “Envoyer” & Entrée
+// =============================
+sendBtn.addEventListener("click", handleMessage);
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
-    handleSend(input.value);
+    handleMessage();
   }
 });
-muteToggle.addEventListener("change", e => VC.setMuted(e.target.checked));
 
-// === démarrage ===
-(async function boot(){
-  UI.setStatus("Initialisation…");
-  await envCheck();
-
-  const welcome = "Bienvenue dans la démonstration Ecommind. Dites-moi votre besoin : site, automatisation, ou prise de rendez-vous ?";
-  UI.push('ai', welcome);
-  await VC.speak(welcome, 'fr');
-
-  UI.setStatus("Prêt");
-})();
+// =============================
+// 🚀 8. Message d’accueil automatique
+// =============================
+window.addEventListener("load", () => {
+  const welcomeText = "Bienvenue dans la démo Ecommind. Dites-moi votre besoin : site, automatisation, ou prise de rendez-vous ?";
+  appendMessage(welcomeText, "bot");
+  playTTS(welcomeText, "fr");
+});
