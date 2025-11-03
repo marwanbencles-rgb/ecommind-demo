@@ -1,12 +1,11 @@
 # ===============================
-# Ecommind — Netlify minimal OK
+# Ecommind — Netlify (final OK)
 # ===============================
 
 [build]
   publish  = "public"
   functions = "netlify/functions"
-  # Pas de build step (site statique)
-  command  = ""
+  command  = ""   # pas de build step
 
 # --- API redirects ---
 [[redirects]]
@@ -40,12 +39,12 @@
   to   = "/index.html"
   status = 200
 
-# --- Functions (config globale) ---
+# --- Functions (PAS de [[functions]] !) ---
 [functions]
   node_bundler = "esbuild"
+  directory    = "netlify/functions"
 
-# ✅ Timeout/memory doivent être en bloc pattern (et NON pas [functions.config])
-[[functions]]
-  pattern = "*"
+# Timeout/memory via sous-table pattern (syntaxe attendue par Netlify)
+[functions."*"]
   timeout = 20
   memory  = 512
