@@ -1,29 +1,96 @@
+// netlify/functions/stt.js
+// ✅ Proxy STT (Speech-To-Text) via Whisper (OpenAI)
+// - Reçoit un fichier audio depuis le front (multipart/form-data)
+// - Retourne le texte + langue détectée
+// - Compatible Netlify Functions (Node 18+)
+
+import { fileFromPath } from "formdata-node/file-from-path";
+import { FormData } from "formdata-node";
+
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
 export async function handler(event) {
   try {
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-    const { audioBase64 } = JSON.parse(event.body || "{}");
-    if (!audioBase64) return { statusCode: 400, body: "audioBase64 manquant" };
+    // Autorise CORS
+    if (event.httpMethod === "OPTIONS") {
+      return { statusCode: 200, headers: CORS_HEADERS, body: "OK" };
+    }
 
-    // Recrée un Blob à partir du base64
-    const bytes = Buffer.from(audioBase64, "base64");
-    const blob = new Blob([bytes], { type: "audio/webm" });
-    const form = new FormData();
-    form.append("file", blob, "audio.webm");
-    form.append("model", "whisper-1");
-    form.append("response_format", "verbose_json");
+    if (event.httpMethod !== "POST") {
+      return { statusCode: 405, headers: CORS_HEADERS, body: "Method Not Allowed" };
+    }
 
-    const r = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return {
+        statusCode: 500,
+        headers: CORS_HEADERS,
+        body: "Missing OPENAI_API_KEY",
+      };
+    }
+
+    // ⚙️ Vérification que l’audio a bien été envoyé
+    const contentType = event.headers["content-type"] || "";
+    if (!contentType.includes("multipart/form-data")) {
+      return {
+        statusCode: 400,
+        headers: CORS_HEADERS,
+        body: "Expected multipart/form-data (audio file)",
+      };
+    }
+
+    // 🧩 Conversion du body binaire reçu (base64)
+    const boundary = contentType.split("boundary=")[1];
+    const buffer = Buffer.from(event.body, event.isBase64Encoded ? "base64" : "utf8");
+
+    const formData = new FormData();
+    const blob = new Blob([buffer]);
+    formData.append("file", blob, "audio.webm");
+    formData.append("model", "whisper-1");
+
+    // 🎙️ Appel API Whisper
+    const res = await fetch("https://api.openai.com/v1/audio/transcriptions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
-      body: form
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: formData,
     });
 
-    if (!r.ok) return { statusCode: r.status, body: await r.text() };
-    const data = await r.json();
-    return { statusCode: 200, body: JSON.stringify({
-      text: data.text || "", language: data.language || null
-    })};
+    if (!res.ok) {
+      const errText = await res.text();
+      return {
+        statusCode: res.status,
+        headers: CORS_HEADERS,
+        body: `STT error (${res.status}): ${errText}`,
+      };
+    }
+
+    const data = await res.json();
+    const text = data?.text || "";
+    const language = detectLangLocal(text);
+
+    return {
+      statusCode: 200,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({ text, language }),
+    };
   } catch (e) {
-    return { statusCode: 500, body: e.message };
+    return {
+      statusCode: 500,
+      headers: CORS_HEADERS,
+      body: `Server error: ${e.message}`,
+    };
   }
+}
+
+// 🔤 Détection simple locale (fallback)
+function detectLangLocal(text = "") {
+  if (/[\u0600-\u06FF]/.test(text)) return "ar";
+  if (/[àâäçéèêëîïôöùûüÿœæ]/i.test(text)) return "fr";
+  return "en";
 }

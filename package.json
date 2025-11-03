@@ -1,43 +1,35 @@
 {
   "name": "ecommind-demo",
   "version": "1.0.0",
-  "description": "Démo premium multilingue Ecommind Agency – IA + Voix + Automatisation.",
+  "description": "Démo complète Ecommind Agency — Automatisation (STT → LLM → TTS)",
+  "main": "index.js",
   "type": "module",
-  "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "build": "echo 'Build step not required' && exit 0",
-    "dev": "netlify dev"
+    "start": "netlify dev",
+    "build": "echo 'No build step required' && exit 0",
+    "dev": "netlify dev",
+    "serve": "netlify dev",
+    "test": "echo \"Run tests if needed\""
   },
   "dependencies": {
-    "axios": "^1.13.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "elevenlabs-node": "^1.1.0",
-    "express": "^4.21.2",
-    "form-data": "^4.0.4",
-    "franc-min": "^6.1.0",
-    "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^7.0.10",
-    "openai": "^4.56.0"
+    "formdata-node": "^6.0.2"
   },
-  "devDependencies": {
-    "netlify-cli": "^17.33.0",
-    "nodemon": "^3.1.10"
-  },
+  "devDependencies": {},
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.x"
   },
   "keywords": [
-    "ecommind",
-    "netlify",
-    "openai",
-    "elevenlabs",
-    "multilingual",
-    "automation",
-    "chatgpt",
-    "demo"
+    "Ecommind",
+    "Netlify",
+    "AI",
+    "Chatbot",
+    "TTS",
+    "STT",
+    "LLM",
+    "Whisper",
+    "OpenAI",
+    "ElevenLabs"
   ],
   "author": "Ecommind Agency",
   "license": "MIT"

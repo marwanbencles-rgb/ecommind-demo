@@ -1,7 +1,90 @@
+# ==========================================================
+# 🚀 ECOMMIND AGENCY — CONFIGURATION NETLIFY
+# Version : Production stable
+# Description : Pipeline complet IA (TTS + STT + LLM + Lang)
+# ==========================================================
+
 [build]
+  command = "npm run build"
+  publish = "public"
   functions = "netlify/functions"
+
+# ==========================================================
+# ✅ ROUTING API FUNCTIONS
+# ==========================================================
+
+# --- Assistant IA ---
+[[redirects]]
+  from = "/api/llm"
+  to = "/.netlify/functions/llm"
+  status = 200
+
+[[redirects]]
+  from = "/api/stt"
+  to = "/.netlify/functions/stt"
+  status = 200
 
 [[redirects]]
   from = "/api/tts"
   to = "/.netlify/functions/tts"
   status = 200
+
+[[redirects]]
+  from = "/api/lang"
+  to = "/.netlify/functions/lang"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+# --- Gestion 404 ---
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ==========================================================
+# ⚙️ HEADERS & CORS
+# ==========================================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Cache-Control = "no-store"
+
+# ==========================================================
+# 🧠 ENVIRONNEMENT (à définir sur Netlify UI)
+# ==========================================================
+# Ajoute dans ton tableau de bord Netlify :
+# - OPENAI_API_KEY = ta clé OpenAI (gpt-4o-mini)
+# - ELEVENLABS_API_KEY = ta clé ElevenLabs (TTS)
+# - URL = ton domaine Netlify (auto-renseigné en prod)
+# ==========================================================
+
+# ==========================================================
+# 🧩 PARAMÈTRES AVANCÉS
+# ==========================================================
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["public/**/*"]
+  external_node_modules = ["formdata-node", "node-fetch"]
+  directory = "netlify/functions"
+  timeout = 20
+  memory = 512
+
+# ==========================================================
+# 💎 LOGGING & DEBUG
+# ==========================================================
+[build.environment]
+  NODE_ENV = "production"
+  NODE_VERSION = "18.20.3"
+  NPM_FLAGS = "--legacy-peer-deps"
