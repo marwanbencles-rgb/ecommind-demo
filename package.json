@@ -1,19 +1,10 @@
 {
   "name": "ecommind-agency",
   "version": "1.0.0",
-  "description": "Ecommind Agency — IA Demo assistant vocal et automatisation",
   "type": "module",
   "scripts": {
-    "start": "netlify dev",
-    "build": "echo 'No build step required for static site' && exit 0",
-    "dev": "netlify dev"
+    "build": "echo build-skip",
+    "start": "netlify dev"
   },
-  "dependencies": {
-    "formdata-node": "^6.0.2",
-    "node-fetch": "^3.3.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "license": "MIT"
+  "engines": { "node": ">=18.0.0" }
 }

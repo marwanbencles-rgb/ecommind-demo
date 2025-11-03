@@ -1,62 +1,51 @@
-# ==========================================================
-# 🚀 ECOMMIND AGENCY — NETLIFY CONFIG (PRODUCTION)
-# ==========================================================
+# ===============================
+# Ecommind — Netlify minimal OK
+# ===============================
 
 [build]
-  command = "npm run build"
-  publish = "public"
+  publish  = "public"
   functions = "netlify/functions"
+  # Pas de build step (site statique)
+  command  = ""
 
-# === API REDIRECTS ===
+# --- API redirects ---
 [[redirects]]
   from = "/api/llm"
-  to = "/.netlify/functions/llm"
+  to   = "/.netlify/functions/llm"
   status = 200
+
 [[redirects]]
   from = "/api/stt"
-  to = "/.netlify/functions/stt"
+  to   = "/.netlify/functions/stt"
   status = 200
+
 [[redirects]]
   from = "/api/tts"
-  to = "/.netlify/functions/tts"
+  to   = "/.netlify/functions/tts"
   status = 200
+
 [[redirects]]
   from = "/api/lang"
-  to = "/.netlify/functions/lang"
+  to   = "/.netlify/functions/lang"
   status = 200
+
 [[redirects]]
   from = "/api/health"
-  to = "/.netlify/functions/health"
+  to   = "/.netlify/functions/health"
   status = 200
+
+# SPA fallback
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to   = "/index.html"
   status = 200
 
-# === HEADERS (SÉCURITÉ & CORS) ===
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
-    Cache-Control = "no-store"
-    X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosniff"
-
-# === FONCTIONS SERVERLESS ===
+# --- Functions (config globale) ---
 [functions]
   node_bundler = "esbuild"
-  included_files = ["public/**/*"]
-  external_node_modules = ["formdata-node", "node-fetch"]
-  directory = "netlify/functions"
 
-[functions.config]
+# ✅ Timeout/memory doivent être en bloc pattern (et NON pas [functions.config])
+[[functions]]
+  pattern = "*"
   timeout = 20
-  memory = 512
-
-# === ENVIRONNEMENT ===
-[build.environment]
-  NODE_ENV = "production"
-  NODE_VERSION = "18.20.3"
-  NPM_FLAGS = "--legacy-peer-deps"
+  memory  = 512
