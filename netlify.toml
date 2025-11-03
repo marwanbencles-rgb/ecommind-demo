@@ -1,9 +1,13 @@
+# ==========================================================
+# 🚀 ECOMMIND AGENCY — NETLIFY CONFIG (PRODUCTION)
+# ==========================================================
+
 [build]
   command = "npm run build"
   publish = "public"
   functions = "netlify/functions"
 
-# === REDIRECTIONS ===
+# === API REDIRECTS ===
 [[redirects]]
   from = "/api/llm"
   to = "/.netlify/functions/llm"
@@ -29,7 +33,7 @@
   to = "/index.html"
   status = 200
 
-# === HEADERS ===
+# === HEADERS (SÉCURITÉ & CORS) ===
 [[headers]]
   for = "/*"
   [headers.values]
@@ -37,6 +41,8 @@
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
     Cache-Control = "no-store"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
 
 # === FONCTIONS SERVERLESS ===
 [functions]
@@ -53,3 +59,4 @@
 [build.environment]
   NODE_ENV = "production"
   NODE_VERSION = "18.20.3"
+  NPM_FLAGS = "--legacy-peer-deps"

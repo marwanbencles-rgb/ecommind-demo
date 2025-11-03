@@ -1,36 +1,19 @@
 {
-  "name": "ecommind-demo",
+  "name": "ecommind-agency",
   "version": "1.0.0",
-  "description": "Démo complète Ecommind Agency — Automatisation (STT → LLM → TTS)",
-  "main": "index.js",
+  "description": "Ecommind Agency — IA Demo assistant vocal et automatisation",
   "type": "module",
   "scripts": {
     "start": "netlify dev",
-    "build": "echo 'No build step required' && exit 0",
-    "dev": "netlify dev",
-    "serve": "netlify dev",
-    "test": "echo \"Run tests if needed\""
+    "build": "echo 'No build step required for static site' && exit 0",
+    "dev": "netlify dev"
   },
   "dependencies": {
-    "node-fetch": "^3.3.2",
-    "formdata-node": "^6.0.2"
+    "formdata-node": "^6.0.2",
+    "node-fetch": "^3.3.2"
   },
-  "devDependencies": {},
   "engines": {
-    "node": ">=18.x"
+    "node": ">=18.0.0"
   },
-  "keywords": [
-    "Ecommind",
-    "Netlify",
-    "AI",
-    "Chatbot",
-    "TTS",
-    "STT",
-    "LLM",
-    "Whisper",
-    "OpenAI",
-    "ElevenLabs"
-  ],
-  "author": "Ecommind Agency",
   "license": "MIT"
 }
