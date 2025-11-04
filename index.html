@@ -1,232 +1,126 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ecommind Closer – Demo</title>
-  <meta name="description" content="Ecommind – Captiver. Déclencher. Convertir. Dashboard Closer (Chat + Voix)"/>
-  <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="style.css" />
-  <!-- GSAP (optionnel, safe si absent) -->
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Ecommind Closer — Demo</title>
+  <meta name="theme-color" content="#000000"/>
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- GSAP (arrival) -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <!-- Three.js (3D orb) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   <script defer src="app.js"></script>
 </head>
+<body>
+  <!-- Background particles -->
+  <canvas id="bg"></canvas>
 
-<body class="app">
-  <!-- Sidebar -->
-  <aside class="sidebar" aria-label="Barre latérale">
+  <!-- Intro cinematic -->
+  <div id="intro">
+    <div class="intro-core">
+      <img src="assets/logo.png" alt="Ecommind Agency" class="intro-logo" onerror="this.style.display='none'"/>
+      <h1 class="intro-title">Ecommind Closer</h1>
+      <p class="intro-tag">Captiver. Déclencher. Convertir.</p>
+    </div>
+  </div>
+
+  <!-- Top bar -->
+  <header class="top">
     <div class="brand">
-      <div class="brand-mark" aria-hidden="true">E</div>
-      <div class="brand-meta">
-        <h1 class="brand-name">Ecommind</h1>
-        <p class="brand-tag">Captiver. Déclencher. Convertir.</p>
+      <img src="assets/logo.png" alt="Ecommind Agency" class="brand-logo" onerror="this.style.display='none'"/>
+      <div class="meta">
+        <strong>Ecommind</strong>
+        <small>Closer Demo</small>
       </div>
     </div>
-
-    <nav class="nav" role="navigation">
-      <button class="nav-btn active" data-section="home" aria-current="page">
-        <span>Dashboard</span>
-      </button>
-      <button class="nav-btn" data-section="chat"><span>Chat IA</span></button>
-      <button class="nav-btn" data-section="voice"><span>Voix IA</span></button>
-      <button class="nav-btn" data-section="history"><span>Historique</span></button>
-      <button class="nav-btn" data-section="settings"><span>Paramètres</span></button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <button id="logoutBtn" class="ghost">Déconnexion</button>
-      <small class="muted">© Ecommind Agency</small>
+    <div class="actions">
+      <button id="fxToggle" class="ghost">FX ON</button>
+      <button id="themeToggle" class="ghost">Auto Light/Dark</button>
     </div>
-  </aside>
+  </header>
 
-  <!-- Contenu -->
-  <main class="content">
-    <!-- Header -->
-    <header class="header">
-      <div class="status">
-        <span class="dot dot-live" aria-hidden="true"></span>
-        <strong>Ecommind Closer</strong>
-        <span class="status-pill" id="statusPill">Actif • En écoute</span>
+  <!-- Stage -->
+  <main class="stage">
+    <!-- HERO -->
+    <section class="hero card">
+      <div class="hero-left">
+        <h2 class="hero-title">La démo qui close.</h2>
+        <p class="hero-sub">
+          Votre IA écoute, qualifie et conduit la décision — sans pause, sans erreur. 
+          Pendant que vous vivez, elle travaille pour vous.
+        </p>
+        <div class="hero-cta">
+          <button class="primary" id="ctaChat">Voir le chat</button>
+          <button class="outline" id="ctaVoice">Voir la voix</button>
+        </div>
+        <ul class="hero-points">
+          <li>Score de closing en temps réel</li>
+          <li>Preuve visuelle & micro-interactions</li>
+          <li>Design premium — zéro distraction</li>
+        </ul>
       </div>
-      <div class="header-actions">
-        <button id="modeToggle" class="ghost">Mode Auto (Light/Dark)</button>
-        <button id="pulseToggle" class="primary">Effets ON/OFF</button>
-      </div>
-    </header>
-
-    <!-- Section: Dashboard -->
-    <section class="section show" id="home" aria-label="Tableau de bord">
-      <!-- KPIs -->
-      <div class="grid grid-kpi">
-        <article class="card kpi">
-          <header>Leads traités</header>
-          <div class="kpi-row">
-            <strong id="kpiLeads" class="kpi-num">2 300</strong>
-            <span class="kpi-badge up">+18%</span>
-          </div>
-          <footer class="muted">Dernières 24h</footer>
-        </article>
-
-        <article class="card kpi">
-          <header>Conversion</header>
-          <div class="kpi-row">
-            <strong id="kpiConv" class="kpi-num">9.3</strong>
-            <span class="kpi-unit">/10</span>
-          </div>
-          <footer class="muted">Score Closer</footer>
-        </article>
-
-        <article class="card kpi">
-          <header>Temps de réponse</header>
-          <div class="kpi-row">
-            <strong id="kpiRt" class="kpi-num">1.2</strong>
-            <span class="kpi-unit">s</span>
-          </div>
-          <footer class="muted">Médiane chat</footer>
-        </article>
-
-        <article class="card kpi">
-          <header>Satisfaction</header>
-          <div class="kpi-row">
-            <strong id="kpiSat" class="kpi-num">95%</strong>
-          </div>
-          <footer class="muted">Après démo</footer>
-        </article>
-      </div>
-
-      <!-- Graphiques -->
-      <div class="grid grid-2">
-        <article class="card">
-          <header>Interactions / jour</header>
-          <canvas id="chartLine" height="140" aria-label="Graphique des interactions"></canvas>
-        </article>
-
-        <article class="card">
-          <header>Origine des leads</header>
-          <div class="bars" id="bars"><!-- barres injectées en JS --></div>
-        </article>
-      </div>
-
-      <!-- Punchline / CTA -->
-      <div class="grid grid-1">
-        <article class="card hero-punch">
-          <div class="hero-copy">
-            <h2>Ecommind – la démo qui close.</h2>
-            <p>Votre IA écoute, qualifie et conduit la décision. Sans pause. Sans erreur. Pendant que vous vivez, elle travaille pour vous.</p>
-          </div>
-          <div class="hero-cta">
-            <button class="primary" data-section="chat">Lancer la conversation</button>
-            <button class="outline" data-section="voice">Démarrer la voix</button>
-          </div>
-        </article>
+      <div class="hero-right">
+        <!-- Three.js orb -->
+        <div id="orb-wrap" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- Section: Chat -->
-    <section class="section" id="chat" aria-label="Chat IA">
-      <div class="split">
-        <article class="card chat">
-          <header class="chat-head">
-            <div class="agent">
-              <div class="avatar" aria-hidden="true">AI</div>
-              <div>
-                <strong>Closer IA</strong>
-                <small class="muted">Stratégie • Objections • Closing</small>
-              </div>
-            </div>
-            <div class="chat-actions">
-              <button id="clearChat" class="ghost">Effacer</button>
-            </div>
-          </header>
-
-          <div id="chatStream" class="chat-stream" role="log" aria-live="polite"></div>
-
-          <form id="chatForm" class="chat-form" autocomplete="off">
-            <input id="chatInput" type="text" placeholder="Pose ta question… (ex : 'Quel ROI sur 30 jours ?')" aria-label="Message"/>
-            <button class="primary" type="submit">Envoyer</button>
-          </form>
-        </article>
-
-        <article class="card notes">
-          <header>Notes & Punchlines</header>
-          <ul id="punchList" class="list"></ul>
-        </article>
-      </div>
+    <!-- KPIs -->
+    <section class="kpis">
+      <article class="kpi card"><header>Leads (24h)</header><div class="num" id="kpiLeads">2 300</div><div class="muted">+18%</div></article>
+      <article class="kpi card"><header>Score closer</header><div class="num" id="kpiScore">9.3</div><div class="muted">/10</div></article>
+      <article class="kpi card"><header>Temps de réponse</header><div class="num" id="kpiRt">1.2</div><div class="muted">s</div></article>
+      <article class="kpi card"><header>Satisfaction</header><div class="num" id="kpiSat">95%</div><div class="muted">après démo</div></article>
     </section>
 
-    <!-- Section: Voix -->
-    <section class="section" id="voice" aria-label="Voix IA">
-      <div class="split">
-        <article class="card voice">
-          <header class="voice-head">
-            <div class="agent">
-              <div class="avatar" aria-hidden="true">VOX</div>
-              <div>
-                <strong>Closer Voice</strong>
-                <small class="muted">Détection langue • Réponses instantanées</small>
-              </div>
-            </div>
-            <div class="voice-actions">
-              <button id="micBtn" class="primary">🎤 Démarrer</button>
-              <button id="stopBtn" class="ghost">Stop</button>
-            </div>
-          </header>
-
-          <!-- Visualiseur audio -->
-          <div class="voice-visual">
-            <canvas id="voiceCanvas" height="160"></canvas>
-            <div class="voice-status">
-              <span class="dot" id="micDot"></span>
-              <span id="micLabel">Micro inactif</span>
-            </div>
-          </div>
-
-          <!-- Transcript -->
-          <div class="voice-log" id="voiceLog" role="log" aria-live="polite"></div>
-        </article>
-
-        <article class="card script">
-          <header>Scénario de closing</header>
-          <ol class="script-steps">
-            <li>Qualification rapide : besoin, budget, délai.</li>
-            <li>Démonstration ciblée sur 1 douleur.</li>
-            <li>Preuve par cas concret (60s).</li>
-            <li>Recadrage des objections.</li>
-            <li>Offre claire : 2 490€ + 490€/mois.</li>
-            <li>CTA direct : “On démarre aujourd’hui ou demain ?”.</li>
-          </ol>
-        </article>
-      </div>
-    </section>
-
-    <!-- Section: Historique -->
-    <section class="section" id="history" aria-label="Historique">
-      <article class="card">
-        <header>Dernières conversations</header>
-        <ul id="historyList" class="list"></ul>
+    <!-- Modules visuels -->
+    <section class="grid">
+      <article class="card mod">
+        <header>Interactions / jour</header>
+        <canvas id="lineChart" height="140"></canvas>
       </article>
-    </section>
-
-    <!-- Section: Paramètres -->
-    <section class="section" id="settings" aria-label="Paramètres">
-      <article class="card">
-        <header>Préférences</header>
-        <div class="settings-grid">
-          <label class="toggle">
-            <input id="autoScroll" type="checkbox" checked/>
-            <span>Défilement automatique du chat</span>
-          </label>
-          <label class="toggle">
-            <input id="minimalFX" type="checkbox"/>
-            <span>Réduire les animations</span>
-          </label>
-          <label class="toggle">
-            <input id="speechRealtime" type="checkbox" checked/>
-            <span>Traitement voix temps réel (visuel)</span>
-          </label>
+      <article class="card mod">
+        <header>Origine des leads</header>
+        <div id="bars" class="bars"></div>
+      </article>
+      <article class="card mod">
+        <header>Chat (aperçu visuel)</header>
+        <div id="chat" class="chat">
+          <div class="msg ai"><div class="bubble">Bienvenue — quel est votre secteur ?</div><span class="t"></span></div>
+          <div class="msg user"><div class="bubble">Garage auto — je veux plus de RDV réparations.</div><span class="t"></span></div>
+          <div id="lastMsg" class="msg ai"><div class="bubble">OK. Je vous montre comment on capte, qualifie et close en 60s.</div><span class="t"></span></div>
+        </div>
+      </article>
+      <article class="card mod">
+        <header>Voix (visualiseur)</header>
+        <div class="voice">
+          <canvas id="voice" height="140"></canvas>
+          <div class="voice-status"><span class="dot" id="micDot"></span><span id="micLabel">Micro inactif</span></div>
+          <div class="voice-cta">
+            <button id="micStart" class="primary">🎤 Démarrer</button>
+            <button id="micStop" class="ghost">Stop</button>
+          </div>
         </div>
       </article>
     </section>
+
+    <!-- Bandeau closing -->
+    <section class="banner card">
+      <p class="b-copy">
+        Entrée <strong>2 490€</strong> — Maintenance & cybersécurité <strong>490€/mois</strong>. 
+        On démarre <u>aujourd’hui</u> ou <u>demain</u> ?
+      </p>
+      <div class="b-cta">
+        <button class="primary">Démarrer maintenant</button>
+        <button class="outline">Planifier 15 min</button>
+      </div>
+    </section>
   </main>
+
+  <footer class="foot">
+    <small>© Ecommind Agency — Full Luxe CAC40 • Zéro dégradé • IA Closer</small>
+  </footer>
 </body>
 </html>
