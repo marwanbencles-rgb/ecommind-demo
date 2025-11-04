@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ecommind Closer – Demo</title>
   <meta name="description" content="Ecommind – Captiver. Déclencher. Convertir. Dashboard Closer (Chat + Voix)"/>
-  <link rel="preload" href="/assets/styles.css" as="style"/>
-  <link rel="stylesheet" href="/assets/styles.css"/>
-  <!-- GSAP (optionnel) -->
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- GSAP (optionnel, safe si absent) -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script defer src="/assets/app.js"></script>
+  <script defer src="app.js"></script>
 </head>
 
 <body class="app">
@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <nav class="nav">
+    <nav class="nav" role="navigation">
       <button class="nav-btn active" data-section="home" aria-current="page">
         <span>Dashboard</span>
       </button>
@@ -55,7 +55,7 @@
     </header>
 
     <!-- Section: Dashboard -->
-    <section class="section show" id="home">
+    <section class="section show" id="home" aria-label="Tableau de bord">
       <!-- KPIs -->
       <div class="grid grid-kpi">
         <article class="card kpi">
@@ -103,13 +103,11 @@
 
         <article class="card">
           <header>Origine des leads</header>
-          <div class="bars" id="bars">
-            <!-- Barres générées en JS -->
-          </div>
+          <div class="bars" id="bars"><!-- barres injectées en JS --></div>
         </article>
       </div>
 
-      <!-- Zone “preuve sociale / pitch” -->
+      <!-- Punchline / CTA -->
       <div class="grid grid-1">
         <article class="card hero-punch">
           <div class="hero-copy">

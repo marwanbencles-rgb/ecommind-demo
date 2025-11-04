@@ -1,24 +1,29 @@
+# ===============================
 # Ecommind Closer – Netlify config
+# Site statique (pas de build)
+# ===============================
 
 [build]
-  command = ""        # app statique, pas de build
-  publish = "."
+  command = ""      # aucun build, fichiers statiques
+  publish = "."     # publier le dossier courant (là où se trouve index.html)
 
+# Sécurité + permission micro (HTTPS requis pour getUserMedia)
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "microphone=(), geolocation=(), camera=()"
+    # Autoriser uniquement le micro pour ce domaine
+    Permissions-Policy = "microphone=(self)"
 
-# Autoriser le micro sur la page (nécessaire pour getUserMedia)
+# Cache simple pour CSS/JS (optionnel)
 [[headers]]
-  for = "/"
+  for = "/:file.(css|js)"
   [headers.values]
-    Permissions-Policy = "microphone=(self)"  # active uniquement le micro pour ton domaine
+    Cache-Control = "public, max-age=31536000, immutable"
 
-# SPA fallback (si plus tard tu ajoutes du routing côté client)
+# SPA fallback (toutes les routes → index.html)
 [[redirects]]
   from = "/*"
   to = "/index.html"
