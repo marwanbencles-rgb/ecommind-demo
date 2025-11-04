@@ -1,50 +1,25 @@
-# ===============================
-# Ecommind — Netlify (final OK)
-# ===============================
+# Ecommind Closer – Netlify config
 
 [build]
-  publish  = "public"
-  functions = "netlify/functions"
-  command  = ""   # pas de build step
+  command = ""        # app statique, pas de build
+  publish = "."
 
-# --- API redirects ---
-[[redirects]]
-  from = "/api/llm"
-  to   = "/.netlify/functions/llm"
-  status = 200
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "microphone=(), geolocation=(), camera=()"
 
-[[redirects]]
-  from = "/api/stt"
-  to   = "/.netlify/functions/stt"
-  status = 200
+# Autoriser le micro sur la page (nécessaire pour getUserMedia)
+[[headers]]
+  for = "/"
+  [headers.values]
+    Permissions-Policy = "microphone=(self)"  # active uniquement le micro pour ton domaine
 
-[[redirects]]
-  from = "/api/tts"
-  to   = "/.netlify/functions/tts"
-  status = 200
-
-[[redirects]]
-  from = "/api/lang"
-  to   = "/.netlify/functions/lang"
-  status = 200
-
-[[redirects]]
-  from = "/api/health"
-  to   = "/.netlify/functions/health"
-  status = 200
-
-# SPA fallback
+# SPA fallback (si plus tard tu ajoutes du routing côté client)
 [[redirects]]
   from = "/*"
-  to   = "/index.html"
+  to = "/index.html"
   status = 200
-
-# --- Functions (PAS de [[functions]] !) ---
-[functions]
-  node_bundler = "esbuild"
-  directory    = "netlify/functions"
-
-# Timeout/memory via sous-table pattern (syntaxe attendue par Netlify)
-[functions."*"]
-  timeout = 20
-  memory  = 512

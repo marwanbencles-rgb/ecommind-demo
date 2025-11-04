@@ -1,0 +1,154 @@
+/* Ecommind Closer – Styles
+   Branding: gold #C9A55E, blue #00BFFF, bg #000000, bg-2 #0D1B2A, text #FFFFFF
+   Aucune utilisation de dégradés. Effets par ombres/halos.
+*/
+
+:root{
+  --gold:#C9A55E;
+  --blue:#00BFFF;
+  --bg:#000000;
+  --bg2:#0D1B2A;
+  --text:#FFFFFF;
+  --muted:#9aa2aa;
+  --card: #0f2233;
+  --border: #1f3345;
+  --shadow: 0 0 0.5rem rgba(0,191,255,.25), 0 0 1.2rem rgba(201,165,94,.18);
+  --radius: 16px;
+  --space: 16px;
+  --font: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial;
+}
+
+@media (prefers-color-scheme: light) {
+  :root{
+    --bg:#f7f9fb;
+    --bg2:#e9eef4;
+    --text:#0d1b2a;
+    --card:#ffffff;
+    --border:#dce3ea;
+    --shadow: 0 1px 12px rgba(0,0,0,.06);
+  }
+}
+
+/* Base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body.app{
+  margin:0; display:grid; grid-template-columns: 300px 1fr;
+  background: var(--bg); color: var(--text); font-family: var(--font);
+}
+
+/* Sidebar */
+.sidebar{
+  position:sticky; top:0; height:100dvh; padding:24px 18px;
+  background: var(--bg2); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; gap:24px;
+}
+.brand{display:flex; gap:12px; align-items:center}
+.brand-mark{
+  width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+  background:#001421; color:var(--blue); font-weight:800; box-shadow:var(--shadow);
+}
+.brand-name{margin:0;font-size:18px;letter-spacing:.3px}
+.brand-tag{margin:0;color:var(--muted);font-size:12px}
+
+.nav{display:flex;flex-direction:column;gap:8px}
+.nav-btn{
+  width:100%; text-align:left; padding:12px 14px; border:1px solid var(--border);
+  background:transparent; color:var(--text); border-radius:12px; cursor:pointer;
+}
+.nav-btn:hover{border-color:var(--blue)}
+.nav-btn.active{border-color:var(--gold); box-shadow:var(--shadow)}
+
+.sidebar-footer{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.ghost{
+  background:transparent; border:1px solid var(--border); color:var(--text);
+  border-radius:10px; padding:10px 12px; cursor:pointer;
+}
+.ghost:hover{border-color:var(--blue)}
+.primary{
+  background:var(--blue); color:#001421; border:0; border-radius:10px;
+  padding:10px 14px; font-weight:700; cursor:pointer; box-shadow:var(--shadow);
+}
+.outline{
+  background:transparent; color:var(--blue); border:1px solid var(--blue);
+  border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer;
+}
+
+/* Content */
+.content{padding:24px; display:flex; flex-direction:column; gap:24px}
+.header{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 16px; border:1px solid var(--border); border-radius:var(--radius);
+  background:var(--card); box-shadow:var(--shadow);
+}
+.status{display:flex; align-items:center; gap:10px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted);display:inline-block}
+.dot-live{background:var(--blue);box-shadow:0 0 12px var(--blue)}
+.status-pill{
+  border:1px solid var(--border); padding:4px 8px; border-radius:20px; color:var(--muted)
+}
+
+/* Sections */
+.section{display:none}
+.section.show{display:block}
+
+.grid{display:grid; gap:16px}
+.grid-kpi{grid-template-columns:repeat(4,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-1{grid-template-columns:1fr}
+
+@media (max-width:1024px){ .grid-kpi{grid-template-columns:repeat(2,1fr)} .grid-2{grid-template-columns:1fr} body.app{grid-template-columns: 84px 1fr}}
+@media (max-width:720px){ .grid-kpi{grid-template-columns:1fr} }
+
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; box-shadow:var(--shadow);
+}
+.card header{font-weight:700;margin-bottom:8px}
+
+.kpi .kpi-row{display:flex;align-items:end;gap:8px}
+.kpi-num{font-size:32px;letter-spacing:.5px}
+.kpi-badge{padding:2px 6px;border-radius:8px;font-size:12px;border:1px solid var(--border);color:var(--text)}
+.kpi-badge.up{border-color:#2ecc71;color:#2ecc71}
+.kpi-unit{color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+
+.hero-punch{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.hero-copy h2{margin:0 0 4px 0;font-size:24px}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Bars simple */
+.bars{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:end;height:160px}
+.bars .bar{background:#001421;border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow)}
+.bars .bar .fill{background:var(--blue);height:40%;border-radius:7px 7px 6px 6px}
+
+/* Split layout */
+.split{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+@media (max-width:1024px){.split{grid-template-columns:1fr}}
+
+.chat-head,.voice-head{display:flex;justify-content:space-between;align-items:center}
+.agent{display:flex;gap:10px;align-items:center}
+.avatar{width:38px;height:38px;border-radius:10px;background:#001421;color:var(--blue);display:grid;place-items:center;font-weight:800}
+
+.chat-stream{height:380px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:12px;background:#071725}
+.msg{display:flex;gap:10px;margin-bottom:10px}
+.msg .bubble{padding:10px 12px;border-radius:12px;border:1px solid var(--border)}
+.msg.ai .bubble{background:#001421;color:var(--text)}
+.msg.user .bubble{background:#0b2740;color:var(--text)}
+.msg .time{color:var(--muted);font-size:11px}
+
+.chat-form{display:flex;gap:10px;margin-top:10px}
+.chat-form input{
+  flex:1;border:1px solid var(--border);border-radius:10px;padding:10px;background:transparent;color:var(--text)
+}
+
+.notes .list{margin:0;padding-left:18px}
+.notes .list li{margin:8px 0}
+
+.voice-visual{border:1px solid var(--border);border-radius:12px;padding:12px;background:#071725;margin-top:8px}
+.voice-status{display:flex;align-items:center;gap:8px;margin-top:8px}
+.voice-log{margin-top:12px;height:240px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:10px;background:#071725}
+.script-steps{margin:0 0 0 18px}
+.settings-grid{display:grid;gap:10px}
+
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}

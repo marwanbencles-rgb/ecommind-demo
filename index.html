@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ecommind Closer – Demo</title>
+  <meta name="description" content="Ecommind – Captiver. Déclencher. Convertir. Dashboard Closer (Chat + Voix)"/>
+  <link rel="preload" href="/assets/styles.css" as="style"/>
+  <link rel="stylesheet" href="/assets/styles.css"/>
+  <!-- GSAP (optionnel) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="/assets/app.js"></script>
+</head>
+
+<body class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" aria-label="Barre latérale">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">E</div>
+      <div class="brand-meta">
+        <h1 class="brand-name">Ecommind</h1>
+        <p class="brand-tag">Captiver. Déclencher. Convertir.</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-btn active" data-section="home" aria-current="page">
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-section="chat"><span>Chat IA</span></button>
+      <button class="nav-btn" data-section="voice"><span>Voix IA</span></button>
+      <button class="nav-btn" data-section="history"><span>Historique</span></button>
+      <button class="nav-btn" data-section="settings"><span>Paramètres</span></button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="logoutBtn" class="ghost">Déconnexion</button>
+      <small class="muted">© Ecommind Agency</small>
+    </div>
+  </aside>
+
+  <!-- Contenu -->
+  <main class="content">
+    <!-- Header -->
+    <header class="header">
+      <div class="status">
+        <span class="dot dot-live" aria-hidden="true"></span>
+        <strong>Ecommind Closer</strong>
+        <span class="status-pill" id="statusPill">Actif • En écoute</span>
+      </div>
+      <div class="header-actions">
+        <button id="modeToggle" class="ghost">Mode Auto (Light/Dark)</button>
+        <button id="pulseToggle" class="primary">Effets ON/OFF</button>
+      </div>
+    </header>
+
+    <!-- Section: Dashboard -->
+    <section class="section show" id="home">
+      <!-- KPIs -->
+      <div class="grid grid-kpi">
+        <article class="card kpi">
+          <header>Leads traités</header>
+          <div class="kpi-row">
+            <strong id="kpiLeads" class="kpi-num">2 300</strong>
+            <span class="kpi-badge up">+18%</span>
+          </div>
+          <footer class="muted">Dernières 24h</footer>
+        </article>
+
+        <article class="card kpi">
+          <header>Conversion</header>
+          <div class="kpi-row">
+            <strong id="kpiConv" class="kpi-num">9.3</strong>
+            <span class="kpi-unit">/10</span>
+          </div>
+          <footer class="muted">Score Closer</footer>
+        </article>
+
+        <article class="card kpi">
+          <header>Temps de réponse</header>
+          <div class="kpi-row">
+            <strong id="kpiRt" class="kpi-num">1.2</strong>
+            <span class="kpi-unit">s</span>
+          </div>
+          <footer class="muted">Médiane chat</footer>
+        </article>
+
+        <article class="card kpi">
+          <header>Satisfaction</header>
+          <div class="kpi-row">
+            <strong id="kpiSat" class="kpi-num">95%</strong>
+          </div>
+          <footer class="muted">Après démo</footer>
+        </article>
+      </div>
+
+      <!-- Graphiques -->
+      <div class="grid grid-2">
+        <article class="card">
+          <header>Interactions / jour</header>
+          <canvas id="chartLine" height="140" aria-label="Graphique des interactions"></canvas>
+        </article>
+
+        <article class="card">
+          <header>Origine des leads</header>
+          <div class="bars" id="bars">
+            <!-- Barres générées en JS -->
+          </div>
+        </article>
+      </div>
+
+      <!-- Zone “preuve sociale / pitch” -->
+      <div class="grid grid-1">
+        <article class="card hero-punch">
+          <div class="hero-copy">
+            <h2>Ecommind – la démo qui close.</h2>
+            <p>Votre IA écoute, qualifie et conduit la décision. Sans pause. Sans erreur. Pendant que vous vivez, elle travaille pour vous.</p>
+          </div>
+          <div class="hero-cta">
+            <button class="primary" data-section="chat">Lancer la conversation</button>
+            <button class="outline" data-section="voice">Démarrer la voix</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Section: Chat -->
+    <section class="section" id="chat" aria-label="Chat IA">
+      <div class="split">
+        <article class="card chat">
+          <header class="chat-head">
+            <div class="agent">
+              <div class="avatar" aria-hidden="true">AI</div>
+              <div>
+                <strong>Closer IA</strong>
+                <small class="muted">Stratégie • Objections • Closing</small>
+              </div>
+            </div>
+            <div class="chat-actions">
+              <button id="clearChat" class="ghost">Effacer</button>
+            </div>
+          </header>
+
+          <div id="chatStream" class="chat-stream" role="log" aria-live="polite"></div>
+
+          <form id="chatForm" class="chat-form" autocomplete="off">
+            <input id="chatInput" type="text" placeholder="Pose ta question… (ex : 'Quel ROI sur 30 jours ?')" aria-label="Message"/>
+            <button class="primary" type="submit">Envoyer</button>
+          </form>
+        </article>
+
+        <article class="card notes">
+          <header>Notes & Punchlines</header>
+          <ul id="punchList" class="list"></ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- Section: Voix -->
+    <section class="section" id="voice" aria-label="Voix IA">
+      <div class="split">
+        <article class="card voice">
+          <header class="voice-head">
+            <div class="agent">
+              <div class="avatar" aria-hidden="true">VOX</div>
+              <div>
+                <strong>Closer Voice</strong>
+                <small class="muted">Détection langue • Réponses instantanées</small>
+              </div>
+            </div>
+            <div class="voice-actions">
+              <button id="micBtn" class="primary">🎤 Démarrer</button>
+              <button id="stopBtn" class="ghost">Stop</button>
+            </div>
+          </header>
+
+          <!-- Visualiseur audio -->
+          <div class="voice-visual">
+            <canvas id="voiceCanvas" height="160"></canvas>
+            <div class="voice-status">
+              <span class="dot" id="micDot"></span>
+              <span id="micLabel">Micro inactif</span>
+            </div>
+          </div>
+
+          <!-- Transcript -->
+          <div class="voice-log" id="voiceLog" role="log" aria-live="polite"></div>
+        </article>
+
+        <article class="card script">
+          <header>Scénario de closing</header>
+          <ol class="script-steps">
+            <li>Qualification rapide : besoin, budget, délai.</li>
+            <li>Démonstration ciblée sur 1 douleur.</li>
+            <li>Preuve par cas concret (60s).</li>
+            <li>Recadrage des objections.</li>
+            <li>Offre claire : 2 490€ + 490€/mois.</li>
+            <li>CTA direct : “On démarre aujourd’hui ou demain ?”.</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <!-- Section: Historique -->
+    <section class="section" id="history" aria-label="Historique">
+      <article class="card">
+        <header>Dernières conversations</header>
+        <ul id="historyList" class="list"></ul>
+      </article>
+    </section>
+
+    <!-- Section: Paramètres -->
+    <section class="section" id="settings" aria-label="Paramètres">
+      <article class="card">
+        <header>Préférences</header>
+        <div class="settings-grid">
+          <label class="toggle">
+            <input id="autoScroll" type="checkbox" checked/>
+            <span>Défilement automatique du chat</span>
+          </label>
+          <label class="toggle">
+            <input id="minimalFX" type="checkbox"/>
+            <span>Réduire les animations</span>
+          </label>
+          <label class="toggle">
+            <input id="speechRealtime" type="checkbox" checked/>
+            <span>Traitement voix temps réel (visuel)</span>
+          </label>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
