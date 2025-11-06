@@ -1,17 +1,17 @@
 /* =====================================================
-   ECOMMIND – APP.JS "COCKPIT FULL LUXE"
-   Mercedes × Apple × CAC40 version stable
+   ECOMMIND – APP.JS  "COCKPIT FULL LUXE STABLE"
+   Mercedes × Apple × CAC40 | sans dépendances
    ===================================================== */
 
-// Vérification GSAP
-if (typeof gsap === "undefined") {
-  console.warn("⚠️ GSAP non chargé. Vérifie le <script> dans index.html");
-}
+// --- Vérif GSAP ---
+const hasGSAP = typeof gsap !== "undefined";
+if (!hasGSAP) console.warn("⚠️ GSAP non chargé. Vérifie le <script> dans index.html");
 
-/* --------------------------
-   Effet parallaxe du héros
--------------------------- */
+/* ------------------------------
+   Parallaxe du fond héros
+------------------------------ */
 document.addEventListener("mousemove", (e) => {
+  if (!hasGSAP) return;
   const heroBg = document.querySelector(".hero-bg");
   if (!heroBg) return;
 
@@ -25,10 +25,11 @@ document.addEventListener("mousemove", (e) => {
   });
 });
 
-/* --------------------------
-   Animation d’entrée fluide
--------------------------- */
+/* ------------------------------
+   Apparition fluide (intro)
+------------------------------ */
 window.addEventListener("load", () => {
+  if (!hasGSAP) return;
   const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
   tl.from("header", { opacity: 0, y: -20, duration: 0.6 })
     .from(".hero-inner > *", {
@@ -41,14 +42,15 @@ window.addEventListener("load", () => {
     .from(".glass", { opacity: 0, y: 40, duration: 0.7, stagger: 0.15 }, "-=0.2");
 });
 
-/* --------------------------
+/* ------------------------------
    Orb vocal réactif
--------------------------- */
+------------------------------ */
 const voiceOrb = document.getElementById("voiceOrb");
 let orbPulse = null;
 let orbActive = false;
 
 function startPulse() {
+  if (!hasGSAP || !voiceOrb) return;
   if (orbPulse) orbPulse.kill();
   orbPulse = gsap.to(voiceOrb, {
     scale: 1.08,
@@ -61,6 +63,7 @@ function startPulse() {
 }
 
 function stopPulse() {
+  if (!hasGSAP || !voiceOrb) return;
   if (orbPulse) orbPulse.kill();
   gsap.to(voiceOrb, {
     scale: 1,
@@ -75,19 +78,22 @@ if (voiceButton) {
   voiceButton.addEventListener("click", () => {
     orbActive = !orbActive;
     orbActive ? startPulse() : stopPulse();
-    gsap.fromTo(
-      voiceButton,
-      { scale: 1 },
-      { scale: 1.08, yoyo: true, repeat: 1, duration: 0.15, ease: "power1.inOut" }
-    );
+    if (hasGSAP) {
+      gsap.fromTo(
+        voiceButton,
+        { scale: 1 },
+        { scale: 1.08, yoyo: true, repeat: 1, duration: 0.15, ease: "power1.inOut" }
+      );
+    }
   });
 }
 
-/* --------------------------
-   Hover des boutons
--------------------------- */
+/* ------------------------------
+   Hover boutons
+------------------------------ */
 document.querySelectorAll(".btn").forEach((btn) => {
   btn.addEventListener("mouseenter", () => {
+    if (!hasGSAP) return;
     gsap.to(btn, {
       scale: 1.04,
       duration: 0.25,
@@ -96,6 +102,7 @@ document.querySelectorAll(".btn").forEach((btn) => {
     });
   });
   btn.addEventListener("mouseleave", () => {
+    if (!hasGSAP) return;
     gsap.to(btn, {
       scale: 1,
       duration: 0.25,
@@ -105,11 +112,12 @@ document.querySelectorAll(".btn").forEach((btn) => {
   });
 });
 
-/* --------------------------
-   Hover dynamique sur KPI
--------------------------- */
+/* ------------------------------
+   KPI hover dynamique
+------------------------------ */
 document.querySelectorAll(".kpi").forEach((kpi) => {
   kpi.addEventListener("mouseenter", () => {
+    if (!hasGSAP) return;
     gsap.to(kpi, {
       borderColor: "rgba(0,191,255,.35)",
       boxShadow: "0 0 35px rgba(0,191,255,.15)",
@@ -118,6 +126,7 @@ document.querySelectorAll(".kpi").forEach((kpi) => {
     });
   });
   kpi.addEventListener("mouseleave", () => {
+    if (!hasGSAP) return;
     gsap.to(kpi, {
       borderColor: "rgba(255,255,255,.08)",
       boxShadow: "none",
@@ -127,25 +136,28 @@ document.querySelectorAll(".kpi").forEach((kpi) => {
   });
 });
 
-/* --------------------------
-   Lumière cockpit douce
--------------------------- */
-gsap.to("body", {
-  background:
-    "radial-gradient(ellipse at 50% 50%, rgba(0,191,255,.04), transparent 80%)",
-  duration: 5,
-  ease: "sine.inOut",
-  repeat: -1,
-  yoyo: true,
-});
+/* ------------------------------
+   Effet lumière cockpit global
+------------------------------ */
+if (hasGSAP) {
+  gsap.to("body", {
+    background: "radial-gradient(ellipse at 50% 50%, rgba(0,191,255,.04), transparent 80%)",
+    duration: 5,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+  });
+}
 
-/* --------------------------
-   Chat & Formulaire
--------------------------- */
+/* ------------------------------
+   Chat et formulaire
+------------------------------ */
 const chatBtn = document.querySelector('[data-action="open-chat"]');
 if (chatBtn) {
   chatBtn.addEventListener("click", () => {
-    gsap.fromTo(chatBtn, { scale: 1 }, { scale: 1.1, yoyo: true, repeat: 1, duration: 0.15 });
+    if (hasGSAP) {
+      gsap.fromTo(chatBtn, { scale: 1 }, { scale: 1.1, yoyo: true, repeat: 1, duration: 0.15 });
+    }
     alert("💬 Chat cockpit — connecté à ton IA Ecommind (module à venir).");
   });
 }
@@ -154,16 +166,19 @@ const quickQuote = document.getElementById("quickQuote");
 if (quickQuote) {
   quickQuote.addEventListener("submit", (e) => {
     e.preventDefault();
-    const need = quickQuote.querySelector("#need")?.value.trim();
+    const needInput = quickQuote.querySelector("#need");
+    const need = needInput ? needInput.value.trim() : "";
     if (need) {
       alert(`✅ Reçu : “${need}”\nNous préparons ton mini-plan personnalisé.`);
-      gsap.fromTo(
-        quickQuote,
-        { scale: 1 },
-        { scale: 1.02, duration: 0.25, yoyo: true, repeat: 1, ease: "sine.inOut" }
-      );
+      if (hasGSAP) {
+        gsap.fromTo(
+          quickQuote,
+          { scale: 1 },
+          { scale: 1.02, duration: 0.25, yoyo: true, repeat: 1, ease: "sine.inOut" }
+        );
+      }
     } else {
       alert("Décris ton besoin pour générer un plan clair.");
     }
   });
-});
+}
