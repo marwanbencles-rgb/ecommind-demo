@@ -1,31 +1,33 @@
-# ============================================================
-# 🔧 Configuration Netlify – Proxy vers n8n (backend IA)
-# ============================================================
-
 [build]
+  # Pas de build: site statique (index.html, styles.css, app.js à la racine)
   publish = "."
   command = ""
 
-# --- Redirection des requêtes API vers ton workflow n8n ---
-[[redirects]]
-  from = "/api/*"
-  to = "https://TON-URL-N8N-WEBHOOK/:splat"
-  status = 200
-  force = true
-
-# --- En-têtes de sécurité (recommandés) ---
+# ========= Sécurité & Perf (headers globaux) =========
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "no-referrer-when-downgrade"
-    Permissions-Policy = "microphone=(), camera=(), geolocation=()"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    # CSP adaptée: script GSAP via jsDelivr, styles inline autorisés (tu utilises un <style> dans <head>)
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' https://images.unsplash.com data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
 
-# --- CORS (pour que ton front puisse dialoguer avec n8n) ---
+# ========= Cache long terme pour tes fichiers statiques =========
 [[headers]]
-  for = "/api/*"
+  for = "/styles.css"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/app.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ========= SPA fallback (toutes les routes -> index.html) =========
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

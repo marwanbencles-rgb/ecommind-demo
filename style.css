@@ -1,249 +1,201 @@
-/* ------------------------------
-   🟦 Thème global Ecommind Agency
-   ------------------------------ */
+/* ============================
+   Ecommind – Cockpit Premium UI
+   Mercedes × Apple × Velar
+   ============================ */
 
-/* Couleurs officielles */
-:root {
-  --noir: #000000;
-  --bleu-tech: #00BFFF;
-  --or: #C9A55E;
-  --fond-secondaire: #0D1B2A;
-  --blanc: #FFFFFF;
+/* ---- Variables & Theme ---- */
+:root{
+  --brand-gold:#C9A55E;
+  --brand-blue:#00BFFF;
 
-  --transition: all 0.3s ease;
-  --font: "Poppins", "Segoe UI", sans-serif;
+  --bg:#000000;
+  --bg-soft:#0D1B2A;
+  --fg:#FFFFFF;
+  --fg-dim:#C9D1D9;
+
+  --glass-bg: rgba(255,255,255,.045);
+  --glass-brd: rgba(255,255,255,.10);
+  --glass-ring: rgba(0,191,255,.35);
+
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  --shadow-soft: 0 10px 30px rgba(0,0,0,.35);
+  --shadow-glow-blue: 0 0 40px rgba(0,191,255,.18);
+  --shadow-glow-gold: 0 0 34px rgba(201,165,94,.16);
+
+  --gap: 20px;
 }
 
-/* ------------------------------
-   ⚙️ Reset et structure globale
-   ------------------------------ */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  background-color: var(--noir);
-  color: var(--blanc);
-  font-family: var(--font);
-  scroll-behavior: smooth;
-}
-
-/* ------------------------------
-   🧠 Layout général
-   ------------------------------ */
-
-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  line-height: 1.5;
-}
-
-header, main, footer {
-  width: 100%;
-  max-width: 800px;
-}
-
-/* ------------------------------
-   🔹 Header
-   ------------------------------ */
-
-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-header h1 {
-  font-size: 2rem;
-  color: var(--or);
-  letter-spacing: 1px;
-}
-
-header p {
-  color: var(--bleu-tech);
-  font-weight: 300;
-}
-
-/* ------------------------------
-   💬 Zone de chat
-   ------------------------------ */
-
-#section-demo {
-  background: var(--fond-secondaire);
-  border: 1px solid var(--bleu-tech);
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 0 25px rgba(0, 191, 255, 0.2);
-}
-
-#historique {
-  margin-top: 10px;
-  text-align: left;
-  height: 300px;
-  overflow-y: auto;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
-  padding: 10px;
-  scroll-behavior: smooth;
-}
-
-#chat-log li {
-  list-style: none;
-  margin-bottom: 10px;
-  padding: 8px 12px;
-  border-left: 3px solid var(--bleu-tech);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-}
-
-#chat-log li b {
-  color: var(--or);
-}
-
-/* ------------------------------
-   🖊️ Formulaire de saisie
-   ------------------------------ */
-
-#zone-saisie {
-  margin-top: 25px;
-  text-align: center;
-}
-
-#form-chat {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-#champ-message {
-  padding: 12px;
-  background: var(--fond-secondaire);
-  border: 1px solid var(--bleu-tech);
-  border-radius: 8px;
-  color: var(--blanc);
-  font-size: 1rem;
-  transition: var(--transition);
-}
-
-#champ-message:focus {
-  outline: none;
-  border-color: var(--or);
-  box-shadow: 0 0 10px rgba(201, 165, 94, 0.4);
-}
-
-/* Boutons */
-#actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  font-size: 1rem;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: var(--transition);
-}
-
-#btn-envoyer {
-  background: var(--or);
-  color: var(--noir);
-}
-
-#btn-parler {
-  background: transparent;
-  color: var(--bleu-tech);
-  border: 1px solid var(--bleu-tech);
-}
-
-#btn-envoyer:hover {
-  background: var(--bleu-tech);
-  color: var(--blanc);
-}
-
-#btn-parler:hover {
-  background: var(--bleu-tech);
-  color: var(--blanc);
-}
-
-/* ------------------------------
-   🔊 Section audio
-   ------------------------------ */
-
-#section-audio {
-  margin-top: 25px;
-  text-align: center;
-}
-
-audio {
-  width: 100%;
-  outline: none;
-  border-radius: 8px;
-  background: #111;
-}
-
-/* ------------------------------
-   🧾 Section état système
-   ------------------------------ */
-
-#etat-systeme {
-  margin-top: 30px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: #ccc;
-}
-
-#etat-systeme dt {
-  font-weight: bold;
-  color: var(--or);
-}
-
-#etat-systeme dd {
-  margin-left: 10px;
-  margin-bottom: 8px;
-  color: var(--bleu-tech);
-}
-
-/* ------------------------------
-   ⚫ Footer
-   ------------------------------ */
-
-footer {
-  margin-top: 30px;
-  text-align: center;
-  font-size: 0.85rem;
-  opacity: 0.7;
-}
-
-/* ------------------------------
-   📱 Responsive
-   ------------------------------ */
-
-@media (max-width: 600px) {
-  #section-demo {
-    padding: 18px;
-  }
-
-  header h1 {
-    font-size: 1.6rem;
-  }
-
-  #champ-message {
-    font-size: 0.9rem;
-  }
-
-  button {
-    font-size: 0.9rem;
+/* Auto light/dark (le design reste noir dominant) */
+@media (prefers-color-scheme: light) {
+  :root{
+    --bg:#0B0F14;
+    --bg-soft:#101824;
+    --fg:#F5F7FA;
+    --fg-dim:#CFD6DF;
+    --glass-bg: rgba(255,255,255,.06);
+    --glass-brd: rgba(255,255,255,.12);
   }
 }
+
+*{box-sizing:border-box}
+html,body{height:100%; color-scheme:dark}
+body{
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---- Utilities ---- */
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+.grid{display:grid;gap:var(--gap)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---- Header / Nav ---- */
+header{
+  position:sticky; top:0; z-index:50;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+header .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+nav a{
+  color:#D7DFEA; text-decoration:none; margin:0 .75rem;
+  padding:.45rem .25rem; position:relative; transition:opacity .2s ease;
+}
+nav a:hover{opacity:.85}
+nav a::after{
+  content:""; position:absolute; left:0; right:0; bottom:0;
+  height:2px; background:transparent; transform:scaleX(0); transition:transform .25s ease;
+}
+nav a:hover::after{background:var(--brand-blue); transform:scaleX(1)}
+
+/* ---- Pills & Buttons (sans dégradés sur texte/boutons) ---- */
+.pill{
+  display:inline-flex; align-items:center; gap:.6rem;
+  border:1px solid var(--glass-brd);
+  border-radius:999px; padding:.5rem .9rem;
+  background: var(--glass-bg);
+}
+.btn{
+  display:inline-flex; align-items:center; gap:.55rem;
+  padding:.9rem 1.15rem; border-radius:12px;
+  border:1px solid var(--glass-brd);
+  background: rgba(255,255,255,.04);
+  color: var(--fg); text-decoration:none; cursor:pointer;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  box-shadow: var(--shadow-soft);
+}
+.btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-soft), var(--shadow-glow-gold) }
+.btn:active{ transform: translateY(0) scale(.99) }
+.btn:focus-visible{ outline:2px solid var(--brand-blue); outline-offset:2px }
+.btn.primary{
+  border-color: var(--brand-blue);
+  box-shadow: inset 0 0 0 1px var(--glass-ring), var(--shadow-soft), var(--shadow-glow-blue);
+}
+
+/* ---- HERO (cinématique) ---- */
+.hero{ position:relative; min-height:74vh; display:flex; align-items:center; overflow:hidden }
+.hero-bg{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(1200px 700px at 70% 10%, rgba(0,191,255,.18), transparent 60%),
+    radial-gradient(900px 500px at 20% 80%, rgba(201,165,94,.14), transparent 60%),
+    url('https://images.unsplash.com/photo-1445905595283-21f8ae8a33d2?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+  filter: saturate(115%) brightness(.8) contrast(1.05);
+  transform: translateZ(0);
+}
+.hero-overlay{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.85)) }
+.hero-inner{ position:relative; z-index:2 }
+.hero h1{ font-size:clamp(28px,6vw,56px); line-height:1.05; margin:0 0 14px }
+.hero h1 span{ color: var(--brand-blue) }
+.hero p{ max-width:640px; color: var(--fg-dim); margin:0 0 22px }
+.trust{ display:flex; gap:22px; align-items:center; flex-wrap:wrap; opacity:.9 }
+.trust .pill{ opacity:.95 }
+
+/* ---- Cockpit ---- */
+.cockpit{
+  position:relative; margin-top:-64px; padding:28px 0 80px;
+  background:
+    radial-gradient(1000px 500px at 50% -10%, rgba(0,191,255,.10), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00));
+}
+.glass{
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
+  backdrop-filter: blur(18px) saturate(140%);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+}
+.kpis{ grid-template-columns: repeat(4, minmax(0,1fr)) }
+.kpi{ padding:18px }
+.kpi h3{ margin:0; color: var(--fg-dim); font-weight:600; font-size:.9rem }
+.kpi .v{ font-size:1.9rem; font-weight:700 }
+
+/* ---- Voice Panel ---- */
+.voice-panel{ display:grid; grid-template-columns:140px 1fr; gap:20px; align-items:center }
+.voice-orb{
+  width:140px; height:140px; border-radius:999px;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(0,191,255,.85), rgba(201,165,94,.65) 60%, rgba(0,0,0,.2) 70%);
+  box-shadow: var(--shadow-glow-blue), var(--shadow-glow-gold);
+  position:relative; isolation:isolate;
+  transition: transform .25s ease, filter .25s ease;
+}
+.voice-orb::after{
+  /* halo de respiration */
+  content:""; position:absolute; inset:-6px; border-radius:inherit;
+  background: radial-gradient(circle, rgba(0,191,255,.28), transparent 60%);
+  filter: blur(16px); opacity:.75; z-index:-1;
+  animation: orb-breathe 3.6s ease-in-out infinite;
+}
+@keyframes orb-breathe{
+  0%,100%{ transform: scale(1); opacity:.55 }
+  50%{ transform: scale(1.06); opacity:.9 }
+}
+.voice-panel .btn{ margin-top:6px }
+
+/* ---- Forms ---- */
+input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="tel"], input[type="number"],
+textarea{
+  width:100%; color:var(--fg); background: rgba(255,255,255,.045);
+  border:1px solid var(--glass-brd); border-radius:12px; padding:12px;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+input::placeholder, textarea::placeholder{ color: #96A0AE }
+input:focus, textarea:focus{
+  outline:none; border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(0,191,255,.18);
+}
+
+/* ---- Footer ---- */
+footer{
+  border-top:1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(6px);
+  padding:26px 0; color:#b9c0c8;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1100px){
+  .kpis{ grid-template-columns: repeat(2, minmax(0,1fr)) }
+}
+@media (max-width: 860px){
+  header .bar{ height:58px }
+  .voice-panel{ grid-template-columns:1fr; text-align:center }
+  .voice-panel .btn{ justify-content:center }
+  .cockpit .container{ grid-template-columns:1fr !important }
+}
+@media (max-width: 520px){
+  .kpis{ grid-template-columns: repeat(2, minmax(0,1fr)) }
+  .kpi .v{ font-size:1.6rem }
+  .btn{ width:100%; justify-content:center }
+}
+
+/* ---- Fine polish ---- */
+::selection{ background: rgba(0,191,255,.25) }
+img{ max-width:100%; height:auto; display:block }
+a{ -webkit-tap-highlight-color: rgba(0,0,0,0) }
