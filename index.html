@@ -3,13 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecommind — Planet Demo • Parle. Capte. Close.</title>
-  <meta name="description" content="Démonstration IA Ecommind : une planète qui parle, chat élégant à droite, WhatsApp pour conclure." />
+  <title>Ecommind — Démo Planète • Parle. Capte. Close.</title>
+  <meta name="description" content="Une planète qui parle, un chat qui trace tout. Démo IA Ecommind : capter, qualifier, proposer un créneau, conclure sur WhatsApp." />
 
-  <!-- CSS (racine, pas d’assets) -->
   <link rel="stylesheet" href="/style.css" />
 
-  <!-- CSP minimale : autorise GSAP + image Unsplash -->
+  <!-- CSP : autorise GSAP + image Unsplash -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  style-src 'self' 'unsafe-inline';
@@ -22,75 +21,107 @@
                  frame-ancestors 'self';
                  upgrade-insecure-requests">
 
-  <!-- GSAP + App -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="/app.js"></script>
 </head>
 <body class="planet-demo">
 
-  <!-- Header : logo en haut gauche, visible et grand -->
+  <!-- Header (logo seul) -->
   <header class="pd-header">
     <div class="pd-header-inner">
       <img id="brandLogo" src="/logo.png" alt="Ecommind" class="pd-logo-lg" />
     </div>
   </header>
 
-  <!-- Scène centrale : planète à gauche, chat à droite -->
-  <main class="pd-stage">
+  <!-- HERO intro (copy qui close) -->
+  <section class="pd-hero-intro">
+    <div class="pd-hero-bg" aria-hidden="true"></div>
+    <div class="pd-hero-overlay" aria-hidden="true"></div>
+
+    <div class="pd-hero-inner">
+      <div class="pill">Interface Cockpit IA • Mercedes × Apple</div>
+      <h1>Automatisation de prestige, <span>pilotée</span> pour convertir.</h1>
+      <p class="lead">
+        Je capte l’intention, je qualifie en 60–120 s, je propose 3 créneaux.  
+        Vous validez, on confirme. Le **reste se conclut sur WhatsApp**.
+      </p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#demo">Démarrer la démo</a>
+        <a class="btn pill" id="waBtnTop" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCÈNE DÉMO : Planète + Chat -->
+  <main id="demo" class="pd-stage">
+    <!-- (on réutilise le même fond pour continuité visuelle) -->
     <div class="pd-hero-bg" aria-hidden="true"></div>
     <div class="pd-hero-overlay" aria-hidden="true"></div>
 
     <section class="pd-center">
-      <!-- Bloc planète parlant -->
+      <!-- Planète -->
       <div class="pd-planet-wrap">
         <div id="planet" class="pd-planet" aria-label="Planète parlante">
+          <div class="pd-core-spec"></div>
           <div class="pd-ring ring-1"></div>
           <div class="pd-ring ring-2"></div>
           <div class="pd-ring ring-3"></div>
           <canvas id="pdViz" class="pd-viz" aria-hidden="true"></canvas>
         </div>
 
-        <!-- CTA minimalistes -->
         <div class="pd-cta">
           <button class="btn primary" data-action="voice-toggle">🎤 Parler</button>
-          <a class="btn pill" id="waBtn" href="https://wa.me/?text=Je%20souhaite%20parler%20avec%20Ecommind%20Agency%20au%20sujet%20de%20la%20d%C3%A9mo%20IA" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn pill" id="waBtn" target="_blank" rel="noopener">WhatsApp</a>
         </div>
 
-        <!-- Accroche unique -->
         <p class="pd-tagline">« La démo parle pour vous. On conclut sur WhatsApp. »</p>
       </div>
 
-      <!-- Chat élégant à droite -->
+      <!-- Chat transcript -->
       <aside class="pd-chat glass" aria-label="Chat démo Ecommind">
         <header class="pd-chat-head">
-          <div class="pd-chat-title">
-            <span class="dot dot-blue"></span>
-            Chat Ecommind
-          </div>
+          <div class="pd-chat-title"><span class="dot dot-blue"></span> Chat Ecommind</div>
           <button class="pd-chat-min btn pill" data-action="toggle-chat">−</button>
         </header>
 
         <div id="chatFeed" class="pd-chat-feed">
-          <!-- Messages seed (peu de texte, focus closing) -->
-          <div class="msg bot">
-            <div class="bubble">
-              Bonjour 👋 Je vous montre en 60–120 s comment on capte, qualifie et propose un créneau automatiquement.
-            </div>
-          </div>
-          <div class="msg bot">
-            <div class="bubble">
-              Posez une question, ou cliquez WhatsApp pour continuer la discussion 👉
-            </div>
-          </div>
+          <div class="msg bot"><div class="bubble">
+            Bonjour 👋 Je vous montre en 60–120 s comment on capte, qualifie et propose un créneau automatiquement.
+          </div></div>
+          <div class="msg bot"><div class="bubble">
+            Posez une question, ou cliquez WhatsApp pour continuer la discussion 👉
+          </div></div>
         </div>
 
         <form id="chatForm" class="pd-chat-input" autocomplete="off">
-          <input id="chatText" name="q" placeholder="Écrivez ici… (ex : Montrez-moi un scénario de prise de RDV)" />
+          <input id="chatText" name="q" placeholder="Écrivez ici… (ex : Montrez-moi la prise de RDV)" />
           <button class="btn primary" type="submit">Envoyer</button>
         </form>
       </aside>
     </section>
   </main>
+
+  <!-- BLOC PERSUASION (court, inspiré pj2) -->
+  <section class="pd-proof">
+    <div class="proof-grid">
+      <article class="glass proof-card">
+        <h3>1) Captation</h3>
+        <p>Hook visuel + voix naturelle. L’IA garde le lead, qualifie en 60–120 s.</p>
+      </article>
+      <article class="glass proof-card">
+        <h3>2) Conversion</h3>
+        <p>Objections traitées, proposition claire, 3 créneaux auto → <strong>RDV</strong>.</p>
+      </article>
+      <article class="glass proof-card">
+        <h3>3) Confiance</h3>
+        <p>Confirmation e-mail + WhatsApp, acompte sécurisé, relances intelligentes.</p>
+      </article>
+    </div>
+    <div class="proof-cta">
+      <a class="btn primary" href="#demo">Voir la démo</a>
+      <a class="btn pill" id="waBtnBottom" target="_blank" rel="noopener">Parler sur WhatsApp</a>
+    </div>
+  </section>
 
 </body>
 </html>
