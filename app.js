@@ -1,334 +1,200 @@
-// Ecommind OnePage — GSAP + Canvas + Three.js + Pyodide
+/* =========================================================
+   Ecommind – Demo IA (Front minimal, propre et robuste)
+   - Soumission du formulaire
+   - Affichage historique
+   - Appel au backend (proxy Netlify → Webhook n8n)
+   - Lecture audio TTS si fourni
+   - Accessibilité (aria-live) + états visuels
+   ========================================================= */
+
 (() => {
-  const $ = (s) => document.querySelector(s);
+  // ------- Sélecteurs ----------
+  const form = document.getElementById("form-chat");
+  const input = document.getElementById("champ-message");
+  const chatLog = document.getElementById("chat-log");
+  const srStatus = document.querySelector(".sr-status"); // aria-live polite
+  const btnEnvoyer = document.getElementById("btn-envoyer");
+  const btnParler = document.getElementById("btn-parler");
+  const lecteurAudio = document.getElementById("lecteur-audio");
+  const etatN8n = document.getElementById("etat-n8n");
+  const etatTTS = document.getElementById("etat-tts");
+  const etatAdapt = document.getElementById("etat-adapt");
 
-  /* ======================================================
-     BACKGROUND PARTICLES (Canvas)
-  ====================================================== */
-  const bg = $("#bg");
-  const g = bg.getContext("2d");
-  let W, H, pts = [], reqBG;
+  // ------- Config ----------
+  // IMPORTANT : /api/demo est redirigé par netlify.toml → Webhook n8n
+  const API_PATH = "/api/demo";
 
-  function size() {
-    W = bg.width = innerWidth;
-    H = bg.height = innerHeight;
-  }
-  addEventListener("resize", size); size();
+  // ------- Utilitaires ----------
+  function setBusy(isBusy) {
+    btnEnvoyer.disabled = isBusy;
+    btnParler.disabled = isBusy;
+    input.disabled = isBusy;
 
-  function initPts(n = 64) {
-    pts = Array.from({ length: n }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      r: 1 + Math.random() * 2.2,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
-    }));
-  }
-  function tickBG() {
-    g.clearRect(0, 0, W, H);
-    g.fillStyle = css("--blue");
-    for (const p of pts) {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
-      g.beginPath(); g.arc(p.x, p.y, p.r, 0, Math.PI * 2); g.fill();
+    if (isBusy) {
+      btnEnvoyer.dataset.prevText = btnEnvoyer.textContent;
+      btnEnvoyer.textContent = "Envoi…";
+    } else {
+      btnEnvoyer.textContent = btnEnvoyer.dataset.prevText || "Envoyer";
     }
-    g.strokeStyle = "rgba(0,191,255,.12)";
-    g.lineWidth = 1;
-    for (let i = 0; i < pts.length; i++) {
-      for (let j = i + 1; j < pts.length; j++) {
-        const a = pts[i], b = pts[j];
-        const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
-        if (d2 < 120 * 120) {
-          g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
-        }
-      }
-    }
-    reqBG = requestAnimationFrame(tickBG);
-  }
-  initPts();
-
-  /* ======================================================
-     INTRO GSAP
-  ====================================================== */
-  function intro() {
-    if (!window.gsap) { start(); return; }
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.from(".intro-logo", { scale: 0.7, opacity: 0, duration: 0.45 })
-      .from(".intro-title", { y: 10, opacity: 0, duration: 0.35 }, "-=0.15")
-      .from(".intro-tag", { y: 8, opacity: 0, duration: 0.3 }, "-=0.2")
-      .to("#intro", { opacity: 0, duration: 0.5, delay: 0.25, onComplete: () => $("#intro").style.display = "none" })
-      .add(start, "-=0.1");
   }
 
-  /* ======================================================
-     THREE.JS ORB (reactive to audio)
-  ====================================================== */
-  let scene, camera, renderer, orb, glow, raf3D;
-  function initThree() {
-    const wrap = $("#orb-wrap");
-    const w = wrap.clientWidth, h = wrap.clientHeight;
+  function announce(message) {
+    if (!srStatus) return;
+    srStatus.hidden = false;
+    srStatus.textContent = message;
+  }
 
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-    camera.position.z = 4;
+  function scrollToBottom() {
+    const histo = document.getElementById("historique");
+    if (histo) histo.scrollTop = histo.scrollHeight;
+  }
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
-    wrap.innerHTML = "";
-    wrap.appendChild(renderer.domElement);
+  function sanitize(str) {
+    // Protection basique contre l’injection HTML
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
 
-    const light = new THREE.PointLight(0x00bfff, 1.2); light.position.set(2, 2, 3);
-    const amb = new THREE.AmbientLight(0x113344, 0.6);
-    scene.add(light, amb);
+  function addMessage(role, text) {
+    const li = document.createElement("li");
+    li.innerHTML = `<b>${role} :</b> ${sanitize(text)}`;
+    chatLog.appendChild(li);
+    scrollToBottom();
+  }
 
-    const coreMat = new THREE.MeshPhongMaterial({
-      color: 0x002a3a,
-      emissive: 0x003b57,
-      shininess: 80,
-      specular: 0x003b57,
-    });
-    orb = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 48), coreMat);
-    scene.add(orb);
-
-    const glowMat = new THREE.ShaderMaterial({
-      uniforms: { color: { value: new THREE.Color(0x00bfff) }, power: { value: 1.7 } },
-      vertexShader: `
-        varying float vA;
-        void main(){
-          vec3 n = normalize(normalMatrix * normal);
-          vec3 v = normalize(normalMatrix * -position);
-          vA = pow(1.0 - max(dot(n,v), 0.0), 2.0);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-        }`,
-      fragmentShader: `
-        varying float vA; uniform vec3 color; uniform float power;
-        void main(){ gl_FragColor = vec4(color, vA*power); }`,
-      blending: THREE.AdditiveBlending, transparent: true, side: THREE.FrontSide, depthWrite: false,
-    });
-    glow = new THREE.Mesh(new THREE.SphereGeometry(1.05, 48, 48), glowMat);
-    scene.add(glow);
-
-    const loop = () => {
-      orb.rotation.y += 0.005;
-      glow.rotation.y += 0.004;
-      // scale piloté par l'audio (mis à jour dans drawVoice)
-      renderer.render(scene, camera);
-      raf3D = requestAnimationFrame(loop);
+  function setEtat(key, value) {
+    const map = {
+      n8n: etatN8n,
+      tts: etatTTS,
+      adapt: etatAdapt,
     };
-    loop();
-
-    new ResizeObserver((ents) => {
-      for (const e of ents) {
-        const w2 = e.contentRect.width, h2 = e.contentRect.height;
-        renderer.setSize(w2, h2); camera.aspect = w2 / h2; camera.updateProjectionMatrix();
-      }
-    }).observe(wrap);
-
-    // exposer pour la voix
-    window.orb = orb; window.glow = glow;
+    if (map[key]) map[key].textContent = value;
   }
 
-  /* ======================================================
-     PYODIDE (Python → score de closing)
-  ====================================================== */
-  let pyodideReady = (async () => {
-    if (!window.loadPyodide) return null;
+  async function playAudio(url) {
+    if (!url) return;
     try {
-      const py = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/" });
-      const code = `
-import numpy as np
-def closing_score(leads, sat, response_s):
-    x = np.array([leads/3000.0, sat/100.0, max(0.1, 2.0-response_s)/2.0])
-    w = np.array([0.55, 0.35, 0.25])
-    z = float(np.dot(x, w))
-    s = 1.0/(1.0+np.exp(-5*(z-0.5)))
-    return round(10.0*s, 1)
-`;
-      await py.runPythonAsync(code);
-      return py;
+      lecteurAudio.src = url;
+      await lecteurAudio.play();
+      return true;
     } catch (e) {
-      return null;
+      // Certains navigateurs bloquent l’autoplay sans interaction
+      console.warn("Lecture auto refusée, tentative via contrôle natif.", e);
+      return false;
+    }
+  }
+
+  // ------- Ping de santé (facultatif) ----------
+  // On vérifie rapidement si le proxy Netlify / n8n répond
+  (async function healthCheck() {
+    try {
+      // Convention: le Webhook peut répondre 405/200 selon la config sur GET; on n’en fait pas une erreur bloquante
+      const res = await fetch(API_PATH, { method: "OPTIONS" });
+      setEtat("n8n", res.ok ? "connecté" : "en attente");
+    } catch {
+      setEtat("n8n", "hors ligne");
     }
   })();
 
-  async function updateClosingScore() {
-    try {
-      const py = await pyodideReady; if (!py) return;
-      const leads = Number($("#kpiLeads")?.textContent || 2300);
-      const sat = 95, rt = 1.2;
-      const score = await py.runPythonAsync(`closing_score(${leads}, ${sat}, ${rt})`);
-      const el = $("#kpiScore"); if (el) el.textContent = Number(score).toFixed(1);
-    } catch { /* silencieux */ }
-  }
+  // ------- Soumission du formulaire ----------
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
 
-  /* ======================================================
-     MINI CHARTS (Canvas)
-  ====================================================== */
-  function drawLine() {
-    const c = $("#lineChart"); if (!c) return;
-    const ctx = c.getContext("2d");
-    const W = c.width = c.clientWidth, H = c.height;
-    const data = Array.from({ length: 24 }, (_, i) => 20 + Math.sin(i / 3) * 12 + Math.random() * 6);
-    const max = Math.max(...data) + 10, min = Math.min(...data) - 10;
+    // 1) Affichage local du message utilisateur
+    addMessage("Vous", message);
+    announce("Message envoyé. Réponse en cours…");
+    setBusy(true);
 
-    ctx.clearRect(0, 0, W, H);
-    ctx.strokeStyle = css("--blue"); ctx.lineWidth = 2; ctx.beginPath();
-    data.forEach((v, i) => {
-      const x = (i / (data.length - 1)) * W;
-      const y = H - ((v - min) / (max - min)) * H;
-      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
-    });
-    ctx.stroke();
-    ctx.fillStyle = "#001421";
-    data.forEach((v, i) => {
-      const x = (i / (data.length - 1)) * W;
-      const y = H - ((v - min) / (max - min)) * H;
-      ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
-    });
-  }
-
-  function drawBars() {
-    const root = $("#bars"); if (!root) return;
-    root.innerHTML = "";
-    ["Ads", "Mail", "WhatsApp", "Instagram", "Site", "Phone"].forEach(() => {
-      const h = 30 + Math.round(Math.random() * 70);
-      const bar = document.createElement("div"); bar.className = "bar";
-      const fill = document.createElement("div"); fill.className = "fill"; fill.style.height = h + "%";
-      bar.appendChild(fill); root.appendChild(bar);
-    });
-  }
-
-  /* ======================================================
-     CHAT typing (visuel)
-  ====================================================== */
-  async function typeIn(sel, text) {
-    const el = document.querySelector(sel); if (!el) return;
-    el.textContent = "";
-    const words = text.split(" ");
-    for (let i = 0; i < words.length; i++) {
-      el.textContent += (i ? " " : "") + words[i];
-      await wait(24);
-    }
-  }
-  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-
-  /* ======================================================
-     VOICE visual + pilotage de l’orbe
-  ====================================================== */
-  const micStart = $("#micStart"), micStop = $("#micStop"), micDot = $("#micDot"), micLabel = $("#micLabel");
-  const v = $("#voice"); const vctx = v.getContext("2d");
-  let stream, audio, ana, raf, listening = false;
-
-  micStart?.addEventListener("click", async () => {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      audio = new (window.AudioContext || window.webkitAudioContext)();
-      const src = audio.createMediaStreamSource(stream);
-      ana = audio.createAnalyser(); ana.fftSize = 1024; // meilleure précision
-      src.connect(ana);
-      listening = true; micDot.style.background = css("--blue"); micLabel.textContent = "En écoute";
-      drawVoice();
-    } catch (e) {
-      alert("Micro refusé / indisponible (HTTPS requis).");
-    }
-  });
-  micStop?.addEventListener("click", stopMic);
-
-  function stopMic() {
-    if (!listening) return;
-    listening = false;
-    micDot.style.background = css("--muted"); micLabel.textContent = "Micro inactif";
-    if (raf) cancelAnimationFrame(raf);
-    if (stream) stream.getTracks().forEach((t) => t.stop());
-    if (audio) audio.close();
-  }
-
-  function drawVoice() {
-    const W = (v.width = v.clientWidth), H = v.height;
-    const timeF32 = new Float32Array(ana.fftSize);
-    const timeU8 = new Uint8Array(ana.fftSize);
-
-    const loop = () => {
-      // time domain pour affichage
-      ana.getByteTimeDomainData(timeU8);
-      vctx.clearRect(0, 0, W, H);
-      vctx.lineWidth = 2; vctx.strokeStyle = css("--blue");
-      vctx.beginPath();
-      for (let i = 0; i < timeU8.length; i++) {
-        const x = (i / (timeU8.length - 1)) * W;
-        const y = (timeU8[i] / 128.0) * H / 2;
-        i ? vctx.lineTo(x, y) : vctx.moveTo(x, y);
-      }
-      vctx.stroke();
-
-      // JS RMS (fallback rapide) pour piloter l’orbe
-      ana.getFloatTimeDomainData(timeF32);
-      let peak = 0.0, sum = 0.0;
-      for (let i = 0; i < timeF32.length; i++) {
-        const v = timeF32[i];
-        const a = Math.abs(v);
-        if (a > peak) peak = a;
-        sum += v * v;
-      }
-      const rms = Math.sqrt(sum / timeF32.length);                // ~ 0..1
-      const crest = rms > 0 ? (peak / rms) : 0.0;                 // typ 1..3
-      const peakFactor = Math.max(0, Math.min(1, (crest - 1) / 2)); // 0..1
-      const s = 1 + (rms * 1.5 + peakFactor * 0.4);
-
-      if (window.orb && window.glow) {
-        window.orb.scale.set(s, s, s);
-        window.glow.scale.set(s * 1.03, s * 1.03, s * 1.03);
-      }
-
-      if (listening) raf = requestAnimationFrame(loop);
+    // 2) Prépare la charge utile (adaptation future : type de business, ton, etc.)
+    const payload = {
+      message,                 // requis
+      business_type: null,     // à remplir plus tard depuis l’UI si tu veux
+      emotion: null,           // idem (ex: "pressé", "calme", "sceptique")
+      meta: {
+        locale: "fr-FR",
+        source: "ecommind-demo-web",
+      },
     };
-    loop();
-  }
 
-  /* ======================================================
-     TOGGLES + HELPERS
-  ====================================================== */
-  function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+    try {
+      const res = await fetch(API_PATH, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-  $("#fxToggle")?.addEventListener("click", (e) => {
-    document.body.classList.toggle("fx-off");
-    e.currentTarget.textContent = document.body.classList.contains("fx-off") ? "FX OFF" : "FX ON";
-    initPts(document.body.classList.contains("fx-off") ? 24 : 64);
-  });
+      // Gestion d’erreurs réseau/API
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`Erreur API (${res.status}) ${txt}`);
+      }
 
-  $("#themeToggle")?.addEventListener("click", () => {
-    document.documentElement.classList.toggle("force-light");
-    document.documentElement.classList.toggle("force-dark");
-  });
+      const data = await res.json();
 
-  function smoothTo(sel) {
-    const el = document.querySelector(sel);
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-    if (window.gsap) gsap.from(el.closest(".card"), { scale: 0.99, duration: 0.25 });
-  }
+      // 3) Affiche la réponse texte
+      const botText =
+        (data && (data.text || data.reply || data.message)) ||
+        "Je n’ai pas pu générer de réponse pour l’instant.";
+      addMessage("Ecommind", botText);
+      announce("Réponse reçue.");
 
-  /* ======================================================
-     START SEQUENCE
-  ====================================================== */
-  function start() {
-    cancelAnimationFrame(reqBG); tickBG();
-    if (window.gsap) {
-      gsap.from(".top", { y: -20, opacity: 0, duration: 0.5 });
-      gsap.from(".hero .card, .kpi, .mod, .banner", { opacity: 0, y: 15, stagger: 0.06, duration: 0.6 });
-      gsap.from(["#kpiLeads", "#kpiScore", "#kpiRt", "#kpiSat"], { scale: 0.98, opacity: 0.85, duration: 0.5, stagger: 0.1 });
+      // 4) Lecture audio si disponible
+      const audioUrl = data && (data.audio_url || data.audioUrl || data.audio);
+      const played = await playAudio(audioUrl);
+      setEtat("tts", audioUrl ? (played ? "actif" : "en attente (autoplay)") : "désactivé");
+
+      // 5) État adaptation si fourni
+      if (data && data.adaptation) {
+        setEtat("adapt", data.adaptation);
+      } else {
+        // Valeur par défaut, jusqu’à l’intégration du prompt dynamique
+        setEtat("adapt", "basique");
+      }
+    } catch (err) {
+      console.error(err);
+      addMessage("Système", "Impossible de contacter le serveur. Réessaie dans un instant.");
+      announce("Erreur de connexion avec le serveur.");
+      setEtat("n8n", "hors ligne");
+    } finally {
+      // 6) Reset UI
+      input.value = "";
+      input.focus();
+      setBusy(false);
     }
-    drawLine(); drawBars();
-    typeIn("#lastMsg .bubble", "OK. Je vous montre comment on capte, qualifie et close en 60s.");
-    initThree();
-    updateClosingScore();
+  });
 
-    $("#ctaChat")?.addEventListener("click", () => smoothTo("#chat"));
-    $("#ctaVoice")?.addEventListener("click", () => smoothTo("#voice"));
-  }
+  // ------- Bouton “Parler” (hook futur) ----------
+  // On n’active pas le micro ici : on attendra l’étape “Voix côté front” plus tard.
+  btnParler.addEventListener("click", () => {
+    const pressed = btnParler.getAttribute("aria-pressed") === "true";
+    btnParler.setAttribute("aria-pressed", String(!pressed));
+    // Placeholder UI — à remplacer quand on ajoutera le micro
+    if (!pressed) {
+      addMessage("Système", "Mode Parler (préparation). Le micro sera activé à l’étape Voix.");
+    } else {
+      addMessage("Système", "Mode Parler désactivé.");
+    }
+  });
 
-  // GO
-  intro();
+  // ------- Confort : Enter pour envoyer ----------
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      btnEnvoyer.click();
+    }
+  });
+
+  // ------- Affichage de l’année courante ----------
+  (function setYear() {
+    const y = document.getElementById("annee-courante");
+    if (y) {
+      const now = new Date();
+      y.setAttribute("datetime", String(now.getFullYear()));
+      y.textContent = String(now.getFullYear());
+    }
+  })();
 })();

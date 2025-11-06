@@ -1,18 +1,31 @@
-[build]
-  command = ""
-  publish = "."
+# ============================================================
+# 🔧 Configuration Netlify – Proxy vers n8n (backend IA)
+# ============================================================
 
-# Sécurité + micro (pour le visualiseur voix)
+[build]
+  publish = "."
+  command = ""
+
+# --- Redirection des requêtes API vers ton workflow n8n ---
+[[redirects]]
+  from = "/api/*"
+  to = "https://TON-URL-N8N-WEBHOOK/:splat"
+  status = 200
+  force = true
+
+# --- En-têtes de sécurité (recommandés) ---
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
+    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "microphone=(self)"
+    Referrer-Policy = "no-referrer-when-downgrade"
+    Permissions-Policy = "microphone=(), camera=(), geolocation=()"
 
-# SPA fallback
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# --- CORS (pour que ton front puisse dialoguer avec n8n) ---
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"

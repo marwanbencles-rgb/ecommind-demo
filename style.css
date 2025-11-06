@@ -1,369 +1,249 @@
-/* ============================================================
-   ECOMMIND AGENCY — CLOSER DEMO DASHBOARD (Full Luxe CAC40)
-   ============================================================ */
+/* ------------------------------
+   🟦 Thème global Ecommind Agency
+   ------------------------------ */
+
+/* Couleurs officielles */
 :root {
-  --gold: #C9A55E;
-  --blue: #00BFFF;
-  --bg: #000000;
-  --bg2: #0D1B2A;
-  --text: #FFFFFF;
-  --muted: #9aa2aa;
-  --card: #0f2233;
-  --border: #1f3345;
-  --shadow: 0 0 .5rem rgba(0,191,255,.25),
-             0 0 1.2rem rgba(201,165,94,.18);
-  --radius: 16px;
-  --font: 'Segoe UI', system-ui, sans-serif;
+  --noir: #000000;
+  --bleu-tech: #00BFFF;
+  --or: #C9A55E;
+  --fond-secondaire: #0D1B2A;
+  --blanc: #FFFFFF;
+
+  --transition: all 0.3s ease;
+  --font: "Poppins", "Segoe UI", sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #f7f9fb;
-    --bg2: #e9eef4;
-    --text: #0d1b2a;
-    --card: #ffffff;
-    --border: #dce3ea;
-    --shadow: 0 1px 12px rgba(0,0,0,.06);
-  }
-}
+/* ------------------------------
+   ⚙️ Reset et structure globale
+   ------------------------------ */
 
-/* ----------------------------- */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 html, body {
   height: 100%;
+  background-color: var(--noir);
+  color: var(--blanc);
+  font-family: var(--font);
+  scroll-behavior: smooth;
 }
+
+/* ------------------------------
+   🧠 Layout général
+   ------------------------------ */
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  overflow-x: hidden;
-}
-
-#bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: var(--bg);
-}
-
-/* ----------------------------- */
-/* INTRO LOADER */
-#intro {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: var(--bg);
-  z-index: 9999;
-}
-.intro-core {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  padding: 20px;
+  line-height: 1.5;
 }
-.intro-logo {
-  height: 72px;
-  filter: drop-shadow(0 0 8px rgba(201,165,94,.45));
+
+header, main, footer {
+  width: 100%;
+  max-width: 800px;
 }
-.intro-title {
-  margin: 8px 0 0 0;
-  font-weight: 700;
+
+/* ------------------------------
+   🔹 Header
+   ------------------------------ */
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 2rem;
+  color: var(--or);
   letter-spacing: 1px;
 }
-.intro-tag {
-  margin: 0;
-  color: var(--muted);
-  font-size: 15px;
+
+header p {
+  color: var(--bleu-tech);
+  font-weight: 300;
 }
 
-/* ----------------------------- */
-/* HEADER */
-.top {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  backdrop-filter: saturate(140%) blur(6px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(15,34,51,.55);
+/* ------------------------------
+   💬 Zone de chat
+   ------------------------------ */
+
+#section-demo {
+  background: var(--fond-secondaire);
+  border: 1px solid var(--bleu-tech);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.2);
 }
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.brand-logo {
-  height: 30px;
-}
-.meta small {
-  color: var(--muted);
-}
-.actions {
-  display: flex;
-  gap: 8px;
-}
-.ghost {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
+
+#historique {
+  margin-top: 10px;
+  text-align: left;
+  height: 300px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 10px;
-  padding: 9px 12px;
-  cursor: pointer;
-  transition: all .2s ease;
-}
-.ghost:hover {
-  border-color: var(--blue);
-  color: var(--blue);
-}
-
-/* ----------------------------- */
-/* STAGE / STRUCTURE */
-.stage {
-  max-width: 1200px;
-  margin: 28px auto;
-  padding: 0 16px;
-  display: grid;
-  gap: 18px;
-}
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
-  position: relative;
-}
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  border: 1px solid rgba(201,165,94,.25);
-  box-shadow: inset 0 0 0 1px rgba(0,191,255,.12);
-}
-
-/* ----------------------------- */
-/* HERO SECTION */
-.hero {
-  display: grid;
-  grid-template-columns: 1.2fr .8fr;
-  align-items: center;
-  gap: 16px;
-}
-.hero-title {
-  margin: 0 0 6px 0;
-  font-size: 28px;
-  font-weight: 700;
-}
-.hero-sub {
-  margin: 0 0 12px 0;
-  color: var(--muted);
-}
-.hero-cta {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-.primary {
-  background: var(--blue);
-  color: #001421;
-  border: 0;
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-weight: 800;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: all .2s ease;
-}
-.primary:hover {
-  transform: scale(1.03);
-}
-.outline {
-  background: transparent;
-  color: var(--blue);
-  border: 1px solid var(--blue);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-weight: 800;
-  cursor: pointer;
-}
-.hero-points {
-  margin: 8px 0 0 18px;
-}
-#orb-wrap {
-  width: 100%;
-  height: 240px;
-  border-radius: 20px;
-  background: #001421;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  outline: 1px solid rgba(0,191,255,.25);
-}
-
-/* ----------------------------- */
-/* KPI CARDS */
-.kpis {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-.kpi header {
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.kpi .num {
-  font-size: 32px;
-  font-weight: 600;
-  letter-spacing: .4px;
-}
-
-/* ----------------------------- */
-/* MODULE GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-.mod header {
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-/* ----------------------------- */
-/* BARS */
-.bars {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
-  align-items: end;
-  height: 160px;
-}
-.bars .bar {
-  background: #001421;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  display: flex;
-  align-items: flex-end;
-}
-.bars .fill {
-  background: var(--blue);
-  width: 100%;
-  height: 40%;
-  border-radius: 7px 7px 6px 6px;
-}
-
-/* ----------------------------- */
-/* CHAT MOCKUP */
-.chat {
-  height: 220px;
-  overflow: auto;
-  border: 1px solid var(--border);
-  border-radius: 12px;
   padding: 10px;
-  background: #071725;
-}
-.msg {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-.msg .bubble {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px 12px;
-  max-width: 85%;
-}
-.msg.ai .bubble {
-  background: #001421;
-}
-.msg.user .bubble {
-  background: #0b2740;
-}
-.msg .t {
-  color: var(--muted);
-  font-size: 11px;
-  align-self: flex-end;
+  scroll-behavior: smooth;
 }
 
-/* ----------------------------- */
-/* VOICE SECTION */
-.voice {
-  display: grid;
-  gap: 10px;
-}
-.voice canvas {
-  background: #071725;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-.voice-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--muted);
-  display: inline-block;
+#chat-log li {
+  list-style: none;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--bleu-tech);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
 }
 
-/* ----------------------------- */
-/* BANNER CLOSING */
-.banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-.b-copy {
-  margin: 0;
-}
-.b-cta {
-  display: flex;
-  gap: 10px;
+#chat-log li b {
+  color: var(--or);
 }
 
-/* ----------------------------- */
-/* FOOTER */
-.foot {
-  padding: 28px 16px;
+/* ------------------------------
+   🖊️ Formulaire de saisie
+   ------------------------------ */
+
+#zone-saisie {
+  margin-top: 25px;
   text-align: center;
-  color: var(--muted);
 }
 
-/* ----------------------------- */
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-  .kpis {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .grid {
-    grid-template-columns: 1fr;
-  }
+#form-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-@media (max-width: 560px) {
-  .kpis {
-    grid-template-columns: 1fr;
+
+#champ-message {
+  padding: 12px;
+  background: var(--fond-secondaire);
+  border: 1px solid var(--bleu-tech);
+  border-radius: 8px;
+  color: var(--blanc);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+#champ-message:focus {
+  outline: none;
+  border-color: var(--or);
+  box-shadow: 0 0 10px rgba(201, 165, 94, 0.4);
+}
+
+/* Boutons */
+#actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+#btn-envoyer {
+  background: var(--or);
+  color: var(--noir);
+}
+
+#btn-parler {
+  background: transparent;
+  color: var(--bleu-tech);
+  border: 1px solid var(--bleu-tech);
+}
+
+#btn-envoyer:hover {
+  background: var(--bleu-tech);
+  color: var(--blanc);
+}
+
+#btn-parler:hover {
+  background: var(--bleu-tech);
+  color: var(--blanc);
+}
+
+/* ------------------------------
+   🔊 Section audio
+   ------------------------------ */
+
+#section-audio {
+  margin-top: 25px;
+  text-align: center;
+}
+
+audio {
+  width: 100%;
+  outline: none;
+  border-radius: 8px;
+  background: #111;
+}
+
+/* ------------------------------
+   🧾 Section état système
+   ------------------------------ */
+
+#etat-systeme {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+#etat-systeme dt {
+  font-weight: bold;
+  color: var(--or);
+}
+
+#etat-systeme dd {
+  margin-left: 10px;
+  margin-bottom: 8px;
+  color: var(--bleu-tech);
+}
+
+/* ------------------------------
+   ⚫ Footer
+   ------------------------------ */
+
+footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* ------------------------------
+   📱 Responsive
+   ------------------------------ */
+
+@media (max-width: 600px) {
+  #section-demo {
+    padding: 18px;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+  }
+
+  #champ-message {
+    font-size: 0.9rem;
+  }
+
+  button {
+    font-size: 0.9rem;
   }
 }
