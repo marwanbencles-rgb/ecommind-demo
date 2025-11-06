@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecommind — Planet Demo</title>
-  <meta name="description" content="Démonstration vocale IA Ecommind. Une planète qui parle. Minimal, premium, prêt à closer sur WhatsApp." />
+  <title>Ecommind — Planet Demo • Parle. Capte. Close.</title>
+  <meta name="description" content="Démonstration IA Ecommind : une planète qui parle, chat élégant à droite, WhatsApp pour conclure." />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="/style.css">
+  <!-- CSS (racine, pas d’assets) -->
+  <link rel="stylesheet" href="/style.css" />
 
-  <!-- CSP minimale (scripts: gsap CDN) -->
+  <!-- CSP minimale : autorise GSAP + image Unsplash -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  style-src 'self' 'unsafe-inline';
                  script-src 'self' https://cdn.jsdelivr.net;
                  img-src 'self' https://images.unsplash.com data:;
+                 font-src 'self' data:;
                  connect-src 'self';
                  object-src 'none';
                  base-uri 'self';
@@ -27,44 +28,69 @@
 </head>
 <body class="planet-demo">
 
-  <!-- HEADER (logo en haut gauche, grand) -->
+  <!-- Header : logo en haut gauche, visible et grand -->
   <header class="pd-header">
     <div class="pd-header-inner">
-      <!-- Remplace /logo.png par le chemin de TON PNG -->
       <img id="brandLogo" src="/logo.png" alt="Ecommind" class="pd-logo-lg" />
     </div>
   </header>
 
-  <!-- HERO (fond galaxie + planète parlante) -->
-  <main class="pd-hero">
+  <!-- Scène centrale : planète à gauche, chat à droite -->
+  <main class="pd-stage">
     <div class="pd-hero-bg" aria-hidden="true"></div>
     <div class="pd-hero-overlay" aria-hidden="true"></div>
 
-    <!-- Planète (parle) -->
-    <section class="pd-planet-wrap">
-      <div id="planet" class="pd-planet" aria-label="Planète parlante">
-        <div class="pd-ring ring-1"></div>
-        <div class="pd-ring ring-2"></div>
-        <div class="pd-ring ring-3"></div>
-        <canvas id="pdViz" class="pd-viz" aria-hidden="true"></canvas>
+    <section class="pd-center">
+      <!-- Bloc planète parlant -->
+      <div class="pd-planet-wrap">
+        <div id="planet" class="pd-planet" aria-label="Planète parlante">
+          <div class="pd-ring ring-1"></div>
+          <div class="pd-ring ring-2"></div>
+          <div class="pd-ring ring-3"></div>
+          <canvas id="pdViz" class="pd-viz" aria-hidden="true"></canvas>
+        </div>
+
+        <!-- CTA minimalistes -->
+        <div class="pd-cta">
+          <button class="btn primary" data-action="voice-toggle">🎤 Parler</button>
+          <a class="btn pill" id="waBtn" href="https://wa.me/?text=Je%20souhaite%20parler%20avec%20Ecommind%20Agency%20au%20sujet%20de%20la%20d%C3%A9mo%20IA" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+
+        <!-- Accroche unique -->
+        <p class="pd-tagline">« La démo parle pour vous. On conclut sur WhatsApp. »</p>
       </div>
 
-      <!-- Commandes minimales -->
-      <div class="pd-cta">
-        <button class="btn primary" data-action="voice-toggle">🎤 Parler</button>
-        <button class="btn" data-action="open-chat">💬 Chat</button>
-        <!-- WhatsApp direct. Tu peux personnaliser le message dans app.js -->
-        <a class="btn pill" id="waBtn" href="https://wa.me/?text=Je%20souhaite%20parler%20avec%20Ecommind%20Agency" target="_blank" rel="noopener">WhatsApp</a>
-      </div>
+      <!-- Chat élégant à droite -->
+      <aside class="pd-chat glass" aria-label="Chat démo Ecommind">
+        <header class="pd-chat-head">
+          <div class="pd-chat-title">
+            <span class="dot dot-blue"></span>
+            Chat Ecommind
+          </div>
+          <button class="pd-chat-min btn pill" data-action="toggle-chat">−</button>
+        </header>
 
-      <!-- Accroche unique -->
-      <p class="pd-tagline">“Une démonstration qui parle pour vous. Le reste se conclut sur WhatsApp.”</p>
+        <div id="chatFeed" class="pd-chat-feed">
+          <!-- Messages seed (peu de texte, focus closing) -->
+          <div class="msg bot">
+            <div class="bubble">
+              Bonjour 👋 Je vous montre en 60–120 s comment on capte, qualifie et propose un créneau automatiquement.
+            </div>
+          </div>
+          <div class="msg bot">
+            <div class="bubble">
+              Posez une question, ou cliquez WhatsApp pour continuer la discussion 👉
+            </div>
+          </div>
+        </div>
+
+        <form id="chatForm" class="pd-chat-input" autocomplete="off">
+          <input id="chatText" name="q" placeholder="Écrivez ici… (ex : Montrez-moi un scénario de prise de RDV)" />
+          <button class="btn primary" type="submit">Envoyer</button>
+        </form>
+      </aside>
     </section>
   </main>
 
-  <script>
-    // année si besoin un jour (non affichée ici)
-    // const y = new Date().getFullYear();
-  </script>
 </body>
 </html>
