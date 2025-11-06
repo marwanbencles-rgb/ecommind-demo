@@ -3,178 +3,68 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecommind — Démo Cockpit IA • Captiver. Déclencher. Convertir.</title>
-  <meta name="description" content="Démo IA immersive Ecommind. Automatisation de prestige, ergonomie Mercedes × Apple, copywriting CAC40. 2 490 € + 490 €/mois." />
+  <title>Ecommind — Planet Demo</title>
+  <meta name="description" content="Démonstration vocale IA Ecommind. Une planète qui parle. Minimal, premium, prêt à closer sur WhatsApp." />
 
-  <!-- === CSS (singulier) === -->
+  <!-- CSS -->
   <link rel="stylesheet" href="/style.css">
 
-  <!-- === CSP minimale compatible Netlify + GSAP CDN === -->
+  <!-- CSP minimale (scripts: gsap CDN) -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  style-src 'self' 'unsafe-inline';
                  script-src 'self' https://cdn.jsdelivr.net;
                  img-src 'self' https://images.unsplash.com data:;
-                 font-src 'self' data:;
                  connect-src 'self';
                  object-src 'none';
                  base-uri 'self';
                  frame-ancestors 'self';
                  upgrade-insecure-requests">
 
-  <!-- === GSAP + App JS (racine) === -->
+  <!-- GSAP + App -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="/app.js"></script>
 </head>
-<body>
+<body class="planet-demo">
 
-  <!-- HEADER -->
-  <header>
-    <div class="container bar">
-      <div class="left" style="display:flex;align-items:center;gap:14px">
-        <div class="pill"><strong>Ecommind</strong> — <span>Captiver. Déclencher. Convertir.</span></div>
-      </div>
-      <nav aria-label="Navigation principale">
-        <a href="/pages/packs">Packs</a>
-        <a href="/pages/a-propos">À propos</a>
-        <a href="/pages/contact-ecommind" class="pill">Contact</a>
-      </nav>
+  <!-- HEADER (logo en haut gauche, grand) -->
+  <header class="pd-header">
+    <div class="pd-header-inner">
+      <!-- Remplace /logo.png par le chemin de TON PNG -->
+      <img id="brandLogo" src="/logo.png" alt="Ecommind" class="pd-logo-lg" />
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg" aria-hidden="true"></div>
-    <div class="hero-overlay" aria-hidden="true"></div>
+  <!-- HERO (fond galaxie + planète parlante) -->
+  <main class="pd-hero">
+    <div class="pd-hero-bg" aria-hidden="true"></div>
+    <div class="pd-hero-overlay" aria-hidden="true"></div>
 
-    <div class="container hero-inner">
-      <div class="pill" aria-label="Badge style">Interface Cockpit IA • Mercedes × Apple × Velar</div>
-
-      <h1>Automatisation de prestige, <span>pilotée</span> pour convertir.</h1>
-      <p>
-        Votre démo parle, écoute, qualifie et <strong>close</strong> avec élégance.<br>
-        Matériaux digitaux haut de gamme, lumière d’habitacle, précision Apple.<br>
-        Investissement : <strong>2 490 €</strong> + <strong>490 €/mois</strong> (maintenance & IA).
-      </p>
-
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px">
-        <a class="btn primary" href="/pages/offre-royale-buisness">Lancer la démo interactive</a>
-        <a class="btn" href="/pages/packs">Voir les packs</a>
+    <!-- Planète (parle) -->
+    <section class="pd-planet-wrap">
+      <div id="planet" class="pd-planet" aria-label="Planète parlante">
+        <div class="pd-ring ring-1"></div>
+        <div class="pd-ring ring-2"></div>
+        <div class="pd-ring ring-3"></div>
+        <canvas id="pdViz" class="pd-viz" aria-hidden="true"></canvas>
       </div>
 
-      <div class="trust">
-        <span class="pill">Confiance ••••☆</span>
-        <span>Google</span> · <span>LinkedIn</span> · <span>Microsoft</span> · <span>AMD</span> · <span>PayPal</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3 PILIERS -->
-  <section style="padding:26px 0 10px">
-    <div class="container grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
-      <div class="glass" style="padding:18px">
-        <h3 style="margin:0 0 6px">1) Captation</h3>
-        <p style="margin:0;color:#cfd6df">Hook visuel + voix naturelle. L’IA qualifie en 60–120 s et garde le lead.</p>
-      </div>
-      <div class="glass" style="padding:18px">
-        <h3 style="margin:0 0 6px">2) Conversion</h3>
-        <p style="margin:0;color:#cfd6df">Scénarios de closing, objections traitées, proposition claire, créneaux auto.</p>
-      </div>
-      <div class="glass" style="padding:18px">
-        <h3 style="margin:0 0 6px">3) Confiance</h3>
-        <p style="margin:0;color:#cfd6df">Suivi multicanal (mail/WhatsApp), récap, rappel intelligent, image premium.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- COCKPIT -->
-  <section class="cockpit">
-    <div class="container grid" style="grid-template-columns:1.2fr .8fr;align-items:start">
-      <!-- KPIs -->
-      <div class="grid" style="grid-template-rows:auto auto;gap:20px">
-        <div class="glass grid kpis">
-          <article class="kpi"><h3>Taux de réponse IA</h3><div class="v">99.2%</div><small>latence &lt; 350 ms</small></article>
-          <article class="kpi"><h3>Conversions démo → RDV</h3><div class="v">34%</div><small>AB test v2</small></article>
-          <article class="kpi"><h3>RDV confirmés</h3><div class="v">18</div><small>7 derniers jours</small></article>
-          <article class="kpi"><h3>Satisfaction vocale</h3><div class="v">4.8★</div><small>multi-lang</small></article>
-        </div>
-
-        <div class="glass" style="padding:20px">
-          <h2 style="margin:0 0 10px;font-size:1.2rem">Parcours : “Réparation express”</h2>
-          <ol style="margin:0;padding-left:18px;color:#cfd6df">
-            <li>Le prospect décrit son besoin (voix/texte).</li>
-            <li>L’IA qualifie, propose 3 créneaux & prépare un devis.</li>
-            <li>Confirmation : e-mail + WhatsApp + acompte sécurisé.</li>
-            <li>Suivi automatique + relances intelligentes.</li>
-          </ol>
-        </div>
+      <!-- Commandes minimales -->
+      <div class="pd-cta">
+        <button class="btn primary" data-action="voice-toggle">🎤 Parler</button>
+        <button class="btn" data-action="open-chat">💬 Chat</button>
+        <!-- WhatsApp direct. Tu peux personnaliser le message dans app.js -->
+        <a class="btn pill" id="waBtn" href="https://wa.me/?text=Je%20souhaite%20parler%20avec%20Ecommind%20Agency" target="_blank" rel="noopener">WhatsApp</a>
       </div>
 
-      <!-- Assistant -->
-      <aside class="glass" style="padding:20px">
-        <div class="voice-panel">
-          <div class="voice-orb" id="voiceOrb" aria-label="Indicateur vocal"></div>
-          <div>
-            <h2 style="margin:.2rem 0 6px;font-size:1.2rem">Assistant Ecommind</h2>
-            <p style="margin:0;color:#cfd6df">Parlez-lui comme à un conseiller : il s’adapte à votre langue, recadre la discussion et close avec élégance.</p>
-            <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn primary" data-action="voice-toggle">🎤 Parler</button>
-              <button class="btn" data-action="open-chat">💬 Ouvrir le chat</button>
-            </div>
-          </div>
-        </div>
+      <!-- Accroche unique -->
+      <p class="pd-tagline">“Une démonstration qui parle pour vous. Le reste se conclut sur WhatsApp.”</p>
+    </section>
+  </main>
 
-        <div class="glass" style="margin-top:18px;padding:16px">
-          <form id="quickQuote" class="grid" style="grid-template-columns:1fr auto;gap:10px">
-            <label class="sr-only" for="need">Votre besoin</label>
-            <input id="need" name="need" placeholder="Décrivez votre besoin (ex : automatiser RDV & WhatsApp)" />
-            <button class="btn primary" type="submit">Obtenir un plan</button>
-          </form>
-          <small style="display:block;margin-top:8px;color:#96A0AE">
-            ⓘ Vous recevrez un mini-plan clair (étapes, délais, livrables).
-          </small>
-        </div>
-
-        <div class="glass" style="margin-top:18px;padding:16px">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
-            <strong>Pack Démo → Setup</strong>
-            <div><strong>2 490 €</strong> + <strong>490 €/mois</strong></div>
-          </div>
-          <ul style="margin:10px 0 0;padding-left:18px;color:#cfd6df">
-            <li>Installation cockpit IA + scénarios de closing</li>
-            <li>Voix multi-lang & intégrations (mail/WhatsApp)</li>
-            <li>Maintenance, sécurité & mises à jour mensuelles</li>
-          </ul>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- TÉMOIGNAGE -->
-  <section style="padding:0 0 56px">
-    <div class="container">
-      <div class="glass" style="padding:18px;display:grid;grid-template-columns:72px 1fr;gap:16px;align-items:center">
-        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));display:flex;align-items:center;justify-content:center;font-weight:700">A+</div>
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-            <strong>Aeva Patel</strong>
-            <div style="opacity:.85">★★★★★ 4.9 — “UI claire, close sans friction.”</div>
-          </div>
-          <p style="margin:6px 0 0;color:#cfd6df">« L’assistant capte, qualifie et propose un créneau en moins de 2 minutes. L’image de marque est premium et les clients le ressentent. »</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div>Ecommind — © <span id="y"></span></div>
-      <div style="opacity:.85">Design “Full Luxe CAC40” • Or <span style="color:#C9A55E">#C9A55E</span> • Bleu <span style="color:#00BFFF">#00BFFF</span></div>
-    </div>
-  </footer>
-
-  <!-- JS minimal pour l'année -->
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <script>
+    // année si besoin un jour (non affichée ici)
+    // const y = new Date().getFullYear();
+  </script>
 </body>
 </html>
