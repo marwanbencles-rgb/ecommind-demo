@@ -6,9 +6,13 @@
   <title>Ecommind — Démo Cockpit IA • Captiver. Déclencher. Convertir.</title>
   <meta name="description" content="Démo IA immersive Ecommind. Automatisation de prestige, ergonomie Mercedes × Apple, copywriting CAC40. 2 490 € + 490 €/mois." />
 
-  <!-- Style & GSAP -->
-  <link rel="preload" href="/styles.css" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/styles.css"></noscript>
+  <!-- === Styles === -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- === Sécurité CSS/JS === -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net; img-src 'self' https://images.unsplash.com data:;">
+
+  <!-- === GSAP === -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="/app.js"></script>
 </head>
@@ -28,7 +32,7 @@
     </div>
   </header>
 
-  <!-- HERO (COPYWRITING PREMIUM) -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-overlay" aria-hidden="true"></div>
@@ -36,13 +40,10 @@
     <div class="container hero-inner">
       <div class="pill" aria-label="Badge style">Interface Cockpit IA • Mercedes × Apple × Velar</div>
 
-      <h1>
-        Automatisation de prestige, <span>pilotée</span> pour convertir.
-      </h1>
-
+      <h1>Automatisation de prestige, <span>pilotée</span> pour convertir.</h1>
       <p>
-        Votre démo parle, écoute, qualifie et **close** avec élégance.  
-        Matériaux digitaux haut de gamme, lumière d’habitacle, précision Apple.  
+        Votre démo parle, écoute, qualifie et <strong>close</strong> avec élégance.<br>
+        Matériaux digitaux haut de gamme, lumière d’habitacle, précision Apple.<br>
         Investissement : <strong>2 490 €</strong> + <strong>490 €/mois</strong> (maintenance & IA).
       </p>
 
@@ -51,7 +52,6 @@
         <a class="btn" href="/pages/packs">Voir les packs</a>
       </div>
 
-      <!-- Micro-preuves -->
       <div class="trust">
         <span class="pill">Confiance ••••☆</span>
         <span>Google</span> · <span>LinkedIn</span> · <span>Microsoft</span> · <span>AMD</span> · <span>PayPal</span>
@@ -59,12 +59,12 @@
     </div>
   </section>
 
-  <!-- STRIP BÉNÉFICES (3 PILIERS) -->
+  <!-- 3 PILIERS -->
   <section style="padding:26px 0 10px">
     <div class="container grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
       <div class="glass" style="padding:18px">
         <h3 style="margin:0 0 6px">1) Captation</h3>
-        <p style="margin:0;color:#cfd6df">Hook visuel + voix naturelle. L’IA qualifie en 60–120s et garde le lead.</p>
+        <p style="margin:0;color:#cfd6df">Hook visuel + voix naturelle. L’IA qualifie en 60–120 s et garde le lead.</p>
       </div>
       <div class="glass" style="padding:18px">
         <h3 style="margin:0 0 6px">2) Conversion</h3>
@@ -79,53 +79,34 @@
 
   <!-- COCKPIT -->
   <section class="cockpit">
-    <div class="container grid" style="grid-template-columns: 1.2fr .8fr; align-items:start">
-      <!-- KPIs + Timeline -->
-      <div class="grid" style="grid-template-rows:auto auto; gap:20px">
+    <div class="container grid" style="grid-template-columns:1.2fr .8fr;align-items:start">
+      <!-- KPIs -->
+      <div class="grid" style="grid-template-rows:auto auto;gap:20px">
         <div class="glass grid kpis">
-          <article class="kpi">
-            <h3>Taux de réponse IA</h3>
-            <div class="v">99.2%</div>
-            <small>latence &lt; 350 ms</small>
-          </article>
-          <article class="kpi">
-            <h3>Conversions démo → RDV</h3>
-            <div class="v">34%</div>
-            <small>AB test v2</small>
-          </article>
-          <article class="kpi">
-            <h3>RDV confirmés</h3>
-            <div class="v">18</div>
-            <small>7 derniers jours</small>
-          </article>
-          <article class="kpi">
-            <h3>Satisfaction vocale</h3>
-            <div class="v">4.8★</div>
-            <small>multi-lang</small>
-          </article>
+          <article class="kpi"><h3>Taux de réponse IA</h3><div class="v">99.2%</div><small>latence &lt; 350 ms</small></article>
+          <article class="kpi"><h3>Conversions démo → RDV</h3><div class="v">34%</div><small>AB test v2</small></article>
+          <article class="kpi"><h3>RDV confirmés</h3><div class="v">18</div><small>7 derniers jours</small></article>
+          <article class="kpi"><h3>Satisfaction vocale</h3><div class="v">4.8★</div><small>multi-lang</small></article>
         </div>
 
         <div class="glass" style="padding:20px">
-          <h2 style="margin:0 0 10px;font-size:1.2rem">Parcours “Réparation express”</h2>
+          <h2 style="margin:0 0 10px;font-size:1.2rem">Parcours : “Réparation express”</h2>
           <ol style="margin:0;padding-left:18px;color:#cfd6df">
             <li>Le prospect décrit son besoin (voix/texte).</li>
             <li>L’IA qualifie, propose 3 créneaux & prépare un devis.</li>
-            <li>Confirmation par e-mail + WhatsApp + acompte sécurisé.</li>
+            <li>Confirmation : e-mail + WhatsApp + acompte sécurisé.</li>
             <li>Suivi automatique + relances intelligentes.</li>
           </ol>
         </div>
       </div>
 
-      <!-- Assistant vocal + formulaire -->
+      <!-- Assistant -->
       <aside class="glass" style="padding:20px">
         <div class="voice-panel">
           <div class="voice-orb" id="voiceOrb" aria-label="Indicateur vocal"></div>
           <div>
             <h2 style="margin:.2rem 0 6px;font-size:1.2rem">Assistant Ecommind</h2>
-            <p style="margin:0;color:#cfd6df">
-              Parlez-lui comme à un conseiller. Il s’adapte à votre langue, recadre la discussion et
-              **close** avec élégance.
-            </p>
+            <p style="margin:0;color:#cfd6df">Parlez-lui comme à un conseiller : il s’adapte à votre langue, recadre la discussion et close avec élégance.</p>
             <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
               <button class="btn primary" data-action="voice-toggle">🎤 Parler</button>
               <button class="btn" data-action="open-chat">💬 Ouvrir le chat</button>
@@ -140,13 +121,12 @@
             <button class="btn primary" type="submit">Obtenir un plan</button>
           </form>
           <small style="display:block;margin-top:8px;color:#96A0AE">
-            ⓘ Vous recevrez un mini-plan clair (étapes, délais indicatifs, livrables).
+            ⓘ Vous recevrez un mini-plan clair (étapes, délais, livrables).
           </small>
         </div>
 
-        <!-- Carte prix courte (claire & rassurante) -->
         <div class="glass" style="margin-top:18px;padding:16px">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
             <strong>Pack Démo → Setup</strong>
             <div><strong>2 490 €</strong> + <strong>490 €/mois</strong></div>
           </div>
@@ -160,17 +140,17 @@
     </div>
   </section>
 
-  <!-- SOCIAL PROOF (Témoignage court) -->
+  <!-- TÉMOIGNAGE -->
   <section style="padding:0 0 56px">
     <div class="container">
-      <div class="glass" style="padding:18px; display:grid; grid-template-columns:72px 1fr; gap:16px; align-items:center">
-        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));display:flex;align-items:center;justify-content:center; font-weight:700">A+</div>
+      <div class="glass" style="padding:18px;display:grid;grid-template-columns:72px 1fr;gap:16px;align-items:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));display:flex;align-items:center;justify-content:center;font-weight:700">A+</div>
         <div>
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
             <strong>Aeva Patel</strong>
             <div style="opacity:.85">★★★★★ 4.9 — “UI claire, close sans friction.”</div>
           </div>
-          <p style="margin:6px 0 0; color:#cfd6df">« L’assistant capte, qualifie et propose un créneau en moins de deux minutes. L’image de marque est premium, les clients le ressentent. »</p>
+          <p style="margin:6px 0 0;color:#cfd6df">« L’assistant capte, qualifie et propose un créneau en moins de 2 minutes. L’image de marque est premium et les clients le ressentent. »</p>
         </div>
       </div>
     </div>
@@ -180,32 +160,13 @@
   <footer>
     <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div>Ecommind — © <span id="y"></span></div>
-      <div style="opacity:.85">Design “Full Luxe CAC40” • Or <span style="color:#C9A55E">#C9A55E</span> · Bleu <span style="color:#00BFFF">#00BFFF</span></div>
+      <div style="opacity:.85">Design “Full Luxe CAC40” • Or <span style="color:#C9A55E">#C9A55E</span> • Bleu <span style="color:#00BFFF">#00BFFF</span></div>
     </div>
   </footer>
 
-  <!-- BOOTSTRAP JS MINIMAL (mêmes hooks que ta version) -->
+  <!-- JS basique -->
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
-
-    document.querySelector('[data-action="voice-toggle"]')
-      ?.addEventListener('click', () => {
-        if (window.gsap) {
-          gsap.fromTo("#voiceOrb",
-            { scale: 1, opacity: 0.9 },
-            { scale: 1.08, opacity: 1, yoyo: true, repeat: 5, duration: 0.35, ease: "sine.inOut" }
-          );
-        }
-      });
-
-    document.getElementById('quickQuote')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const v = (document.getElementById('need').value || '').trim();
-      alert(v ? `Reçu ✅\n\nOn te génère un mini-plan pour :\n“${v}”` : 'Décris ton besoin pour générer un plan.');
-    });
-
-    document.querySelector('[data-action="open-chat"]')
-      ?.addEventListener('click', () => alert('Chat cockpit — module branché à ton LLM + TTS.'));
   </script>
 </body>
 </html>

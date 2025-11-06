@@ -1,11 +1,11 @@
 /* =====================================================
-   ECOMMIND – APP.JS "FULL LUXE COCKPIT EXPERIENCE"
-   Mercedes × Apple × CAC40 version
+   ECOMMIND – APP.JS "COCKPIT FULL LUXE"
+   Mercedes × Apple × CAC40 version stable
    ===================================================== */
 
-/* Vérification GSAP */
+// Vérification GSAP
 if (typeof gsap === "undefined") {
-  console.warn("⚠️ GSAP non chargé. Ajoute le CDN avant /app.js");
+  console.warn("⚠️ GSAP non chargé. Vérifie le <script> dans index.html");
 }
 
 /* --------------------------
@@ -19,7 +19,7 @@ document.addEventListener("mousemove", (e) => {
   const y = (e.clientY / window.innerHeight - 0.5) * 20;
 
   gsap.to(heroBg, {
-    duration: 1.8,
+    duration: 1.5,
     ease: "power2.out",
     backgroundPosition: `${50 + x}% ${50 + y}%`,
   });
@@ -75,8 +75,6 @@ if (voiceButton) {
   voiceButton.addEventListener("click", () => {
     orbActive = !orbActive;
     orbActive ? startPulse() : stopPulse();
-
-    // petit effet de clic sonore simulé
     gsap.fromTo(
       voiceButton,
       { scale: 1 },
@@ -130,13 +128,15 @@ document.querySelectorAll(".kpi").forEach((kpi) => {
 });
 
 /* --------------------------
-   Effet “lumière cockpit”
+   Lumière cockpit douce
 -------------------------- */
-const lightPulse = gsap.timeline({ repeat: -1, yoyo: true });
-lightPulse.to("body", {
-  background: "radial-gradient(ellipse at 50% 50%, rgba(0,191,255,.04), transparent 80%)",
+gsap.to("body", {
+  background:
+    "radial-gradient(ellipse at 50% 50%, rgba(0,191,255,.04), transparent 80%)",
   duration: 5,
   ease: "sine.inOut",
+  repeat: -1,
+  yoyo: true,
 });
 
 /* --------------------------
@@ -166,19 +166,4 @@ if (quickQuote) {
       alert("Décris ton besoin pour générer un plan clair.");
     }
   });
-}
-
-/* --------------------------
-   Scroll Reveal (sections)
--------------------------- */
-if (typeof ScrollTrigger !== "undefined") {
-  gsap.utils.toArray(".glass").forEach((el) => {
-    gsap.from(el, {
-      scrollTrigger: { trigger: el, start: "top 85%" },
-      opacity: 0,
-      y: 40,
-      duration: 0.8,
-      ease: "power2.out",
-    });
-  });
-}
+});

@@ -1,21 +1,35 @@
+###############################################
+# ECOMMIND AGENCY — NETLIFY DEPLOY CONFIG
+# Version : Cockpit IA Full Luxe CAC40
+###############################################
+
 [build]
-  # Pas de build: site statique (index.html, styles.css, app.js à la racine)
   publish = "."
   command = ""
 
-# ========= Sécurité & Perf (headers globaux) =========
+###############################################
+# 🔒 HEADERS : sécurité & performance
+###############################################
+
 [[headers]]
   for = "/*"
   [headers.values]
+    # Sécurité globale
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    # CSP adaptée: script GSAP via jsDelivr, styles inline autorisés (tu utilises un <style> dans <head>)
+
+    # Permissions
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+    # CSP : autorise GSAP via CDN et images Unsplash
     Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' https://images.unsplash.com data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
 
-# ========= Cache long terme pour tes fichiers statiques =========
+###############################################
+# ⚡️ Cache long terme pour fichiers statiques
+###############################################
+
 [[headers]]
   for = "/styles.css"
   [headers.values]
@@ -26,7 +40,10 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# ========= SPA fallback (toutes les routes -> index.html) =========
+###############################################
+# 🔁 SPA fallback : toutes les routes → index
+###############################################
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
