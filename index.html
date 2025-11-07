@@ -6,12 +6,10 @@
   <title>Ecommind — Démo Saturne • Captiver. Déclencher. Convertir.</title>
   <meta name="description" content="Interface IA Ecommind : intro premium, Saturne avec chat transcript, anneaux dynamiques, final qui close proprement (WhatsApp & avis)." />
 
-  <!-- Assets principaux -->
   <link rel="preload" href="/assets/logo.png" as="image" />
   <link rel="stylesheet" href="/style.css" />
   <script defer src="/app.js"></script>
 
-  <!-- CSP minimale -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  style-src 'self' 'unsafe-inline';
@@ -53,17 +51,15 @@
         Interface Cockpit IA • Mercedes × Apple
       </div>
 
-      <!-- Titre animé mot-à-mot (géré par app.js via #introTitle) -->
       <h1 id="introTitle" class="intro__title" data-animate="slide-up">
         Automatisation de prestige, <em class="accent">pilotée</em> pour convertir.
       </h1>
 
       <p class="intro__lead" data-animate="fade-up">
-        En clair : l’IA capte, qualifie en 60–120&nbsp;s et propose 3 créneaux.
+        L’IA capte, reformule, qualifie en 60–120&nbsp;s et propose 3 créneaux.
         Vous validez, on confirme. Le <strong>reste se conclut sur WhatsApp</strong>.
       </p>
 
-      <!-- Bénéfices simples qui closent -->
       <ul class="intro__benefits" data-animate="fade-up" aria-label="Bénéfices clés">
         <li>🕑 <strong>60–120 s</strong> pour comprendre le besoin.</li>
         <li>🗓️ <strong>3 créneaux</strong> proposés immédiatement.</li>
@@ -72,8 +68,6 @@
 
       <div class="intro__cta" data-animate="fade-up">
         <a class="btn btn--primary" href="#experience">Lancer la démo</a>
-
-        <!-- WhatsApp premium -->
         <a id="waHero" class="wa-card" href="#" target="_blank" rel="noopener" aria-label="Continuer sur WhatsApp">
           <div class="wa-card__icon" aria-hidden="true">💬</div>
           <div class="wa-card__content">
@@ -83,7 +77,6 @@
         </a>
       </div>
 
-      <!-- Preuves courtes -->
       <ul class="intro__trust" data-animate="fade-up">
         <li>Latence &lt; 350 ms</li>
         <li>Satisfaction vocale 4.8★</li>
@@ -112,7 +105,6 @@
           <canvas id="viz" class="saturn__viz" aria-hidden="true"></canvas>
         </div>
 
-        <!-- Contrôles -->
         <div class="saturn__controls">
           <button
             id="voiceToggle"
@@ -121,9 +113,7 @@
             aria-pressed="false"
             aria-label="Activer la voix"
             data-label-on="Arrêter"
-            data-label-off="Parler">
-            🎤
-          </button>
+            data-label-off="Parler">🎤</button>
 
           <a id="waMid" class="btn btn--ghost btn--wa" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
             Continuer sur WhatsApp
@@ -133,7 +123,7 @@
         <p class="saturn__tag">« La démo parle pour vous. On conclut sur WhatsApp. »</p>
       </div>
 
-      <!-- Chat transcript -->
+      <!-- Chat -->
       <aside class="chat glass" data-animate="fade-left" aria-label="Chat Ecommind">
         <header class="chat__head">
           <div class="chat__title"><span class="dot dot--blue"></span> Chat Ecommind</div>
@@ -156,10 +146,64 @@
   </section>
 
   <!-- ============================================
-       PARTIE 3 — FINALE RENFORCÉE
+       BLOC — AVANTAGES SIMPLES (COPY QUI CLOSE)
+  ============================================= -->
+  <section id="advantages" class="advantages">
+    <div class="space-overlay" aria-hidden="true"></div>
+    <div class="advantages__wrap">
+      <header class="advantages__head" data-animate="fade-up">
+        <h2>💡 Les avantages simples de notre IA</h2>
+        <p class="muted">Pourquoi notre technologie vous rend la vie plus facile — et convertit mieux.</p>
+      </header>
+
+      <div class="advantages__grid">
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Disponible 24h/24 et 7j/7</h3>
+          <p>Votre service ne dort jamais. Chaque demande est prise en charge, même la nuit.</p>
+        </article>
+
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Réponses immédiates</h3>
+          <p>Fini les longues attentes. L’IA répond et qualifie en <strong>temps réel</strong>.</p>
+        </article>
+
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Traitement ultra-rapide</h3>
+          <p>Commandes, prises de RDV et suivis : tout est accéléré, sans friction.</p>
+        </article>
+
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Zéro erreur de saisie</h3>
+          <p>Une <strong>précision maximale</strong> pour vos données et vos devis.</p>
+        </article>
+
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Offres personnalisées</h3>
+          <p>Conseils utiles, jamais intrusifs. On propose ce qui intéresse vraiment.</p>
+        </article>
+
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Un service qui s’adapte</h3>
+          <p>Langue, ton, horaires, domaine : l’IA s’aligne sur votre réalité.</p>
+        </article>
+
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Problèmes résolus plus vite</h3>
+          <p>On vous connecte directement au <strong>bon expert</strong>, sans détour.</p>
+        </article>
+
+        <article class="adv glass" data-animate="fade-up">
+          <h3>Plus de temps humain</h3>
+          <p>L’IA gère l’opérationnel. Vos équipes se concentrent sur les cas à forte valeur.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PARTIE 3 — FINALE
   ============================================= -->
   <section id="finale" class="finale">
-    <!-- Ruban métriques -->
     <div class="finale__metrics" data-animate="fade-up">
       <div class="metric">
         <div class="metric__label">Taux de réponse IA</div>
@@ -178,7 +222,6 @@
       </div>
     </div>
 
-    <!-- Impact concret -->
     <section class="impact glass" data-animate="fade-up" aria-label="Impact rapide">
       <h2>En 7 jours, vous voyez la différence.</h2>
       <ul class="impact__list">
@@ -188,7 +231,6 @@
       </ul>
     </section>
 
-    <!-- Avis / carrousel -->
     <section class="reviews" aria-label="Avis clients">
       <header class="reviews__head">
         <h2 data-animate="fade-up">Ils l’utilisent déjà</h2>
@@ -223,7 +265,6 @@
       </div>
     </section>
 
-    <!-- FAQ courte -->
     <section class="faq" aria-label="Questions fréquentes" data-animate="fade-up">
       <details class="faq__item glass">
         <summary>Et si l’IA ne comprend pas bien mon activité ?</summary>
@@ -239,11 +280,10 @@
       </details>
     </section>
 
-    <!-- Final CTA -->
     <section class="final-cta glass" data-animate="rise-in" aria-label="Passer à l'action">
       <div class="final-cta__copy">
-        <h3>Testez l’IA qui close pour vous — proprement.</h3>
-        <p>Une démo parlante, un chat qui trace tout, et une finalisation sur WhatsApp.</p>
+        <h3>Voyez comment l’IA close pour vous — avec classe.</h3>
+        <p>Une démonstration parlante, un chat qui trace tout, et une finalisation sur WhatsApp.</p>
       </div>
       <div class="final-cta__actions">
         <a class="btn btn--primary" href="#experience">Relancer la démo</a>
