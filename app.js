@@ -1,248 +1,112 @@
-/* ============================================================
-   ECOMMIND — app.js (Full Luxe CAC40 × Harvey)
-   ============================================================ */
-
 document.addEventListener("DOMContentLoaded", () => {
-  /* -------------------------------
-     1) Révélations au scroll (stagger)
-  ----------------------------------*/
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (!e.isIntersecting) return;
-      const el = e.target;
-      // Stagger si le conteneur possède plusieurs enfants cartes
-      if (el.dataset.animate && el.children && el.children.length > 1) {
-        [...el.children].forEach((child, i) => {
-          child.style.transitionDelay = `${i * 70}ms`;
-          requestAnimationFrame(() => child.classList.add("is-visible"));
+  /* Reveal on scroll */
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el=e.target;
+      if(el.children && el.children.length>1){
+        [...el.children].forEach((c,i)=>{
+          c.style.transitionDelay = `${i*60}ms`;
+          c.classList.add("is-visible");
         });
       }
       el.classList.add("is-visible");
       io.unobserve(el);
     });
-  }, { threshold: 0.25 });
+  },{threshold:.25});
+  document.querySelectorAll("[data-animate]").forEach(el=>io.observe(el));
 
-  document.querySelectorAll("[data-animate]").forEach(el => io.observe(el));
+  /* WhatsApp links (message prérempli) */
+  const WA_TEXT = encodeURIComponent("Bonjour 👋 Je viens de voir la démo Ecommind. Montrez-moi la prise de RDV auto + 3 créneaux.");
+  const wa = (num="") => num ? `https://wa.me/${num}?text=${WA_TEXT}` : `https://wa.me/?text=${WA_TEXT}`;
+  ["waHero","waMid","waBottom"].forEach(id=>{ const a=document.getElementById(id); if(a) a.href=wa(); });
 
-  /* -------------------------------
-     2) Titre mot à mot
-  ----------------------------------*/
-  (function animateIntroTitle() {
-    const title = document.getElementById("introTitle");
-    if (!title) return;
-    // conserver le <em>accent</em> intact
-    const pieces = [];
-    title.childNodes.forEach(n => {
-      if (n.nodeType === 3) { // texte
-        pieces.push(...n.textContent.split(/(\s+)/));
-      } else {
-        pieces.push(n.outerHTML);
-      }
-    });
-    const html = pieces.map(tok => {
-      if (tok.match(/^<em/i)) return tok;
-      if (tok.trim() === "") return tok; // espaces
-      return `<span class="word">${tok}</span>`;
-    }).join("");
-    title.innerHTML = html;
-
-    const ioTitle = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        title.classList.add("is-revealed");
-        ioTitle.disconnect();
-      }
-    }, { threshold: 0.6 });
-    ioTitle.observe(title);
-  })();
-
-  /* -------------------------------
-     3) WhatsApp — liens préremplis
-  ----------------------------------*/
-  const WA_TEXT = encodeURIComponent(
-    "Bonjour 👋 Je viens de voir la démo Ecommind. Pouvez-vous me montrer la prise de RDV auto + 3 créneaux ?"
-  );
-  const buildWa = (phone = "") =>
-    phone
-      ? `https://wa.me/${phone}?text=${WA_TEXT}`
-      : `https://wa.me/?text=${WA_TEXT}`;
-
-  ["waHero","waMid","waBottom"].forEach(id => {
-    const a = document.getElementById(id);
-    if (a) a.href = buildWa(); // Remplace par buildWa('33600000000') si tu veux un numéro fixe
-  });
-
-  /* -------------------------------
-     4) Chat (trace + réponses simples)
-  ----------------------------------*/
+  /* Chat minimal */
   const feed = document.getElementById("chatFeed");
   const form = document.getElementById("chatForm");
   const input = document.getElementById("chatText");
-
-  const scrollFeed = () => feed?.scrollTo({ top: feed.scrollHeight, behavior: "smooth" });
-
-  function addMsg(text, who = "bot") {
-    if (!feed) return;
-    const wrap = document.createElement("div");
-    wrap.className = `msg ${who}`;
-    wrap.innerHTML = `<div class="bubble">${text}</div>`;
-    feed.appendChild(wrap);
-    scrollFeed();
-  }
-
-  form?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const v = input.value.trim();
-    if (!v) return;
-    addMsg(v, "user");
-    input.value = "";
-
-    // Réponses clés minimalistes (pitch qui close)
-    const s = v.toLowerCase();
-    let reply =
-      "💡 L’IA capte l’intention, propose 3 créneaux, confirme par WhatsApp. Vous gardez le contrôle, sans frictions.";
-    if (s.includes("prix") || s.includes("tarif")) {
-      reply = "📦 Mise en place + calibrage, puis un abonnement mensuel. L’objectif : ROI visible dès 1–2 semaines.";
-    } else if (s.includes("rdv") || s.includes("créneau")) {
-      reply = "🗓️ L’IA lit votre planning et propose 3 créneaux. Le client valide, on confirme automatiquement.";
-    } else if (s.includes("erreur") || s.includes("saisie")) {
-      reply = "✅ Zéro erreur de saisie : les champs clés sont vérifiés et reformulés avant envoi/stockage.";
-    }
-    setTimeout(() => addMsg(reply, "bot"), 900);
-  });
-
-  // Toggle chat (réduction de la zone)
-  document.querySelector("[data-action='toggle-chat']")?.addEventListener("click", (ev) => {
-    const chat = ev.target.closest(".chat");
-    const feed = chat.querySelector(".chat__feed");
-    chat.classList.toggle("is-collapsed");
-    if (chat.classList.contains("is-collapsed")) {
-      feed.style.maxHeight = "0px";
-      ev.target.textContent = "+";
-      ev.target.setAttribute("aria-expanded", "false");
-    } else {
-      feed.style.maxHeight = "";
-      ev.target.textContent = "−";
-      ev.target.setAttribute("aria-expanded", "true");
-      scrollFeed();
-    }
-  });
-
-  /* -------------------------------
-     5) Avis — carrousel
-  ----------------------------------*/
-  const reviews = [...document.querySelectorAll(".review")];
-  let idx = reviews.findIndex(r => r.classList.contains("is-active"));
-  if (idx < 0) idx = 0;
-
-  const showReview = (i) => {
-    reviews.forEach((r, k) => r.classList.toggle("is-active", k === i));
+  const add = (t,who="bot")=>{
+    if(!feed) return;
+    const d=document.createElement("div");
+    d.className=`msg ${who}`;
+    d.innerHTML=`<div class="bubble">${t}</div>`;
+    feed.appendChild(d);
+    feed.scrollTo({top:feed.scrollHeight,behavior:"smooth"});
   };
-  document.querySelector("[data-action='reviews-prev']")?.addEventListener("click", () => {
-    idx = (idx - 1 + reviews.length) % reviews.length;
-    showReview(idx);
+  form?.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    const v=input.value.trim(); if(!v) return;
+    add(v,"user"); input.value="";
+    const s=v.toLowerCase();
+    let r="💡 L’IA capte l’intention, propose 3 créneaux, confirme par WhatsApp. Simple et mesurable.";
+    if(s.includes("prix")||s.includes("tarif")) r="💼 Mise en place + abo mensuel. Ciblé ROI : impact visible en 1–2 semaines.";
+    if(s.includes("rdv")||s.includes("créneau")) r="🗓️ Lecture planning + 3 créneaux instantanés. Le client valide, on confirme.";
+    if(s.includes("erreur")||s.includes("saisie")) r="✅ Zéro erreur : les champs clés sont reformulés et validés avant envoi.";
+    setTimeout(()=>add(r,"bot"), 800);
   });
-  document.querySelector("[data-action='reviews-next']")?.addEventListener("click", () => {
-    idx = (idx + 1) % reviews.length;
-    showReview(idx);
+
+  /* Toggle chat */
+  document.querySelector("[data-action='toggle-chat']")?.addEventListener("click",(ev)=>{
+    const chat=ev.target.closest(".chat");
+    const pane=chat.querySelector(".chat__feed");
+    const open=!chat.classList.toggle("is-collapsed");
+    pane.style.maxHeight=open? "":"0px";
+    ev.target.textContent=open ? "−" : "+";
+    ev.target.setAttribute("aria-expanded", open);
   });
 
-  /* -------------------------------
-     6) Saturne — halo canvas animé
-  ----------------------------------*/
-  const planet = document.getElementById("planet");
-  const canvas = document.getElementById("viz");
-  if (canvas && planet) {
-    const ctx = canvas.getContext("2d");
-    const DPR = Math.max(1, window.devicePixelRatio || 1);
+  /* Saturne — halo canvas propre */
+  const canvas=document.getElementById("viz");
+  const planet=document.getElementById("planet");
+  if(canvas && planet){
+    const ctx=canvas.getContext("2d");
+    const DPR=Math.max(1,window.devicePixelRatio||1);
+    const resize=()=>{
+      const r=canvas.getBoundingClientRect();
+      canvas.width = r.width*DPR; canvas.height = r.height*DPR;
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+    };
+    resize(); window.addEventListener("resize", resize);
 
-    function resizeCanvas() {
-      const { width, height } = canvas.getBoundingClientRect();
-      canvas.width = Math.floor(width * DPR);
-      canvas.height = Math.floor(height * DPR);
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    let t = 0;
-    (function loop() {
-      const { width, height } = canvas.getBoundingClientRect();
-      ctx.clearRect(0, 0, width, height);
-
-      // Halo pulsatil + légère dérive pour effet vivant
-      const cx = width / 2 + Math.sin(t / 70) * 4;
-      const cy = height / 2 + Math.cos(t / 90) * 3;
-
-      const grd = ctx.createRadialGradient(cx, cy, 10, cx, cy, Math.max(width, height) * 0.55);
-      grd.addColorStop(0, "rgba(0,191,255,0.45)");
-      grd.addColorStop(0.25, "rgba(0,191,255,0.18)");
-      grd.addColorStop(0.55, "rgba(0,191,255,0.06)");
-      grd.addColorStop(1, "rgba(0,0,0,0)");
-
-      ctx.globalCompositeOperation = "lighter";
-      ctx.fillStyle = grd;
-      ctx.beginPath();
-      ctx.arc(cx, cy, Math.max(width, height) * 0.6, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.globalCompositeOperation = "source-over";
-      t += 1;
-      requestAnimationFrame(loop);
+    let t=0;
+    (function loop(){
+      const r=canvas.getBoundingClientRect();
+      ctx.clearRect(0,0,r.width,r.height);
+      const cx=r.width/2 + Math.sin(t/80)*3;
+      const cy=r.height/2 + Math.cos(t/95)*3;
+      const g=ctx.createRadialGradient(cx,cy,8,cx,cy,Math.max(r.width,r.height)*.55);
+      g.addColorStop(0,"rgba(0,191,255,.42)");
+      g.addColorStop(.28,"rgba(0,191,255,.16)");
+      g.addColorStop(.6,"rgba(0,191,255,.05)");
+      g.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.globalCompositeOperation="lighter";
+      ctx.fillStyle=g; ctx.beginPath();
+      ctx.arc(cx,cy,Math.max(r.width,r.height)*.58,0,Math.PI*2); ctx.fill();
+      ctx.globalCompositeOperation="source-over";
+      t++; requestAnimationFrame(loop);
     })();
   }
 
-  /* -------------------------------
-     7) Bouton vocal — speaking mode
-  ----------------------------------*/
-  const voiceBtn = document.getElementById("voiceToggle");
-  if (voiceBtn && planet) {
-    let active = false;
-    const setLabel = () => {
-      voiceBtn.textContent = active ? "⏹" : "🎤";
-      voiceBtn.setAttribute("aria-pressed", String(active));
-    };
+  /* Bouton voix = boost anneaux, pas d’ellipse folle */
+  const voice=document.getElementById("voiceToggle");
+  if(voice && planet){
+    let on=false;
+    const rings=document.querySelectorAll(".saturn__rings .ring");
+    const setLabel=()=>{ voice.textContent = on? "⏹":"🎤"; voice.setAttribute("aria-pressed", String(on)); }
     setLabel();
-
-    voiceBtn.addEventListener("click", () => {
-      active = !active;
-      planet.classList.toggle("speaking", active);
-      setLabel();
-      addMsg(active ? "🎙️ L’assistant écoute votre demande…" : "✅ Capture terminée. Vous pouvez poursuivre sur WhatsApp.", "bot");
-      // Petit “boost” visuel temporaire des anneaux
-      const rings = document.querySelectorAll(".saturn__rings .ring");
-      rings.forEach(r => {
-        r.style.animationDuration = active ? "7s" : "";
-        r.style.borderColor = active ? "rgba(180,220,255,.45)" : "";
-      });
-      // Auto-stop soft après 25s (démo)
-      if (active) {
-        setTimeout(() => {
-          if (!active) return;
-          active = false; setLabel();
-          planet.classList.remove("speaking");
-          rings.forEach(r => { r.style.animationDuration = ""; r.style.borderColor=""; });
-          addMsg("⏹️ Fin d’écoute. Résumé envoyé dans le chat.", "bot");
-        }, 25000);
+    voice.addEventListener("click",()=>{
+      on=!on; setLabel();
+      rings.forEach(r=> r.style.animationDuration = on? "7s" : "");
+      if(on) {
+        add("🎙️ L’assistant écoute votre demande…","bot");
+        setTimeout(()=>{ on=false; setLabel(); rings.forEach(r=>r.style.animationDuration=""); add("⏹️ Fin d’écoute. Résumé dans le chat.","bot"); }, 20000);
       }
     });
   }
 
-  /* -------------------------------
-     8) Accent “pilotée” — glow subtil à l’écran
-  ----------------------------------*/
-  (function accentGlow() {
-    const word = document.querySelector(".accent");
-    if (!word) return;
-    const watch = () => {
-      const r = word.getBoundingClientRect();
-      const visible = r.top < window.innerHeight && r.bottom > 0;
-      word.style.textShadow = visible ? "0 0 24px rgba(0,191,255,0.7)" : "";
-    };
-    watch();
-    window.addEventListener("scroll", watch, { passive: true });
-  })();
-
-  // Signature console
-  console.log("%cEcommind Agency", "color:#00BFFF; font-size:22px; font-weight:700");
-  console.log("✨ Démo premium : captiver • déclencher • convertir.");
+  /* Avis (simple next/prev) */
+  const items=[...document.querySelectorAll(".review")]; let i=items.findIndex(x=>x.classList.contains("is-active")); if(i<0)i=0;
+  const show=k=>items.forEach((el,idx)=>el.classList.toggle("is-active", idx===k));
+  document.querySelector("[data-action='reviews-prev']")?.addEventListener("click",()=>{i=(i-1+items.length)%items.length;show(i);});
+  document.querySelector("[data-action='reviews-next']")?.addEventListener("click",()=>{i=(i+1)%items.length;show(i);});
 });
