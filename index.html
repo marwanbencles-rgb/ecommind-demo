@@ -3,129 +3,283 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecommind — Démo Saturne • Parle. Capte. Close.</title>
-  <meta name="description" content="Démo IA Ecommind : Saturne parlante, anneaux dynamiques, transcript chat et closing WhatsApp." />
+  <title>Ecommind — Démo Saturne • Captiver. Déclencher. Convertir.</title>
+  <meta name="description" content="Interface IA Ecommind : intro premium, Saturne avec chat transcript, anneaux dynamiques, final qui close proprement (WhatsApp & avis)." />
 
+  <!-- CSS/JS seront ajoutés après, sur tes consignes -->
+  <link rel="preload" href="/logo.png" as="image" />
   <link rel="stylesheet" href="/style.css" />
+  <script defer src="/app.js"></script>
 
-  <!-- CSP minimale -->
+  <!-- Sécurité minimale ; adapte si besoin -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  style-src 'self' 'unsafe-inline';
-                 script-src 'self' https://cdn.jsdelivr.net;
+                 script-src 'self';
                  img-src 'self' https://images.unsplash.com data:;
                  font-src 'self' data:;
                  connect-src 'self';
                  object-src 'none';
                  base-uri 'self';
-                 frame-ancestors 'self';
-                 upgrade-insecure-requests">
-
-  <!-- GSAP + App -->
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script defer src="/app.js"></script>
+                 frame-ancestors 'self'">
 </head>
-<body class="planet-demo">
+<body class="ecommind">
 
-  <!-- Header -->
-  <header class="pd-header">
-    <div class="pd-header-inner">
-      <img id="brandLogo" src="/logo.png" alt="Ecommind" class="pd-logo-lg" />
+  <!-- =======================
+       HEADER
+  ======================== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="#intro" class="brand" aria-label="Ecommind">
+        <img src="/logo.png" alt="Ecommind" class="brand__logo" />
+      </a>
+      <nav class="nav">
+        <a href="#intro" class="nav__link">Intro</a>
+        <a href="#experience" class="nav__link">Démo</a>
+        <a href="#finale" class="nav__link">Preuve</a>
+      </nav>
     </div>
   </header>
 
-  <!-- HERO intro -->
-  <section class="pd-hero-intro">
-    <div class="pd-hero-bg" aria-hidden="true"></div>
-    <div class="pd-hero-overlay" aria-hidden="true"></div>
+  <!-- =======================
+       PARTIE 1 — INTRO SLIDE
+  ======================== -->
+  <section id="intro" class="intro">
+    <!-- Fond galaxie (géré en CSS) -->
+    <div class="space-bg" aria-hidden="true"></div>
+    <div class="space-overlay" aria-hidden="true"></div>
 
-    <div class="pd-hero-inner">
-      <div class="pill">Interface Cockpit IA • Mercedes × Apple</div>
-      <h1>Automatisation de prestige, <span>pilotée</span> pour convertir.</h1>
-      <p class="lead">
-        Je capte l’intention, je qualifie en 60–120 s et je propose 3 créneaux.
+    <div class="intro__container">
+      <div class="intro__badge pill" data-animate="fade-up">Interface Cockpit IA • Mercedes × Apple</div>
+
+      <!-- Titre avec effet slide / reveal (hook data-animate) -->
+      <h1 class="intro__title">
+        <span class="line" data-animate="slide-up">Automatisation de prestige,</span>
+        <span class="line" data-animate="slide-up"><em class="accent">pilotée</em> pour convertir.</span>
+      </h1>
+
+      <p class="intro__lead" data-animate="fade-up">
+        Je capte l’intention, je qualifie en 60–120&nbsp;s et je propose 3 créneaux.
         Vous validez, on confirme. Le <strong>reste se conclut sur WhatsApp</strong>.
       </p>
-      <div class="hero-cta">
-        <a class="btn primary" href="#demo">Démarrer la démo</a>
-        <a class="btn pill" id="waBtnTop" target="_blank" rel="noopener">WhatsApp</a>
+
+      <div class="intro__cta" data-animate="fade-up">
+        <a class="btn btn--primary" href="#experience">Lancer la démo</a>
+
+        <!-- Carte WhatsApp premium (nouvelle forme) -->
+        <a id="waHero" class="wa-card" href="#" target="_blank" rel="noopener" aria-label="Continuer sur WhatsApp">
+          <div class="wa-card__icon" aria-hidden="true">💬</div>
+          <div class="wa-card__content">
+            <strong>WhatsApp</strong>
+            <small>Finalisation privée et rapide</small>
+          </div>
+        </a>
       </div>
+
+      <!-- Marqueurs de confiance optionnels -->
+      <ul class="intro__trust" data-animate="fade-up">
+        <li>Latence &lt; 350&nbsp;ms</li>
+        <li>Satisfaction vocale 4.8★</li>
+        <li>AB test v2</li>
+      </ul>
     </div>
   </section>
 
-  <!-- Scène démo : Saturne + Chat -->
-  <main id="demo" class="pd-stage">
-    <div class="pd-hero-bg" aria-hidden="true"></div>
-    <div class="pd-hero-overlay" aria-hidden="true"></div>
+  <!-- ============================================
+       PARTIE 2 — SATURNE + CHAT (EXPÉRIENCE)
+  ============================================= -->
+  <section id="experience" class="experience">
+    <div class="space-bg" aria-hidden="true"></div>
+    <div class="space-overlay" aria-hidden="true"></div>
 
-    <section class="pd-center">
+    <div class="experience__grid">
       <!-- Saturne -->
-      <div class="pd-planet-wrap">
-        <div id="planet" class="pd-planet saturne" aria-label="Saturne parlante">
-          <!-- Anneaux -->
-          <div class="saturn-rings">
-            <span class="ring band-1"></span>
-            <span class="ring band-2"></span>
-            <span class="ring band-3"></span>
-            <span class="ring band-4"></span>
+      <div class="saturn" data-animate="float-in">
+        <div id="planet" class="saturn__planet" role="img" aria-label="Saturne IA">
+          <!-- Anneaux (animation vitesse contrôlée via JS/CSS) -->
+          <div class="saturn__rings" aria-hidden="true">
+            <span class="ring ring--1" data-ring="1"></span>
+            <span class="ring ring--2" data-ring="2"></span>
+            <span class="ring ring--3" data-ring="3"></span>
+            <span class="ring ring--4" data-ring="4"></span>
           </div>
-          <!-- Canvas viz halo -->
-          <canvas id="pdViz" class="pd-viz" aria-hidden="true"></canvas>
+          <!-- Halo / viz -->
+          <canvas id="viz" class="saturn__viz" aria-hidden="true"></canvas>
         </div>
 
-        <div class="pd-cta">
-          <button class="btn primary" data-action="voice-toggle">🎤 Parler</button>
-          <a class="btn pill" id="waBtn" target="_blank" rel="noopener">WhatsApp</a>
+        <!-- Contrôles : bouton Parler → Arrêter (toggle) -->
+        <div class="saturn__controls">
+          <button
+            id="voiceToggle"
+            class="btn btn--primary btn--voice"
+            data-action="voice-toggle"
+            aria-pressed="false"
+            aria-label="Activer la voix"
+            data-label-on="Arrêter"
+            data-label-off="Parler">
+            🎤 Parler
+          </button>
+
+          <!-- WhatsApp sous autre forme, minimal luxe -->
+          <a id="waMid" class="btn btn--ghost btn--wa" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+            Continuer sur WhatsApp
+          </a>
         </div>
 
-        <p class="pd-tagline">« La démo parle pour vous. On conclut sur WhatsApp. »</p>
+        <p class="saturn__tag">« La démo parle pour vous. On conclut sur WhatsApp. »</p>
       </div>
 
       <!-- Chat transcript -->
-      <aside class="pd-chat glass" aria-label="Chat démo Ecommind">
-        <header class="pd-chat-head">
-          <div class="pd-chat-title"><span class="dot dot-blue"></span> Chat Ecommind</div>
-          <button class="pd-chat-min btn pill" data-action="toggle-chat">−</button>
+      <aside class="chat glass" data-animate="fade-left" aria-label="Chat Ecommind">
+        <header class="chat__head">
+          <div class="chat__title"><span class="dot dot--blue"></span> Chat Ecommind</div>
+          <div class="chat__actions">
+            <button class="btn btn--mini" data-action="toggle-chat" aria-expanded="true" aria-controls="chatFeed">−</button>
+          </div>
         </header>
 
-        <div id="chatFeed" class="pd-chat-feed">
-          <div class="msg bot"><div class="bubble">
-            Bonjour 👋 Je vous montre en 60–120 s comment on capte, qualifie et propose un créneau automatiquement.
-          </div></div>
-          <div class="msg bot"><div class="bubble">
-            Posez une question, ou cliquez WhatsApp pour continuer la discussion 👉
-          </div></div>
+        <div id="chatFeed" class="chat__feed" aria-live="polite" aria-busy="false">
+          <!-- Seed messages -->
+          <div class="msg bot"><div class="bubble">Bonjour 👋 Je vous montre en 60–120&nbsp;s comment on capte, qualifie et propose un créneau automatiquement.</div></div>
+          <div class="msg bot"><div class="bubble">Posez une question, ou cliquez WhatsApp pour continuer la discussion 👉</div></div>
         </div>
 
-        <form id="chatForm" class="pd-chat-input" autocomplete="off">
-          <input id="chatText" name="q" placeholder="Écrivez ici… (ex : Montrez-moi la prise de RDV)" />
-          <button class="btn primary" type="submit">Envoyer</button>
+        <form id="chatForm" class="chat__form" autocomplete="off">
+          <input id="chatText" name="q" placeholder="Écrivez ici… (ex : Montrez-moi la prise de RDV)" aria-label="Votre message" />
+          <button class="btn btn--primary" type="submit">Envoyer</button>
         </form>
       </aside>
-    </section>
-  </main>
-
-  <!-- Bloc persuasion -->
-  <section class="pd-proof">
-    <div class="proof-grid">
-      <article class="glass proof-card">
-        <h3>1) Captation</h3>
-        <p>Hook visuel + voix naturelle. L’IA garde le lead, qualifie en 60–120 s.</p>
-      </article>
-      <article class="glass proof-card">
-        <h3>2) Conversion</h3>
-        <p>Objections traitées, proposition claire, 3 créneaux auto → <strong>RDV</strong>.</p>
-      </article>
-      <article class="glass proof-card">
-        <h3>3) Confiance</h3>
-        <p>Confirmation e-mail + WhatsApp, acompte sécurisé, relances intelligentes.</p>
-      </article>
-    </div>
-    <div class="proof-cta">
-      <a class="btn primary" href="#demo">Voir la démo</a>
-      <a class="btn pill" id="waBtnBottom" target="_blank" rel="noopener">Parler sur WhatsApp</a>
     </div>
   </section>
+
+  <!-- ============================================
+       PARTIE 3 — FINALE QUI “SAUVE” (preuves + CTA)
+  ============================================= -->
+  <section id="finale" class="finale">
+    <!-- Ruban métriques -->
+    <div class="finale__metrics" data-animate="fade-up">
+      <div class="metric">
+        <div class="metric__label">Taux de réponse IA</div>
+        <div class="metric__value">99.2%</div>
+        <div class="metric__sub">latence &lt; 350&nbsp;ms</div>
+      </div>
+      <div class="metric">
+        <div class="metric__label">Conversion démo → RDV</div>
+        <div class="metric__value accent">+34%</div>
+        <div class="metric__sub">AB test v2</div>
+      </div>
+      <div class="metric">
+        <div class="metric__label">Satisfaction vocale</div>
+        <div class="metric__value">4.8★</div>
+        <div class="metric__sub">multi-lang</div>
+      </div>
+    </div>
+
+    <!-- Avis / carrousel (basculent) -->
+    <section class="reviews" aria-label="Avis clients">
+      <header class="reviews__head">
+        <h2 data-animate="fade-up">Ce que disent nos clients</h2>
+        <div class="reviews__controls">
+          <button class="btn btn--mini" data-action="reviews-prev" aria-label="Avis précédent">‹</button>
+          <button class="btn btn--mini" data-action="reviews-next" aria-label="Avis suivant">›</button>
+        </div>
+      </header>
+
+      <div class="reviews__track" data-animate="fade-up" role="listbox" aria-live="polite">
+        <!-- Slide 1 -->
+        <article class="review glass is-active" role="option" aria-selected="true">
+          <div class="review__row">
+            <div class="avatar">A</div>
+            <div>
+              <strong>Aeva Patel</strong>
+              <div class="stars">★★★★★</div>
+            </div>
+          </div>
+          <p>“Interface propre, guidance fluide, et surtout… ça close tout seul. Un gain de temps monumental.”</p>
+        </article>
+
+        <!-- Slide 2 -->
+        <article class="review glass">
+          <div class="review__row">
+            <div class="avatar">M</div>
+            <div>
+              <strong>Mohamed Gh.</strong>
+              <div class="stars">★★★★★</div>
+            </div>
+          </div>
+          <p>“La voix s’adapte, recadre, propose 3 créneaux. Confirmation auto par WhatsApp : parfait.”</p>
+        </article>
+
+        <!-- Slide 3 -->
+        <article class="review glass">
+          <div class="review__row">
+            <div class="avatar">S</div>
+            <div>
+              <strong>Sarah L.</strong>
+              <div class="stars">★★★★☆</div>
+            </div>
+          </div>
+          <p>“On a déployé en 48h. Résultat : +31% de RDV en 2 semaines sans effort d’équipe.”</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Objectifs “Harvey Specter” (arguments classe) -->
+    <section class="objectives">
+      <h2 data-animate="fade-up">Vos objectifs. Notre cockpit.</h2>
+      <ul class="objectives__grid" data-animate="fade-up">
+        <li class="objective glass">
+          <span class="objective__icon">✅</span>
+          <div>
+            <strong>Captez & qualifiez sans frictions.</strong>
+            <p>Une IA qui garde le lead et reformule comme un conseiller haut de gamme.</p>
+          </div>
+        </li>
+        <li class="objective glass">
+          <span class="objective__icon">✅</span>
+          <div>
+            <strong>3 créneaux, 1 clic, c’est posé.</strong>
+            <p>Calendrier intégré, proposition claire, absence d’allers-retours.</p>
+          </div>
+        </li>
+        <li class="objective glass">
+          <span class="objective__icon">✅</span>
+          <div>
+            <strong>Confirmation + acompte sécurisé.</strong>
+            <p>E-mail & WhatsApp, paiement d’acompte, relances intelligentes.</p>
+          </div>
+        </li>
+        <li class="objective glass">
+          <span class="objective__icon">✅</span>
+          <div>
+            <strong>Rapide à déployer.</strong>
+            <p>On branche, on teste, on mesure. Vous gardez le contrôle.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Final CTA “qui sauve” -->
+    <section class="final-cta glass" data-animate="rise-in" aria-label="Passer à l'action">
+      <div class="final-cta__copy">
+        <h3>Voyez comment l’IA close pour vous — avec classe.</h3>
+        <p>Une démonstration parlante, un chat qui trace tout, et une finalisation sur WhatsApp.</p>
+      </div>
+      <div class="final-cta__actions">
+        <a class="btn btn--primary" href="#experience">Relancer la démo</a>
+        <a id="waBottom" class="btn btn--ghost btn--wa" href="#" target="_blank" rel="noopener">Parler sur WhatsApp</a>
+      </div>
+    </section>
+  </section>
+
+  <!-- =======================
+       FOOTER
+  ======================== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <p>© Ecommind — <span class="muted">Design “Full Luxe CAC40” • Or #C9A55E • Bleu #00BFFF</span></p>
+    </div>
+  </footer>
 
 </body>
 </html>
