@@ -1,205 +1,189 @@
 /* ============================================================
-   ECOMMIND — APP LOGIC (Intro • Saturne + Chat • Finale)
+   ECOMMIND AGENCY — app.js (version finale)
    ============================================================ */
 
-/* ---------- Helpers ---------- */
-const $  = (sel, root=document) => root.querySelector(sel);
-const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-
-/* ---------- WhatsApp links ---------- */
-(function setupWhatsApp(){
-  const msg = "Bonjour Ecommind 👋 Je viens de la démo. Montrez-moi comment vous captez, qualifiez et proposez des créneaux automatiquement.";
-  ["#waHero", "#waMid", "#waBottom"].forEach(id=>{
-    const a = $(id);
-    if (a) a.setAttribute("href", "https://wa.me/?text="+encodeURIComponent(msg));
+/* -------------------------------
+   Apparition progressive au scroll
+--------------------------------*/
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) entry.target.classList.add("is-visible");
   });
-})();
+}, { threshold: 0.3 });
 
-/* ---------- Intersection animations (reveal) ---------- */
-(function setupReveal(){
-  const els = $$("[data-animate]");
-  if (!('IntersectionObserver' in window) || !els.length){
-    els.forEach(el=>el.classList.add("is-visible"));
-    return;
-  }
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if (entry.isIntersecting){
-        entry.target.classList.add("is-visible");
-        io.unobserve(entry.target);
+document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
+
+/* -------------------------------
+   Animation du titre mot à mot
+--------------------------------*/
+(function revealIntroTitle() {
+  const title = document.getElementById("introTitle");
+  if (!title) return;
+
+  const text = title.textContent.trim().replace(/\s+/g, " ");
+  const words = text.split(" ");
+  title.textContent = "";
+
+  words.forEach((w, i) => {
+    const span = document.createElement("span");
+    span.className = "word";
+    span.style.transitionDelay = `${i * 0.05}s`;
+    span.textContent = (i ? " " : "") + w;
+    title.appendChild(span);
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        title.classList.add("is-revealed");
+        io.disconnect();
       }
     });
-  }, {threshold: .12});
-  els.forEach(el=>io.observe(el));
+  }, { threshold: 0.5 });
+  io.observe(title);
 })();
 
-/* ---------- Parallax (space background) ---------- */
-(function setupParallax(){
-  const bgs = $$(".space-bg");
-  if (!bgs.length) return;
-  const damp = 14;
-  window.addEventListener("mousemove", (e)=>{
-    const x = (e.clientX / window.innerWidth - 0.5) * damp;
-    const y = (e.clientY / window.innerHeight - 0.5) * damp;
-    bgs.forEach(bg=>{
-      bg.style.backgroundPosition = `${50 + x}% ${50 + y}%`;
-    });
-  }, {passive:true});
-})();
+/* -------------------------------
+   Saturne — effet d’anneaux tournants + halo pulsé
+--------------------------------*/
+const saturn = document.querySelector(".saturn__planet");
+const rings = document.querySelectorAll(".saturn__rings .ring");
 
-/* ---------- Saturne (voice toggle + halo canvas) ---------- */
-(function setupSaturn(){
-  const planet     = $("#planet");
-  const ringsWrap  = $(".saturn__rings", planet);
-  const vizCanvas  = $("#viz");
-  const voiceBtn   = $("#voiceToggle");
+function pulseRings() {
+  rings.forEach((ring, i) => {
+    ring.animate(
+      [
+        { transform: `rotate(${i * 20}deg) scale(1)` },
+        { transform: `rotate(${i * 20 + 360}deg) scale(1.1)` },
+        { transform: `rotate(${i * 20 + 720}deg) scale(1)` },
+      ],
+      {
+        duration: 6000 + i * 1000,
+        iterations: Infinity,
+        easing: "linear",
+      }
+    );
+  });
+}
+pulseRings();
 
-  if (!planet || !vizCanvas || !voiceBtn) return;
+/* -------------------------------
+   Bouton vocal — état actif/inactif
+--------------------------------*/
+const voiceBtn = document.getElementById("voiceToggle");
+if (voiceBtn && saturn) {
+  let active = false;
 
-  // Canvas halo
-  const ctx = vizCanvas.getContext("2d");
-  let raf = null, active = false, t = 0;
+  voiceBtn.addEventListener("click", () => {
+    active = !active;
+    voiceBtn.setAttribute("aria-pressed", active);
+    voiceBtn.textContent = active ? "⏹" : "🎤";
+    voiceBtn.classList.toggle("btn--active", active);
+    saturn.classList.toggle("speaking", active);
 
-  function resizeCanvas(){
-    const dpr = window.devicePixelRatio || 1;
-    const w = vizCanvas.clientWidth, h = vizCanvas.clientHeight;
-    vizCanvas.width  = Math.floor(w*dpr);
-    vizCanvas.height = Math.floor(h*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-  }
-  function draw(){
-    raf = requestAnimationFrame(draw);
-    t += 0.015;
-    const w = vizCanvas.clientWidth, h = vizCanvas.clientHeight;
-    ctx.clearRect(0,0,w,h);
-    const cx = w/2, cy = h/2, baseR = Math.min(w,h)*0.30;
+    if (active) addBotMessage("🎙️ L’assistant écoute votre demande...");
+    else addBotMessage("✅ Analyse terminée. Vous pouvez continuer sur WhatsApp.");
+  });
+}
 
-    // Halo principal
-    const amp = active ? 14 + Math.sin(t*3)*6 : 10;
-    const g1 = ctx.createRadialGradient(cx,cy,baseR*0.6,cx,cy,baseR*1.3+amp);
-    g1.addColorStop(0,"rgba(0,191,255,.15)");
-    g1.addColorStop(1,"rgba(0,191,255,0)");
-    ctx.fillStyle = g1;
-    ctx.beginPath(); ctx.arc(cx,cy,baseR*1.35+amp,0,Math.PI*2); ctx.fill();
+/* -------------------------------
+   Chat Ecommind (messages automatiques)
+--------------------------------*/
+const chatForm = document.getElementById("chatForm");
+const chatFeed = document.getElementById("chatFeed");
+const chatInput = document.getElementById("chatText");
 
-    // Liserés elliptiques subtils
-    ctx.save();
-    ctx.translate(cx,cy);
-    ctx.rotate(Math.PI/180 * 15);
-    for(let i=0;i<3;i++){
-      ctx.beginPath();
-      ctx.ellipse(0,0, baseR*1.05+i*10, baseR*0.6+i*6, 0, 0, Math.PI*2);
-      ctx.strokeStyle = `rgba(0,191,255,${active?0.18:0.10})`;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
+function addBotMessage(text) {
+  const msg = document.createElement("div");
+  msg.className = "msg bot";
+  msg.innerHTML = `<div class="bubble">${text}</div>`;
+  chatFeed.appendChild(msg);
+  chatFeed.scrollTo({ top: chatFeed.scrollHeight, behavior: "smooth" });
+}
 
-  resizeCanvas(); draw();
-  window.addEventListener("resize", resizeCanvas);
+function addUserMessage(text) {
+  const msg = document.createElement("div");
+  msg.className = "msg user";
+  msg.innerHTML = `<div class="bubble">${text}</div>`;
+  chatFeed.appendChild(msg);
+  chatFeed.scrollTo({ top: chatFeed.scrollHeight, behavior: "smooth" });
+}
 
-  // Voice toggle (Parler ↔ Arrêter)
-  voiceBtn.addEventListener("click", ()=>{
-    const pressed = voiceBtn.getAttribute("aria-pressed") === "true";
-    const next = !pressed;
-    voiceBtn.setAttribute("aria-pressed", String(next));
-
-    active = next;
-    planet.classList.toggle("speaking", next); // accélère les anneaux via CSS
-
-    // Micro animation tactile
-    voiceBtn.style.transform = "scale(1.05)";
-    setTimeout(()=>voiceBtn.style.transform="", 120);
-  }, {passive:false});
-})();
-
-/* ---------- Chat (seed + reply + collapse) ---------- */
-(function setupChat(){
-  const feed = $("#chatFeed");
-  const form = $("#chatForm");
-  const input= $("#chatText");
-  const toggleBtn = $('[data-action="toggle-chat"]');
-  if (!feed || !form || !input) return;
-
-  function addMsg(text, who="user"){
-    const wrap = document.createElement("div");
-    wrap.className = `msg ${who}`;
-    wrap.innerHTML = `<div class="bubble">${text}</div>`;
-    feed.appendChild(wrap);
-    feed.scrollTop = feed.scrollHeight;
-  }
-
-  // Simple canned responses
-  const canned = [
-    "Compris. Je vous propose 3 créneaux dans un instant.",
-    "Parfait. Cliquez WhatsApp pour finaliser rapidement.",
-    "Noté. Je vous envoie la confirmation et le lien d’acompte."
-  ];
-
-  form.addEventListener("submit",(e)=>{
+if (chatForm && chatFeed && chatInput) {
+  chatForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const q = input.value.trim();
-    if (!q) return;
-    addMsg(q, "user");
-    input.value = "";
-    addMsg(canned[Math.floor(Math.random()*canned.length)], "bot");
-  });
+    const text = chatInput.value.trim();
+    if (!text) return;
+    addUserMessage(text);
+    chatInput.value = "";
 
-  // Collapse
-  toggleBtn?.addEventListener("click", ()=>{
-    const chat = $(".chat");
-    if (!chat) return;
-    const collapsed = chat.getAttribute("data-collapsed")==="1";
-    if (collapsed){
-      chat.removeAttribute("data-collapsed");
-      chat.style.height = "560px";
-      toggleBtn.textContent = "−";
-      toggleBtn.setAttribute("aria-expanded","true");
-    }else{
-      chat.setAttribute("data-collapsed","1");
-      chat.style.height = "56px";
-      toggleBtn.textContent = "+";
-      toggleBtn.setAttribute("aria-expanded","false");
+    setTimeout(() => {
+      addBotMessage(
+        "💡 Bonne question ! L’IA capte votre besoin, qualifie et envoie un devis clair avec 3 créneaux proposés automatiquement."
+      );
+    }, 1200);
+  });
+}
+
+/* -------------------------------
+   Carrousel d’avis (reviews)
+--------------------------------*/
+const reviews = document.querySelectorAll(".review");
+let activeReview = 0;
+
+function showReview(index) {
+  reviews.forEach((r, i) => {
+    r.classList.toggle("is-active", i === index);
+  });
+}
+
+document.querySelector("[data-action='reviews-prev']")?.addEventListener("click", () => {
+  activeReview = (activeReview - 1 + reviews.length) % reviews.length;
+  showReview(activeReview);
+});
+
+document.querySelector("[data-action='reviews-next']")?.addEventListener("click", () => {
+  activeReview = (activeReview + 1) % reviews.length;
+  showReview(activeReview);
+});
+
+/* -------------------------------
+   Réduction du chat (toggle)
+--------------------------------*/
+const toggleBtn = document.querySelector("[data-action='toggle-chat']");
+const chat = document.querySelector(".chat");
+if (toggleBtn && chat) {
+  toggleBtn.addEventListener("click", () => {
+    chat.classList.toggle("is-collapsed");
+    toggleBtn.textContent = chat.classList.contains("is-collapsed") ? "+" : "−";
+  });
+}
+
+/* -------------------------------
+   Glow dynamique sur “pilotée”
+--------------------------------*/
+(function glowAccent() {
+  const word = document.querySelector(".accent");
+  if (!word) return;
+
+  window.addEventListener("scroll", () => {
+    const rect = word.getBoundingClientRect();
+    const visible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+    if (visible) {
+      word.style.textShadow = `0 0 10px ${getGlowColor()}`;
+    } else {
+      word.style.textShadow = "none";
     }
   });
-})();
 
-/* ---------- Reviews carousel ---------- */
-(function setupReviews(){
-  const track = $(".reviews__track");
-  if (!track) return;
-  const slides = $$(".review", track);
-  if (slides.length <= 1) return;
-
-  let idx = 0;
-  function show(i){
-    slides.forEach((s, k)=> s.classList.toggle("is-active", k===i));
+  function getGlowColor() {
+    const colors = [ "#00bfff", "#0099cc", "#33ccff", "#66e0ff" ];
+    return colors[Math.floor(Date.now() / 200) % colors.length];
   }
-  show(idx);
-
-  const prev = $('[data-action="reviews-prev"]');
-  const next = $('[data-action="reviews-next"]');
-  prev?.addEventListener("click", ()=>{
-    idx = (idx - 1 + slides.length) % slides.length;
-    show(idx);
-  });
-  next?.addEventListener("click", ()=>{
-    idx = (idx + 1) % slides.length;
-    show(idx);
-  });
 })();
 
-/* ---------- Smooth scroll (optionnel, UX +) ---------- */
-(function setupSmoothScroll(){
-  const links = $$('a[href^="#"]:not([href="#"])');
-  links.forEach(a=>{
-    a.addEventListener("click", (e)=>{
-      const id = a.getAttribute("href");
-      const target = id && $(id);
-      if (!target) return;
-      e.preventDefault();
-      target.scrollIntoView({behavior:"smooth", block:"start"});
-    });
-  });
-})();
+/* -------------------------------
+   Petite intro de crédibilité
+--------------------------------*/
+console.log("%cEcommind Agency", "color:#00BFFF; font-size:24px; font-weight:bold;");
+console.log("✨ Interface IA de prestige — Conçue pour captiver, déclencher et convertir.");
