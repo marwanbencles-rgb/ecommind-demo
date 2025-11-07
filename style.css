@@ -1,7 +1,6 @@
 /* ============================================================
-   ECOMMIND — PLANET DEMO + CHAT (Luxe, cockpit, transcript)
+   ECOMMIND — DEMO SATURNE (Luxe, cockpit, transcript)
    ============================================================ */
-
 :root{
   --brand-gold:#C9A55E;
   --brand-blue:#00BFFF;
@@ -13,6 +12,10 @@
   --radius-xl:22px;
   --shadow-blue:0 0 55px rgba(0,191,255,.22);
   --shadow-gold:0 0 45px rgba(201,165,94,.16);
+
+  /* Vitesse anneaux (modifiée par .speaking) */
+  --ring-speed: 22s;
+  --ring-glow: rgba(0,191,255,.18);
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -23,17 +26,18 @@ body{
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
 
+/* Header */
 .pd-header{position:fixed;top:0;left:0;right:0;z-index:20;padding:18px 28px}
 .pd-logo-lg{height:68px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.45))}
 
-/* Fond galaxie réutilisable */
+/* Fond galaxie */
 .pd-hero-bg{
   position:absolute;inset:0;
   background:
     radial-gradient(1200px 700px at 70% 10%, rgba(0,191,255,.18), transparent 60%),
-    radial-gradient(900px 500px at 20% 80%, rgba(201,165,94,.14), transparent 60%),
+    radial-gradient(900px 500px at 20% 80%, rgba(201,165,94,.10), transparent 60%),
     url('https://images.unsplash.com/photo-1445905595283-21f8ae8a33d2?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
-  filter:saturate(120%) brightness(.85) contrast(1.1);
+  filter:saturate(118%) brightness(.9) contrast(1.1);
 }
 .pd-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.9))}
 
@@ -49,40 +53,63 @@ body{
 .btn:hover{transform:translateY(-2px)}
 .btn.primary{border-color:var(--brand-blue);box-shadow:inset 0 0 0 1px rgba(0,191,255,.36),var(--shadow-blue)}
 .btn.primary:hover{box-shadow:0 0 25px rgba(0,191,255,.25),var(--shadow-blue)}
+.pill{border-radius:999px;padding:.75rem 1.2rem}
 
 /* Scène démo */
 .pd-stage{position:relative;min-height:100vh;display:grid;place-items:center;overflow:hidden}
 .pd-center{position:relative;z-index:2;display:grid;grid-template-columns:minmax(320px,560px) minmax(320px,420px);gap:50px;align-items:center;justify-content:center;padding:120px 20px 80px}
 @media(max-width:980px){.pd-center{grid-template-columns:1fr;gap:40px;text-align:center}}
 
+/* Saturne */
 .pd-planet-wrap{display:grid;place-items:center;gap:22px}
 .pd-planet{
   position:relative;border-radius:50%;
   width:min(50vh,560px);height:min(50vh,560px);
-  background:
-    radial-gradient(50% 50% at 38% 38%, rgba(0,191,255,.95), rgba(201,165,94,.70) 56%, rgba(0,0,0,.22) 74%),
-    radial-gradient(70% 65% at 62% 66%, rgba(255,255,255,.09), transparent 60%);
-  box-shadow:var(--shadow-blue),var(--shadow-gold);
   isolation:isolate;transition:transform .35s ease, box-shadow .35s ease;
 }
-.pd-core-spec{
-  position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), rgba(255,255,255,0) 45%),
-             radial-gradient(circle at 60% 65%, rgba(255,255,255,.06), rgba(255,255,255,0) 55%);
-  mix-blend-mode:screen;pointer-events:none;
+/* 👇 Couleurs saturne (froides) — plus de gros jaune */
+.saturne{
+  background:
+    radial-gradient(40% 38% at 48% 42%, rgba(0,191,255,.85), rgba(0,64,128,.9) 55%, rgba(0,0,0,.4) 78%),
+    radial-gradient(65% 60% at 58% 66%, rgba(255,255,255,.08), rgba(255,255,255,0) 60%);
+  box-shadow: 0 0 80px rgba(0,191,255,.28), 0 0 70px rgba(201,165,94,.12);
 }
-.pd-viz{position:absolute;inset:-26px;width:calc(100% + 52px);height:calc(100% + 52px);filter:blur(.7px);pointer-events:none}
-.pd-ring{position:absolute;border-radius:50%;inset:-14%;border:2px solid rgba(255,255,255,.06);box-shadow:0 0 24px rgba(0,191,255,.10);pointer-events:none}
-.ring-1{transform:rotateX(67deg)}
-.ring-2{transform:rotateX(76deg) rotateZ(22deg);inset:-22%}
-.ring-3{transform:rotateX(82deg) rotateZ(-32deg);inset:-30%;opacity:.74}
-.pd-planet.speaking{box-shadow:0 0 95px rgba(0,191,255,.38), 0 0 120px rgba(201,165,94,.24)}
-.pd-planet.speaking .pd-ring{border-color:rgba(0,191,255,.25)}
-@keyframes ringPulse{0%,100%{box-shadow:0 0 24px rgba(0,191,255,.10)}50%{box-shadow:0 0 48px rgba(0,191,255,.25)}}
-.pd-planet.speaking .ring-1{animation:ringPulse 2.1s ease-in-out infinite}
-.pd-planet.speaking .ring-2{animation:ringPulse 2.5s ease-in-out infinite .2s}
-.pd-planet.speaking .ring-3{animation:ringPulse 2.9s ease-in-out infinite .35s}
+/* Anneaux elliptiques */
+.saturn-rings{
+  position:absolute; inset:-24% -26%;
+  transform: rotateX(72deg);
+  pointer-events:none; filter: drop-shadow(0 0 22px var(--ring-glow));
+  animation: ringSpin var(--ring-speed) linear infinite;
+}
+.ring{
+  position:absolute; inset:0; border-radius:50%;
+  border: 2px solid rgba(180,220,255,.12);
+  box-shadow: 0 0 28px rgba(0,191,255,.18), inset 0 0 18px rgba(0,191,255,.12);
+}
+.band-1{ transform: scale(1.00); }
+.band-2{ transform: scale(1.10); opacity:.9; }
+.band-3{ transform: scale(1.20); opacity:.78; }
+.band-4{ transform: scale(1.32); opacity:.64; }
 
+@keyframes ringSpin{
+  0%{ transform: rotateX(72deg) rotateZ(0deg); }
+  100%{ transform: rotateX(72deg) rotateZ(360deg); }
+}
+
+/* Halo canvas */
+.pd-viz{position:absolute;inset:-26px;width:calc(100% + 52px);height:calc(100% + 52px);filter:blur(.7px);pointer-events:none}
+
+/* Speaking state */
+.speaking.saturne{
+  box-shadow: 0 0 110px rgba(0,191,255,.42), 0 0 130px rgba(201,165,94,.18);
+}
+.speaking .saturn-rings{
+  /* accélération des anneaux quand ça parle */
+  animation-duration: 7s;
+  filter: drop-shadow(0 0 30px rgba(0,191,255,.35));
+}
+
+/* CTA + tagline */
 .pd-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px}
 .pd-tagline{margin:2px 0 0;color:var(--fg-dim);font-size:.98rem;text-align:center}
 
@@ -105,7 +132,7 @@ body{
 /* Bloc persuasion */
 .pd-proof{position:relative;padding:40px 20px 90px}
 .proof-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:16px;max-width:1100px;margin:0 auto}
-.proof-card{padding:18px}
+.proof-card{padding:18px;box-shadow:0 0 24px rgba(0,191,255,.06)}
 .proof-card h3{margin:0 0 6px}
 .proof-card p{margin:0;color:var(--fg-dim)}
 .proof-cta{display:flex;gap:12px;justify-content:center;margin-top:18px}

@@ -1,8 +1,5 @@
 /* ======================================================
-   ECOMMIND — Planet Demo v2 (Transcript sync)
-   - Planète améliorée (glow + rings + viz)
-   - Chat relié au vocal (trace écrite)
-   - Intro + bloc persuasion: WhatsApp CTA
+   ECOMMIND — DEMO SATURNE (Transcript + Rings control)
    ====================================================== */
 const hasGSAP = typeof gsap !== "undefined";
 
@@ -18,8 +15,8 @@ const waTop     = document.getElementById("waBtnTop");
 const waBtn     = document.getElementById("waBtn");
 const waBottom  = document.getElementById("waBtnBottom");
 
-/* WhatsApp links (pré-remplis) */
-const waMsg = "Bonjour Ecommind 👋 Je viens de la démo. Montrez-moi comment vous captez, qualifiez et proposez des créneaux automatiquement.";
+/* WhatsApp links (préremplis) */
+const waMsg = "Bonjour Ecommind 👋 Je viens de la démo Saturne. Montrez-moi comment vous captez, qualifiez et proposez des créneaux automatiquement.";
 [waTop, waBtn, waBottom].forEach(a => a && a.setAttribute("href", "https://wa.me/?text=" + encodeURIComponent(waMsg)));
 
 /* Parallaxe fond (intro + scène) */
@@ -32,7 +29,7 @@ document.addEventListener("mousemove", (e) => {
   });
 });
 
-/* Canvas visualizer (anneaux dynamiques) */
+/* Canvas visualizer (halo dynamique autour de Saturne) */
 let rafId = null;
 function drawVisualizer(active){
   if (!viz) return;
@@ -42,25 +39,32 @@ function drawVisualizer(active){
   viz.width = Math.floor(w*dpr); viz.height = Math.floor(h*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
 
-  const cx=w/2, cy=h/2, baseR=Math.min(w,h)*0.28;
+  const cx=w/2, cy=h/2, baseR=Math.min(w,h)*0.30;
   let t=0; cancelAnimationFrame(rafId);
   (function loop(){
     rafId = requestAnimationFrame(loop);
     t += 0.015; ctx.clearRect(0,0,w,h);
 
-    for(let i=0;i<6;i++){
-      const k=i/6, amp = active ? (Math.sin(t*2+i)*8+10) : 6;
-      const r = baseR + k*30 + amp;
+    // halo cyan pulsant
+    const amp = active ? 14 + Math.sin(t*3)*6 : 10;
+    const grad = ctx.createRadialGradient(cx,cy,baseR*0.6,cx,cy,baseR*1.3+amp);
+    grad.addColorStop(0, "rgba(0,191,255,.15)");
+    grad.addColorStop(1, "rgba(0,191,255,0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(cx,cy,baseR*1.35+amp,0,Math.PI*2); ctx.fill();
+
+    // liserés elliptiques subtils
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(Math.PI/180 * 15);
+    for(let i=0;i<3;i++){
       ctx.beginPath();
-      const a = Math.max((active?0.24:0.14) - k*0.03, 0);
-      ctx.strokeStyle = `rgba(0,191,255,${a})`;
-      ctx.lineWidth = 2;
-      ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+      ctx.ellipse(0,0, baseR*1.05+i*10, baseR*0.6+i*6, 0, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(0,191,255,${active?0.18:0.10})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
     }
-    const goldR = baseR + (active?24+Math.sin(t*3)*10:16);
-    const g = ctx.createRadialGradient(cx,cy,goldR*.6,cx,cy,goldR*1.15);
-    g.addColorStop(0,"rgba(201,165,94,.20)"); g.addColorStop(1,"rgba(201,165,94,0)");
-    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,goldR*1.15,0,Math.PI*2); ctx.fill();
+    ctx.restore();
   })();
 }
 
@@ -73,28 +77,31 @@ function appendMsg(text, who="user"){
   chatFeed.appendChild(el);
   chatFeed.scrollTop = chatFeed.scrollHeight;
 }
-function addBot(text){ appendMsg(text, "bot"); }
-function addUser(text){ appendMsg(text, "user"); }
+const addBot = (t)=>appendMsg(t,"bot");
+const addUser = (t)=>appendMsg(t,"user");
 
-/* Script “IA parle” (inspiré pj2, orienté close) */
+/* Script “IA parle” (orienté close) */
 const voiceScript = [
   "Je capte votre besoin en 60–120 s, sans friction.",
-  "Je qualifie, je reformule, je retire les objections clés.",
+  "Je qualifie et traite les objections clés.",
   "Je propose 3 créneaux, vous choisissez en un clic.",
-  "Je confirme par e-mail + WhatsApp, acompte sécurisé.",
-  "Vous dormez, l’IA travaille. On passe à WhatsApp pour finaliser."
+  "Confirmation e-mail + WhatsApp, acompte sécurisé.",
+  "On bascule sur WhatsApp pour finaliser."
 ];
 
-/* Speaking pulse + transcript */
+/* Speaking pulse + sync transcript */
 let pulseTl=null, speaking=false, scriptTimer=null, scriptIdx=0;
 function startPulse(){
   planet?.classList.add("speaking"); drawVisualizer(true);
   if (hasGSAP && planet){
     if (pulseTl) pulseTl.kill();
+    // micro-rotation lente de Saturne
+    gsap.to(planet, { rotation: "+=6", duration: 18, ease: "none", repeat: -1 });
+    // respiration glow
     pulseTl = gsap.timeline({repeat:-1,yoyo:true})
-      .to(planet,{duration:.7,scale:1.03,boxShadow:"0 0 95px rgba(0,191,255,.38), 0 0 120px rgba(201,165,94,.24)",ease:"sine.inOut"});
+      .to(planet,{duration:.7,scale:1.03,boxShadow:"0 0 110px rgba(0,191,255,.42), 0 0 130px rgba(201,165,94,.18)",ease:"sine.inOut"});
   }
-  // démarre le script + trace dans le chat
+  // script + trace chat
   scriptIdx = 0;
   scriptTimer = setInterval(()=>{
     if (scriptIdx >= voiceScript.length){ clearInterval(scriptTimer); return; }
@@ -121,16 +128,15 @@ chatForm?.addEventListener("submit",(e)=>{
   e.preventDefault();
   const q = (chatInput?.value||"").trim(); if (!q) return;
   addUser(q); chatInput.value="";
-  // mini réponse orientée closing
   const canned = [
     "Compris. Je vous propose 3 créneaux dans un instant.",
     "Parfait. Cliquez WhatsApp pour finaliser rapidement.",
-    "C’est noté. Je vous envoie la confirmation et le lien d’acompte."
+    "Noté. Je vous envoie la confirmation et le lien d’acompte."
   ];
   addBot(canned[Math.floor(Math.random()*canned.length)]);
 });
 
-/* Chat collapse */
+/* Collapse chat */
 chatTgl?.addEventListener("click", ()=>{
   const chat = document.querySelector(".pd-chat"); if (!chat) return;
   const collapsed = chat.getAttribute("data-collapsed")==="1";
@@ -138,7 +144,7 @@ chatTgl?.addEventListener("click", ()=>{
   else { chat.setAttribute("data-collapsed","1"); chat.style.height="56px"; chatTgl.textContent="+"; }
 });
 
-/* Animations d’entrée */
+/* Entrées animées */
 window.addEventListener("load", ()=>{
   drawVisualizer(false);
   if (hasGSAP){

@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecommind — Démo Planète • Parle. Capte. Close.</title>
-  <meta name="description" content="Une planète qui parle, un chat qui trace tout. Démo IA Ecommind : capter, qualifier, proposer un créneau, conclure sur WhatsApp." />
+  <title>Ecommind — Démo Saturne • Parle. Capte. Close.</title>
+  <meta name="description" content="Démo IA Ecommind : Saturne parlante, anneaux dynamiques, transcript chat et closing WhatsApp." />
 
   <link rel="stylesheet" href="/style.css" />
 
-  <!-- CSP : autorise GSAP + image Unsplash -->
+  <!-- CSP minimale -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  style-src 'self' 'unsafe-inline';
@@ -21,19 +21,20 @@
                  frame-ancestors 'self';
                  upgrade-insecure-requests">
 
+  <!-- GSAP + App -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="/app.js"></script>
 </head>
 <body class="planet-demo">
 
-  <!-- Header (logo seul) -->
+  <!-- Header -->
   <header class="pd-header">
     <div class="pd-header-inner">
       <img id="brandLogo" src="/logo.png" alt="Ecommind" class="pd-logo-lg" />
     </div>
   </header>
 
-  <!-- HERO intro (copy qui close) -->
+  <!-- HERO intro -->
   <section class="pd-hero-intro">
     <div class="pd-hero-bg" aria-hidden="true"></div>
     <div class="pd-hero-overlay" aria-hidden="true"></div>
@@ -42,8 +43,8 @@
       <div class="pill">Interface Cockpit IA • Mercedes × Apple</div>
       <h1>Automatisation de prestige, <span>pilotée</span> pour convertir.</h1>
       <p class="lead">
-        Je capte l’intention, je qualifie en 60–120 s, je propose 3 créneaux.  
-        Vous validez, on confirme. Le **reste se conclut sur WhatsApp**.
+        Je capte l’intention, je qualifie en 60–120 s et je propose 3 créneaux.
+        Vous validez, on confirme. Le <strong>reste se conclut sur WhatsApp</strong>.
       </p>
       <div class="hero-cta">
         <a class="btn primary" href="#demo">Démarrer la démo</a>
@@ -52,20 +53,23 @@
     </div>
   </section>
 
-  <!-- SCÈNE DÉMO : Planète + Chat -->
+  <!-- Scène démo : Saturne + Chat -->
   <main id="demo" class="pd-stage">
-    <!-- (on réutilise le même fond pour continuité visuelle) -->
     <div class="pd-hero-bg" aria-hidden="true"></div>
     <div class="pd-hero-overlay" aria-hidden="true"></div>
 
     <section class="pd-center">
-      <!-- Planète -->
+      <!-- Saturne -->
       <div class="pd-planet-wrap">
-        <div id="planet" class="pd-planet" aria-label="Planète parlante">
-          <div class="pd-core-spec"></div>
-          <div class="pd-ring ring-1"></div>
-          <div class="pd-ring ring-2"></div>
-          <div class="pd-ring ring-3"></div>
+        <div id="planet" class="pd-planet saturne" aria-label="Saturne parlante">
+          <!-- Anneaux -->
+          <div class="saturn-rings">
+            <span class="ring band-1"></span>
+            <span class="ring band-2"></span>
+            <span class="ring band-3"></span>
+            <span class="ring band-4"></span>
+          </div>
+          <!-- Canvas viz halo -->
           <canvas id="pdViz" class="pd-viz" aria-hidden="true"></canvas>
         </div>
 
@@ -101,7 +105,7 @@
     </section>
   </main>
 
-  <!-- BLOC PERSUASION (court, inspiré pj2) -->
+  <!-- Bloc persuasion -->
   <section class="pd-proof">
     <div class="proof-grid">
       <article class="glass proof-card">
