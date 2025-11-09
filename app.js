@@ -1,46 +1,45 @@
+// ===============================
+// ECOMMIND AGENCY – DEMO INTERACTIVE
+// ===============================
+
 document.addEventListener("DOMContentLoaded", () => {
-  // --------- ANIMATION AU SCROLL ---------
-  const animated = document.querySelectorAll("[data-animate]");
+  // --- Apparition fluide des sections ---
+  const elements = document.querySelectorAll("[data-animate]");
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+  elements.forEach(el => observer.observe(el));
 
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.18 }
-    );
-
-    animated.forEach(el => observer.observe(el));
-  } else {
-    // Fallback vieux navigateurs : tout visible
-    animated.forEach(el => el.classList.add("visible"));
-  }
-
-  const logDemo = (label) => {
-    console.log("[Ecommind Demo]", label);
-  };
-
-  // --------- RÉFÉRENCES DOM ---------
+  // --- Références DOM ---
   const ctaJoin       = document.getElementById("cta-join");
   const ctaEnterDemo  = document.getElementById("cta-enter-demo");
   const ctaActivateIA = document.getElementById("cta-activate-ia");
   const micBtn        = document.getElementById("mic-btn");
   const demoInput     = document.getElementById("demo-input");
-
+  const speechBubble  = document.querySelector(".speech-bubble");
   const heroSection   = document.querySelector(".hero-section");
   const demoSection   = document.querySelector(".demo-section");
-  const speechBubble  = document.querySelector(".speech-bubble");
   const orbInner      = document.querySelector(".orb-inner");
 
-  // --------- UTIL ---------
-  const smoothScrollTo = (el) => {
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  // --- Fonctions utilitaires ---
+  const scrollToSection = (section) => {
+    if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const pulseOrb = () => {
+    if (!orbInner) return;
+    orbInner.style.boxShadow = "0 0 50px rgba(0,191,255,0.9)";
+    setTimeout(() => {
+      orbInner.style.boxShadow = "0 0 40px rgba(0,191,255,0.8)";
+    }, 600);
   };
 
   const setBubbleText = (text) => {
@@ -48,79 +47,73 @@ document.addEventListener("DOMContentLoaded", () => {
     speechBubble.textContent = text;
   };
 
-  const pulseOrb = () => {
-    if (!orbInner) return;
-    orbInner.classList.add("glow-blue");
-    setTimeout(() => {
-      orbInner.classList.remove("glow-blue");
-    }, 700);
-  };
-
-  // --------- CTA “REJOINDRE ECOMMIND” (section 1) ---------
+  // --- CTA : Rejoindre Ecommind ---
   if (ctaJoin) {
     ctaJoin.addEventListener("click", () => {
-      logDemo("CTA Rejoindre Ecommind cliqué");
-      smoothScrollTo(heroSection);
+      console.log("[Ecommind] Bouton 'Rejoindre Ecommind' cliqué");
+      scrollToSection(heroSection);
     });
   }
 
-  // --------- CTA “ENTRER DANS LA DÉMO” (section 2) ---------
+  // --- CTA : Entrer dans la démo ---
   if (ctaEnterDemo) {
     ctaEnterDemo.addEventListener("click", () => {
-      logDemo("CTA Entrer dans la démo cliqué");
-      smoothScrollTo(demoSection);
+      console.log("[Ecommind] Bouton 'Entrer dans la démo' cliqué");
+      scrollToSection(demoSection);
+      setBubbleText("Bienvenue dans la démo. Dites-moi quel est votre domaine : restaurant, garage, boutique...");
       pulseOrb();
-      setBubbleText("Bienvenue dans la démo. Dites-moi d’abord quel type de business vous avez.");
     });
   }
 
-  // --------- INPUT + CTA “ACTIVER L’IA ECOMMIND” (section 3) ---------
-  const triggerDemoScenario = () => {
-    const value = demoInput ? demoInput.value.trim() : "";
-    logDemo("Scénario IA déclenché avec : " + (value || "[vide]"));
-
+  // --- Fonction IA simulée ---
+  const runDemoScenario = () => {
+    const value = demoInput.value.trim();
     if (!value) {
-      setBubbleText("Commencez par me dire en une phrase quel est votre business.");
-    } else {
-      setBubbleText(
-        "Très bien, je me mets à votre place : \"" +
-        value +
-        "\". Laissez-moi vous montrer ce que l’IA Ecommind peut automatiser."
-      );
+      setBubbleText("Commencez par me dire votre type d’activité pour que je personnalise la démo.");
+      pulseOrb();
+      return;
     }
-    pulseOrb();
+
+    const response = [
+      `Intéressant... Vous dirigez un ${value}.`,
+      "Regardez comment l’IA Ecommind peut vous faire gagner du temps et des clients.",
+      "Automatisation des appels, gestion des commandes et analyse en temps réel... prête à l’emploi."
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+      setBubbleText(response[i]);
+      pulseOrb();
+      i++;
+      if (i >= response.length) clearInterval(interval);
+    }, 2500);
   };
 
+  // --- Bouton : Activer l'IA ---
   if (ctaActivateIA) {
-    ctaActivateIA.addEventListener("click", () => {
-      triggerDemoScenario();
-    });
+    ctaActivateIA.addEventListener("click", runDemoScenario);
   }
 
+  // --- Entrée clavier : touche Entrée ---
   if (demoInput) {
     demoInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        triggerDemoScenario();
+        runDemoScenario();
       }
     });
   }
 
-  // --------- BOUTON MICRO ---------
+  // --- Micro : simulation d’activation ---
   if (micBtn) {
     micBtn.addEventListener("click", () => {
-      logDemo("Bouton micro cliqué");
-      setBubbleText("Micro prêt. Parlez, je vous écoute.");
+      console.log("[Ecommind] Micro activé");
+      setBubbleText("Micro activé... dites-moi votre business.");
       pulseOrb();
-
-      // Ici tu pourras brancher ton vrai flux vocal (WebRTC, ElevenLabs, etc.)
-      // Exemple : startRecording() / stopRecording()
+      // Ici tu pourras plus tard brancher ton vrai flux vocal (Web Speech / ElevenLabs)
     });
   }
 
-  // Tu pourras exposer quelques fonctions globales si besoin pour le backend
-  window.EcommindDemo = {
-    triggerDemoScenario,
-    log: logDemo
-  };
+  // --- Message console (diagnostic) ---
+  console.log("%cEcommind Agency – Demo IA active ✅", "color:#C9A55E;font-weight:bold;");
 });
