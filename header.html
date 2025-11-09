@@ -2,22 +2,15 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecommind – Démo IA</title>
+  <title>Ecommind – Header</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Police -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="header.css" />
 </head>
 <body>
-  <!-- Fond animé type "jeu" -->
-  <canvas id="bg-canvas"></canvas>
-
   <main>
-    <!-- SECTION 1 : CARDS + CTA + FOOTER -->
     <section class="top-section fade-up" data-animate>
       <div class="top-features">
         <article class="feature-card">
@@ -85,71 +78,8 @@
         </div>
       </div>
     </section>
-
-    <!-- SECTION 2 : HERO DÉMO -->
-    <section class="hero-section fade-up" data-animate>
-      <div class="hero-beam"></div>
-      <div class="hero-circle-glow" id="hero-parallax"></div>
-
-      <div class="hero-content">
-        <div class="hero-logo-main">ECOMMIND</div>
-        <div class="hero-logo-sub">AGENCY</div>
-        <p class="hero-tagline">
-          L’intelligence qui capte, déclenche et convertit vos visiteurs en clients fidèles.
-        </p>
-        <div class="hero-cta-wrapper">
-          <button class="hero-cta" id="cta-enter-demo">
-            ENTRER DANS LA DÉMO
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 3 : INTERFACE IA / ORBE -->
-    <section class="demo-section fade-up" data-animate>
-      <div class="demo-content">
-        <div class="speech-bubble">
-          Bonjour, je vous écoute.
-        </div>
-
-        <div class="orb-wrapper" id="orb-parallax">
-          <div class="orb-outer-glow"></div>
-          <div class="orb-inner">
-            <div class="orb-lines"></div>
-            <div class="orb-core"></div>
-          </div>
-          <div class="orb-floor-glow"></div>
-        </div>
-
-        <div>
-          <div class="input-row">
-            <div class="input-shell">
-              <input
-                type="text"
-                placeholder="Écrivez ou parlez à Ecommind…"
-                id="demo-input"
-              />
-              <button class="mic-button" type="button" id="mic-btn" aria-label="Activer le micro">
-                🎙
-              </button>
-            </div>
-          </div>
-
-          <div class="demo-cta-wrapper">
-            <button class="demo-cta" id="cta-activate-ia">
-              <span class="demo-cta-icon">⚡</span>
-              <span>ACTIVER L’IA ECOMMIND</span>
-            </button>
-          </div>
-          <p class="demo-caption">
-            Lancez un scénario sur votre business (restaurant, garage, boutique…) et laissez la démo vous prouver
-            ce que l’IA Ecommind peut faire pour vous.
-          </p>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <script src="app.js" defer></script>
+  <script src="header.js" defer></script>
 </body>
 </html>

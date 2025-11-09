@@ -1,48 +1,15 @@
-###############################################
-# ECOMMIND AGENCY — NETLIFY CONFIGURATION
-# Version : Cockpit IA Full Luxe CAC40
-###############################################
-
 [build]
-  # Pas de build : tout est statique
+  # On publie la racine du repo (là où sont tous tes .html / .css / .js)
   publish = "."
   command = ""
 
-###############################################
-# 🔒 HEADERS : sécurité + compatibilité GSAP
-###############################################
+[build.environment]
+  NODE_VERSION = "18"
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-
-    # Autorise ton style local + GSAP CDN + images Unsplash
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' https://images.unsplash.com data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
-
-###############################################
-# ⚡️ Cache long terme pour les fichiers statiques
-###############################################
-
-[[headers]]
-  for = "/style.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/app.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-###############################################
-# 🔁 SPA fallback : toutes les routes → index.html
-###############################################
-
+# Quand quelqu'un arrive sur /
+# on le redirige vers la page de ton choix.
+# Tu peux changer `/header.html` par `/hero.html` ou `/cta.html`.
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  from = "/"
+  to = "/header.html"
+  status = 302
