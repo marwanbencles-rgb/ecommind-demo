@@ -1,307 +1,910 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ecommind — Démo Saturne • Captiver. Déclencher. Convertir.</title>
-  <meta name="description" content="Interface IA Ecommind : intro premium, Saturne avec chat transcript, anneaux dynamiques, final qui close proprement (WhatsApp & avis)." />
+  <meta charset="UTF-8" />
+  <title>Ecommind – Démo IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="preload" href="/assets/logo.png" as="image" />
-  <link rel="stylesheet" href="/style.css" />
-  <script defer src="/app.js"></script>
+  <!-- Police proche du rendu maquette -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self';
-                 style-src 'self' 'unsafe-inline';
-                 script-src 'self';
-                 img-src 'self' https://images.unsplash.com data:;
-                 font-src 'self' data:;
-                 connect-src 'self';
-                 object-src 'none';
-                 base-uri 'self';
-                 frame-ancestors 'self'">
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-secondary: #0D1B2A;
+      --gold: #C9A55E;
+      --blue-tech: #00BFFF;
+      --white: #FFFFFF;
+      --muted: #9CAEC7;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(8, 16, 32, 0.85);
+      --radius-lg: 24px;
+      --transition-fast: 180ms ease-out;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 50% 0%, #04131f 0, #000000 60%);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Halo de fond global façon “mercedes / apple” */
+    .background-halo {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(0, 191, 255, 0.25) 0, transparent 45%),
+        radial-gradient(circle at 50% 75%, rgba(0, 191, 255, 0.18) 0, transparent 55%);
+      opacity: 0.9;
+      z-index: 0;
+    }
+
+    /* --------- ANIMATIONS GLOBALES --------- */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 500ms ease-out, transform 500ms ease-out;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .glow-gold {
+      box-shadow:
+        0 0 8px rgba(201, 165, 94, 0.6),
+        0 0 18px rgba(201, 165, 94, 0.4);
+    }
+
+    .glow-blue {
+      box-shadow:
+        0 0 12px rgba(0, 191, 255, 0.55),
+        0 0 32px rgba(0, 191, 255, 0.38);
+    }
+
+    /* --------- SECTION 1 – “HAUT DE PAGE” (IMAGE 1) --------- */
+
+    .top-section {
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+
+    .top-features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      margin-bottom: 56px;
+    }
+
+    .feature-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      background: linear-gradient(145deg, rgba(5, 13, 30, 0.95), rgba(3, 6, 18, 0.96));
+      padding: 26px 24px 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .feature-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 0 0, rgba(0, 191, 255, 0.18), transparent 55%);
+      opacity: 0;
+      transition: opacity 200ms ease-out;
+      pointer-events: none;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(201, 165, 94, 0.7);
+      box-shadow:
+        0 26px 55px rgba(0, 0, 0, 0.9),
+        0 0 32px rgba(0, 191, 255, 0.45);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      font-size: 30px;
+      margin-bottom: 4px;
+    }
+
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .feature-title span.gold {
+      color: var(--gold);
+    }
+
+    .feature-title span.blue {
+      color: var(--blue-tech);
+    }
+
+    .feature-text {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .top-title {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .top-title h2 {
+      font-size: clamp(1.9rem, 2.2vw + 1.2rem, 2.4rem);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .top-title span.brand {
+      color: var(--gold);
+    }
+
+    .top-subtitle {
+      text-align: center;
+      font-size: 0.98rem;
+      color: var(--muted);
+      margin-bottom: 34px;
+    }
+
+    .cta-main-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    .cta-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(201, 165, 94, 0.9);
+      background: rgba(0, 0, 0, 0.65);
+      font-size: 0.98rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.85);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background 220ms ease-out;
+    }
+
+    .cta-main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.12), transparent 55%);
+      opacity: 0;
+      transition: opacity 230ms ease-out;
+      pointer-events: none;
+    }
+
+    .cta-main:hover {
+      transform: translateY(-3px);
+      background: rgba(8, 8, 8, 0.9);
+      border-color: rgba(201, 165, 94, 1);
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.95),
+        0 0 26px rgba(201, 165, 94, 0.6);
+    }
+
+    .cta-main:hover::before {
+      opacity: 1;
+    }
+
+    .cta-main-icon {
+      font-size: 1.05rem;
+      margin-top: 1px;
+      color: var(--gold);
+    }
+
+    .cta-main span.highlight {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* Footer-like bandeau nav (toujours dans la section 1) */
+    .footer-strip {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 32px;
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .footer-logo {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .footer-tagline {
+      max-width: 240px;
+      line-height: 1.5;
+    }
+
+    .footer-nav {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav a {
+      text-decoration: none;
+      color: var(--white);
+      font-size: 0.9rem;
+      position: relative;
+      padding-bottom: 2px;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width 160ms ease-out;
+    }
+
+    .footer-nav a:hover {
+      color: var(--gold);
+    }
+
+    .footer-nav a:hover::after {
+      width: 100%;
+    }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(156, 174, 199, 0.82);
+      margin-top: 8px;
+    }
+
+    /* --------- SECTION 2 – HERO DÉMO (IMAGE 2) --------- */
+
+    .hero-section {
+      padding: 80px 0 72px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-beam {
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 260px;
+      background: linear-gradient(to bottom, rgba(0, 191, 255, 0.4), transparent);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .hero-circle-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 420px;
+      height: 420px;
+      transform: translate(-50%, -52%);
+      border-radius: 50%;
+      border: 1px solid rgba(0, 191, 255, 0.25);
+      box-shadow:
+        0 0 35px rgba(0, 191, 255, 0.25),
+        0 0 125px rgba(0, 191, 255, 0.35);
+      opacity: 0.45;
+      filter: blur(0.5px);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-logo-main {
+      font-size: clamp(2.6rem, 3.2vw + 1.8rem, 3.8rem);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: var(--gold);
+    }
+
+    .hero-logo-sub {
+      font-size: clamp(1.2rem, 1.3vw + 0.8rem, 1.5rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--blue-tech);
+      margin-bottom: 24px;
+    }
+
+    .hero-tagline {
+      font-size: 1.02rem;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    .hero-cta-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-cta {
+      padding: 16px 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(201, 165, 94, 0.9);
+      background: rgba(0, 0, 0, 0.65);
+      font-size: 0.98rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: var(--white);
+      text-decoration: none;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background 220ms ease-out, border-color var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-cta::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.12), transparent 60%);
+      opacity: 0;
+      transition: opacity 220ms ease-out;
+      pointer-events: none;
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-3px);
+      background: rgba(10, 10, 10, 0.95);
+      border-color: rgba(201, 165, 94, 1);
+      box-shadow:
+        0 24px 50px rgba(0, 0, 0, 1),
+        0 0 30px rgba(201, 165, 94, 0.55);
+    }
+
+    .hero-cta:hover::before {
+      opacity: 1;
+    }
+
+    /* --------- SECTION 3 – CTA / INTERFACE (IMAGE 3) --------- */
+
+    .demo-section {
+      padding: 70px 0 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .demo-content {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 26px;
+    }
+
+    .speech-bubble {
+      align-self: center;
+      max-width: 420px;
+      padding: 14px 24px;
+      border-radius: 999px;
+      background: rgba(10, 22, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow-soft);
+      font-size: 0.98rem;
+    }
+
+    .orb-wrapper {
+      position: relative;
+      align-self: center;
+      width: 210px;
+      height: 210px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+    }
+
+    .orb-outer-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 191, 255, 0.85), transparent 60%);
+      opacity: 0.45;
+      filter: blur(12px);
+    }
+
+    .orb-inner {
+      position: absolute;
+      inset: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 191, 255, 0.6);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.18), transparent 45%),
+        radial-gradient(circle at 70% 70%, rgba(0, 191, 255, 0.9), rgba(0, 30, 60, 1) 55%);
+      box-shadow:
+        0 0 32px rgba(0, 191, 255, 0.9),
+        0 0 80px rgba(0, 191, 255, 0.6);
+      animation: orb-spin 16s linear infinite, orb-pulse 4s ease-in-out infinite;
+      overflow: hidden;
+    }
+
+    .orb-lines {
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      opacity: 0.65;
+      mix-blend-mode: screen;
+      transform: rotate(20deg);
+    }
+
+    .orb-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 22px;
+      height: 22px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow:
+        0 0 14px rgba(255, 255, 255, 0.9),
+        0 0 32px rgba(0, 191, 255, 0.9);
+      opacity: 0.9;
+    }
+
+    .orb-floor-glow {
+      position: absolute;
+      left: 50%;
+      bottom: -26px;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 191, 255, 0.35), transparent 70%);
+      filter: blur(6px);
+      opacity: 0.6;
+    }
+
+    @keyframes orb-spin {
+      0% { transform: translateZ(0) rotate(0deg); }
+      100% { transform: translateZ(0) rotate(360deg); }
+    }
+
+    @keyframes orb-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .input-row {
+      display: flex;
+      align-items: stretch;
+      gap: 14px;
+      margin-top: 10px;
+      flex-wrap: nowrap;
+    }
+
+    .input-shell {
+      flex: 1;
+      border-radius: 999px;
+      background: rgba(8, 20, 40, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.8);
+      transition: box-shadow var(--transition-fast), border-color var(--transition-fast), background 180ms ease-out;
+    }
+
+    .input-shell:focus-within {
+      border-color: rgba(0, 191, 255, 0.8);
+      box-shadow:
+        0 16px 34px rgba(0, 0, 0, 0.9),
+        0 0 24px rgba(0, 191, 255, 0.5);
+      background: rgba(7, 17, 34, 0.98);
+    }
+
+    .input-shell input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--white);
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .input-shell input::placeholder {
+      color: rgba(156, 174, 199, 0.9);
+    }
+
+    .mic-button {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201, 165, 94, 0.1);
+      box-shadow:
+        0 0 10px rgba(201, 165, 94, 0.6),
+        0 0 24px rgba(201, 165, 94, 0.4);
+      font-size: 1.1rem;
+      color: var(--gold);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background 180ms ease-out;
+    }
+
+    .mic-button:hover {
+      transform: translateY(-1px) scale(1.05);
+      background: rgba(201, 165, 94, 0.18);
+      box-shadow:
+        0 0 12px rgba(201, 165, 94, 0.8),
+        0 0 28px rgba(201, 165, 94, 0.55);
+    }
+
+    .demo-cta-wrapper {
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .demo-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 15px 36px;
+      border: 1px solid rgba(201, 165, 94, 0.95);
+      background: rgba(0, 0, 0, 0.9);
+      color: var(--white);
+      font-size: 0.96rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.95),
+        0 0 26px rgba(201, 165, 94, 0.65);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background 220ms ease-out, border-color var(--transition-fast);
+    }
+
+    .demo-cta-icon {
+      font-size: 1.05rem;
+      color: var(--gold);
+      margin-top: 1px;
+    }
+
+    .demo-cta:hover {
+      transform: translateY(-3px);
+      background: rgba(8, 8, 8, 0.98);
+      border-color: rgba(201, 165, 94, 1);
+      box-shadow:
+        0 24px 52px rgba(0, 0, 0, 1),
+        0 0 34px rgba(201, 165, 94, 0.7);
+    }
+
+    .demo-caption {
+      margin-top: 12px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    /* --------- RESPONSIVE --------- */
+
+    @media (max-width: 960px) {
+      main {
+        padding-inline: 18px;
+      }
+
+      .top-features {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-circle-glow {
+        width: 320px;
+        height: 320px;
+      }
+
+      .hero-section {
+        padding-top: 60px;
+      }
+
+      .demo-section {
+        padding-top: 56px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        background: radial-gradient(circle at 50% 0, #04131f 0, #000000 70%);
+      }
+
+      main {
+        padding-inline: 16px;
+      }
+
+      .feature-card {
+        padding-inline: 20px;
+      }
+
+      .footer-strip {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .footer-tagline {
+        max-width: 100%;
+      }
+
+      .input-row {
+        flex-direction: column;
+      }
+
+      .mic-button {
+        align-self: flex-end;
+      }
+
+      .demo-cta {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
-<body class="ecommind">
+<body>
+  <div class="background-halo"></div>
 
-  <!-- =======================
-       HEADER
-  ======================== -->
-  <header class="header">
-    <div class="header__inner">
-      <a href="#intro" class="brand" aria-label="Ecommind">
-        <img src="/assets/logo.png" alt="Ecommind" class="brand__logo" />
-      </a>
-      <nav class="nav">
-        <a href="#intro" class="nav__link">Intro</a>
-        <a href="#experience" class="nav__link">Démo</a>
-        <a href="#finale" class="nav__link">Preuve</a>
-      </nav>
-    </div>
-  </header>
+  <main>
+    <!-- SECTION 1 : “HAUT DE PAGE” – IMAGE 1 -->
+    <section class="top-section fade-up" data-animate>
+      <div class="top-features">
+        <article class="feature-card">
+          <div class="feature-icon">💡</div>
+          <h3 class="feature-title"><span class="gold">IA</span> & Automatisation Totale</h3>
+          <p class="feature-text">
+            Nos systèmes apprennent des habitudes de vos clients pour vous faire gagner du temps, de l’argent
+            et transformer chaque interaction en opportunité.
+          </p>
+        </article>
 
-  <!-- =======================
-       PARTIE 1 — INTRO
-  ======================== -->
-  <section id="intro" class="intro">
-    <div class="space-bg" aria-hidden="true"></div>
-    <div class="space-overlay" aria-hidden="true"></div>
+        <article class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3 class="feature-title">Sécurité & <span class="blue">Cybersécurité Intégrée</span></h3>
+          <p class="feature-text">
+            Hébergement, défenses et sauvegardes gérées : votre sérénité est notre mission. Votre business reste
+            en ligne, vos données restent protégées.
+          </p>
+        </article>
 
-    <div class="intro__container">
-      <div class="intro__badge pill" data-animate="fade-up">
-        Interface Cockpit IA • Mercedes × Apple
+        <article class="feature-card">
+          <div class="feature-icon">⚙️</div>
+          <h3 class="feature-title">Maintenance & Performance Continue</h3>
+          <p class="feature-text">
+            Nous surveillons, optimisons et réparons en continu pour que votre système reste fluide, rapide
+            et prêt à encaisser chaque pic de demande.
+          </p>
+        </article>
       </div>
 
-      <h1 id="introTitle" class="intro__title" data-animate="slide-up">
-        Automatisation de prestige, <em class="accent">pilotée</em> pour convertir.
-      </h1>
-
-      <p class="intro__lead" data-animate="fade-up">
-        L’IA capte, reformule, qualifie en 60–120&nbsp;s et propose 3 créneaux.
-        Vous validez, on confirme. Le <strong>reste se conclut sur WhatsApp</strong>.
+      <div class="top-title">
+        <h2>
+          Prêt à propulser votre business<br />
+          dans la dimension <span class="brand">Ecommind&nbsp;?</span>
+        </h2>
+      </div>
+      <p class="top-subtitle">
+        Vous avez vu l’avenir. Maintenant, il est entre vos mains.
       </p>
 
-      <ul class="intro__benefits" data-animate="fade-up" aria-label="Bénéfices clés">
-        <li>🕑 <strong>60–120 s</strong> pour comprendre le besoin.</li>
-        <li>🗓️ <strong>3 créneaux</strong> proposés immédiatement.</li>
-        <li>✅ <strong>Confirmation + acompte</strong> sans relances.</li>
-      </ul>
-
-      <div class="intro__cta" data-animate="fade-up">
-        <a class="btn btn--primary" href="#experience">Lancer la démo</a>
-        <a id="waHero" class="wa-card" href="#" target="_blank" rel="noopener" aria-label="Continuer sur WhatsApp">
-          <div class="wa-card__icon" aria-hidden="true">💬</div>
-          <div class="wa-card__content">
-            <strong>WhatsApp</strong>
-            <small>Finalisation privée et rapide</small>
-          </div>
-        </a>
+      <div class="cta-main-wrapper">
+        <button class="cta-main" id="cta-join">
+          <span class="cta-main-icon">⚡</span>
+          <span><span class="highlight">Rejoindre Ecommind</span> dès aujourd’hui</span>
+        </button>
       </div>
 
-      <ul class="intro__trust" data-animate="fade-up">
-        <li>Latence &lt; 350 ms</li>
-        <li>Satisfaction vocale 4.8★</li>
-        <li>AB test v2</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============================================
-       PARTIE 2 — SATURNE + CHAT
-  ============================================= -->
-  <section id="experience" class="experience">
-    <div class="space-bg" aria-hidden="true"></div>
-    <div class="space-overlay" aria-hidden="true"></div>
-
-    <div class="experience__grid">
-      <!-- Saturne -->
-      <div class="saturn" data-animate="float-in">
-        <div id="planet" class="saturn__planet" role="img" aria-label="Saturne IA">
-          <div class="saturn__rings" aria-hidden="true">
-            <span class="ring ring--1" data-ring="1"></span>
-            <span class="ring ring--2" data-ring="2"></span>
-            <span class="ring ring--3" data-ring="3"></span>
-            <span class="ring ring--4" data-ring="4"></span>
+      <div class="footer-strip">
+        <div class="footer-brand">
+          <div class="footer-logo">ECOMMIND</div>
+          <div class="footer-tagline">
+            L’intelligence qui capte, déclenche et convertit.
           </div>
-          <canvas id="viz" class="saturn__viz" aria-hidden="true"></canvas>
         </div>
 
-        <div class="saturn__controls">
-          <button
-            id="voiceToggle"
-            class="btn btn--primary btn--voice"
-            data-action="voice-toggle"
-            aria-pressed="false"
-            aria-label="Activer la voix"
-            data-label-on="Arrêter"
-            data-label-off="Parler">🎤</button>
-
-          <a id="waMid" class="btn btn--ghost btn--wa" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
-            Continuer sur WhatsApp
-          </a>
+        <div>
+          <nav class="footer-nav">
+            <a href="#packs">Packs</a>
+            <a href="#contact">Contact</a>
+            <a href="#apropos">À propos</a>
+          </nav>
+          <div class="footer-copy">
+            © 2025 Ecommind Agency – Tous droits réservés
+          </div>
         </div>
-
-        <p class="saturn__tag">« La démo parle pour vous. On conclut sur WhatsApp. »</p>
-      </div>
-
-      <!-- Chat -->
-      <aside class="chat glass" data-animate="fade-left" aria-label="Chat Ecommind">
-        <header class="chat__head">
-          <div class="chat__title"><span class="dot dot--blue"></span> Chat Ecommind</div>
-          <div class="chat__actions">
-            <button class="btn btn--mini" data-action="toggle-chat" aria-expanded="true" aria-controls="chatFeed">−</button>
-          </div>
-        </header>
-
-        <div id="chatFeed" class="chat__feed" aria-live="polite" aria-busy="false">
-          <div class="msg bot"><div class="bubble">Bonjour 👋 Je vous montre en 60–120&nbsp;s comment on capte, qualifie et propose un créneau automatiquement.</div></div>
-          <div class="msg bot"><div class="bubble">Posez une question, ou cliquez WhatsApp pour continuer la discussion 👉</div></div>
-        </div>
-
-        <form id="chatForm" class="chat__form" autocomplete="off">
-          <input id="chatText" name="q" placeholder="Écrivez ici… (ex : Montrez-moi la prise de RDV)" aria-label="Votre message" />
-          <button class="btn btn--primary" type="submit">Envoyer</button>
-        </form>
-      </aside>
-    </div>
-  </section>
-
-  <!-- ============================================
-       BLOC — AVANTAGES SIMPLES (COPY QUI CLOSE)
-  ============================================= -->
-  <section id="advantages" class="advantages">
-    <div class="space-overlay" aria-hidden="true"></div>
-    <div class="advantages__wrap">
-      <header class="advantages__head" data-animate="fade-up">
-        <h2>💡 Les avantages simples de notre IA</h2>
-        <p class="muted">Pourquoi notre technologie vous rend la vie plus facile — et convertit mieux.</p>
-      </header>
-
-      <div class="advantages__grid">
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Disponible 24h/24 et 7j/7</h3>
-          <p>Votre service ne dort jamais. Chaque demande est prise en charge, même la nuit.</p>
-        </article>
-
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Réponses immédiates</h3>
-          <p>Fini les longues attentes. L’IA répond et qualifie en <strong>temps réel</strong>.</p>
-        </article>
-
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Traitement ultra-rapide</h3>
-          <p>Commandes, prises de RDV et suivis : tout est accéléré, sans friction.</p>
-        </article>
-
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Zéro erreur de saisie</h3>
-          <p>Une <strong>précision maximale</strong> pour vos données et vos devis.</p>
-        </article>
-
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Offres personnalisées</h3>
-          <p>Conseils utiles, jamais intrusifs. On propose ce qui intéresse vraiment.</p>
-        </article>
-
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Un service qui s’adapte</h3>
-          <p>Langue, ton, horaires, domaine : l’IA s’aligne sur votre réalité.</p>
-        </article>
-
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Problèmes résolus plus vite</h3>
-          <p>On vous connecte directement au <strong>bon expert</strong>, sans détour.</p>
-        </article>
-
-        <article class="adv glass" data-animate="fade-up">
-          <h3>Plus de temps humain</h3>
-          <p>L’IA gère l’opérationnel. Vos équipes se concentrent sur les cas à forte valeur.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       PARTIE 3 — FINALE
-  ============================================= -->
-  <section id="finale" class="finale">
-    <div class="finale__metrics" data-animate="fade-up">
-      <div class="metric">
-        <div class="metric__label">Taux de réponse IA</div>
-        <div class="metric__value">99.2%</div>
-        <div class="metric__sub">latence &lt; 350 ms</div>
-      </div>
-      <div class="metric">
-        <div class="metric__label">Conversion démo → RDV</div>
-        <div class="metric__value accent">+34%</div>
-        <div class="metric__sub">AB test v2</div>
-      </div>
-      <div class="metric">
-        <div class="metric__label">Satisfaction vocale</div>
-        <div class="metric__value">4.8★</div>
-        <div class="metric__sub">multi-lang</div>
-      </div>
-    </div>
-
-    <section class="impact glass" data-animate="fade-up" aria-label="Impact rapide">
-      <h2>En 7 jours, vous voyez la différence.</h2>
-      <ul class="impact__list">
-        <li>🔗 Branché à votre WhatsApp + planning.</li>
-        <li>🗣️ Script IA calibré sur vos offres.</li>
-        <li>📈 RDV posés automatiquement (trace dans le chat).</li>
-      </ul>
-    </section>
-
-    <section class="reviews" aria-label="Avis clients">
-      <header class="reviews__head">
-        <h2 data-animate="fade-up">Ils l’utilisent déjà</h2>
-        <div class="reviews__controls">
-          <button class="btn btn--mini" data-action="reviews-prev" aria-label="Avis précédent">‹</button>
-          <button class="btn btn--mini" data-action="reviews-next" aria-label="Avis suivant">›</button>
-        </div>
-      </header>
-
-      <div class="reviews__track" data-animate="fade-up" role="listbox" aria-live="polite">
-        <article class="review glass is-active" role="option" aria-selected="true">
-          <div class="review__row">
-            <div class="avatar">A</div>
-            <div><strong>Aeva Patel</strong><div class="stars">★★★★★</div></div>
-          </div>
-          <p>“Moins d’appels perdus, plus de RDV. On voit l’impact dès la première semaine.”</p>
-        </article>
-        <article class="review glass">
-          <div class="review__row">
-            <div class="avatar">M</div>
-            <div><strong>Mohamed Gh.</strong><div class="stars">★★★★★</div></div>
-          </div>
-          <p>“La démo parle, propose 3 créneaux, on valide. Simple et efficace.”</p>
-        </article>
-        <article class="review glass">
-          <div class="review__row">
-            <div class="avatar">S</div>
-            <div><strong>Sarah L.</strong><div class="stars">★★★★☆</div></div>
-          </div>
-          <p>“+31 % de RDV en 2 semaines. Rien à gérer côté équipe.”</p>
-        </article>
       </div>
     </section>
 
-    <section class="faq" aria-label="Questions fréquentes" data-animate="fade-up">
-      <details class="faq__item glass">
-        <summary>Et si l’IA ne comprend pas bien mon activité ?</summary>
-        <p>On part d’un script standard, puis on l’ajuste sur vos mots, vos offres et vos objections. Mise à jour en continu.</p>
-      </details>
-      <details class="faq__item glass">
-        <summary>Comment sont proposés les créneaux ?</summary>
-        <p>L’IA lit votre planning (ou gère une plage définie) et propose 3 créneaux au prospect, confirmés ensuite par WhatsApp/e-mail.</p>
-      </details>
-      <details class="faq__item glass">
-        <summary>Est-ce compliqué à brancher ?</summary>
-        <p>Non. WhatsApp + votre agenda suffisent. On vous assiste jusqu’au premier RDV posé.</p>
-      </details>
-    </section>
+    <!-- SECTION 2 : HERO DÉMO – IMAGE 2 -->
+    <section class="hero-section fade-up" data-animate>
+      <div class="hero-beam"></div>
+      <div class="hero-circle-glow"></div>
 
-    <section class="final-cta glass" data-animate="rise-in" aria-label="Passer à l'action">
-      <div class="final-cta__copy">
-        <h3>Voyez comment l’IA close pour vous — avec classe.</h3>
-        <p>Une démonstration parlante, un chat qui trace tout, et une finalisation sur WhatsApp.</p>
-      </div>
-      <div class="final-cta__actions">
-        <a class="btn btn--primary" href="#experience">Relancer la démo</a>
-        <a id="waBottom" class="btn btn--ghost btn--wa" href="#" target="_blank" rel="noopener">
-          Parler sur WhatsApp
-        </a>
+      <div class="hero-content">
+        <div class="hero-logo-main">ECOMMIND</div>
+        <div class="hero-logo-sub">AGENCY</div>
+        <p class="hero-tagline">
+          L’intelligence qui capte, déclenche et convertit vos visiteurs en clients fidèles.
+        </p>
+        <div class="hero-cta-wrapper">
+          <button class="hero-cta" id="cta-enter-demo">
+            ENTRER DANS LA DÉMO
+          </button>
+        </div>
       </div>
     </section>
-  </section>
 
-  <!-- =======================
-       FOOTER
-  ======================== -->
-  <footer class="footer">
-    <div class="footer__inner">
-      <p>© Ecommind — <span class="muted">Design “Full Luxe CAC40” • Or #C9A55E • Bleu #00BFFF</span></p>
-    </div>
-  </footer>
+    <!-- SECTION 3 : CTA / INTERFACE – IMAGE 3 -->
+    <section class="demo-section fade-up" data-animate>
+      <div class="demo-content">
+        <div class="speech-bubble">
+          Bonjour, je vous écoute.
+        </div>
 
+        <div class="orb-wrapper">
+          <div class="orb-outer-glow"></div>
+          <div class="orb-inner">
+            <div class="orb-lines"></div>
+            <div class="orb-core"></div>
+          </div>
+          <div class="orb-floor-glow"></div>
+        </div>
+
+        <div>
+          <div class="input-row">
+            <div class="input-shell">
+              <input
+                type="text"
+                placeholder="Écrivez ou parlez à Ecommind…"
+                id="demo-input"
+              />
+              <button class="mic-button" type="button" id="mic-btn" aria-label="Activer le micro">
+                🎙
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-cta-wrapper">
+            <button class="demo-cta" id="cta-activate-ia">
+              <span class="demo-cta-icon">⚡</span>
+              <span>ACTIVER L’IA ECOMMIND</span>
+            </button>
+          </div>
+          <p class="demo-caption">
+            Lancez un scénario sur votre business (restaurant, garage, boutique…) et laissez la démo vous prouver
+            ce que l’IA Ecommind peut faire pour vous.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Animation d’apparition au scroll
+    const animated = document.querySelectorAll("[data-animate]");
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.18 }
+    );
+
+    animated.forEach(el => observer.observe(el));
+
+    // Petits hooks pour tes futurs comportements (ou juste feeling de démo)
+    const logDemo = label => {
+      console.log("[Ecommind Demo]", label);
+    };
+
+    document.getElementById("cta-join").addEventListener("click", () => {
+      logDemo("CTA Rejoindre Ecommind cliqué");
+      // Ici tu peux scroller vers la section démo ou ouvrir une modale d'onboarding
+      document.querySelector(".hero-section").scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.getElementById("cta-enter-demo").addEventListener("click", () => {
+      logDemo("CTA Entrer dans la démo cliqué");
+      document.querySelector(".demo-section").scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.getElementById("cta-activate-ia").addEventListener("click", () => {
+      logDemo("CTA Activer l'IA Ecommind cliqué");
+      // Ici tu pourras déclencher ton vrai chat / voix / backend
+      alert("Ici, tu connecteras ton moteur IA (chat + voix) pour la démo Ecommind.");
+    });
+
+    document.getElementById("mic-btn").addEventListener("click", () => {
+      logDemo("Bouton micro cliqué");
+      // Tu brancheras ici ton Web Speech / ElevenLabs / backend
+      alert("Activation micro – à connecter à ton moteur vocal (ElevenLabs, etc.).");
+    });
+  </script>
 </body>
 </html>
