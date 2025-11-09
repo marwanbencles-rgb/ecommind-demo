@@ -2,56 +2,25 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecommind – Hero IA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Police -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+  <title>Ecommind Hero</title>
   <link rel="stylesheet" href="hero.css" />
 </head>
 <body>
-  <main>
-    <section class="hero-screen">
-      <!-- Rayon vertical -->
-      <div class="hero-beam"></div>
+  <main class="hero">
+    <div class="beam"></div>
+    <div class="bubble">Bonjour, je vous écoute.</div>
 
-      <!-- Bulle -->
-      <div class="speech-bubble" id="hero-bubble">
-        Bonjour, je vous écoute.
-      </div>
+    <canvas id="orbCanvas"></canvas>
 
-      <!-- Orbe (IMAGE, pas CSS bricolé) -->
-      <div class="orb-wrapper">
-        <img src="orb-ecommind.png" alt="Orbe Ecommind" class="orb-image" />
-      </div>
+    <div class="input-zone">
+      <input type="text" placeholder="Écrivez ou parlez à Ecommind..." />
+      <button class="mic">🎤</button>
+    </div>
 
-      <!-- Champ + micro -->
-      <div class="input-row">
-        <div class="input-shell">
-          <input
-            type="text"
-            id="hero-input"
-            placeholder="Écrivez ou parlez à Ecommind…"
-          />
-          <button class="mic-button" type="button" id="hero-mic" aria-label="Activer le micro">
-            🎙
-          </button>
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <div class="cta-row">
-        <button class="cta-main" id="hero-cta">
-          <span class="cta-icon">⚡</span>
-          <span>ACTIVER L’IA ECOMMIND</span>
-        </button>
-      </div>
-    </section>
+    <button class="cta">⚡ ACTIVER L’IA ECOMMIND</button>
   </main>
 
-  <script src="hero.js" defer></script>
+  <script src="hero.js"></script>
 </body>
 </html>

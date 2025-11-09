@@ -1,50 +1,46 @@
-// ECOMMIND – HERO INTERACTIF
-document.addEventListener("DOMContentLoaded", () => {
-  const bubble = document.getElementById("hero-bubble");
-  const input  = document.getElementById("hero-input");
-  const mic    = document.getElementById("hero-mic");
-  const cta    = document.getElementById("hero-cta");
+const canvas = document.getElementById("orbCanvas");
+const ctx = canvas.getContext("2d");
 
-  const setBubble = (text) => {
-    if (bubble) bubble.textContent = text;
-  };
+function resize() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+window.addEventListener("resize", resize);
+resize();
 
-  const runScenario = () => {
-    const value = (input?.value || "").trim();
+let t = 0;
+function draw() {
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
 
-    if (!value) {
-      setBubble("Commencez par m’écrire une phrase sur votre business.");
-      return;
-    }
+  // fond sombre du globe
+  const base = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w/2);
+  base.addColorStop(0, "rgba(0,0,0,0.6)");
+  base.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = base;
+  ctx.fillRect(0,0,w,h);
 
-    const lines = [
-      `Vous dirigez : « ${value} ».`,
-      "Très bien. Je repère où l’IA peut prendre le relais sur vos tâches répétitives.",
-      "Regardez maintenant comment Ecommind peut capter, qualifier et convertir vos demandes automatiquement."
-    ];
+  // lueur bleue pulsante
+  const glow = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w/2);
+  const pulse = 0.8 + 0.2 * Math.sin(t * 0.04);
+  glow.addColorStop(0, `rgba(0,191,255,${0.9*pulse})`);
+  glow.addColorStop(0.3, `rgba(0,191,255,${0.5*pulse})`);
+  glow.addColorStop(0.6, `rgba(0,191,255,${0.2*pulse})`);
+  glow.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.beginPath();
+  ctx.fillStyle = glow;
+  ctx.arc(w/2, h/2, w/2.5, 0, Math.PI * 2);
+  ctx.fill();
 
-    let i = 0;
-    const interval = setInterval(() => {
-      setBubble(lines[i]);
-      i += 1;
-      if (i >= lines.length) clearInterval(interval);
-    }, 2600);
-  };
+  // ligne circulaire brillante
+  ctx.beginPath();
+  ctx.strokeStyle = `rgba(0,191,255,${0.6 + 0.3*Math.sin(t*0.04)})`;
+  ctx.lineWidth = 2;
+  ctx.arc(w/2, h/2, w/2.6, 0, Math.PI*2);
+  ctx.stroke();
 
-  if (mic) {
-    mic.addEventListener("click", () => {
-      setBubble("Micro activé. Dites-moi ce que vous voulez automatiser.");
-      console.log("[Hero] Micro simulé – plus tard, tu branches la vraie voix ici.");
-    });
-  }
-
-  if (cta) cta.addEventListener("click", runScenario);
-  if (input) {
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        runScenario();
-      }
-    });
-  }
-});
+  t++;
+  requestAnimationFrame(draw);
+}
+draw();
