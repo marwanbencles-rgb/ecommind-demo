@@ -1,86 +1,28 @@
-// --- ORBE WEBGL ---
-const canvas = document.getElementById("orbCanvas");
-const gl = canvas.getContext("webgl");
+const messagesContainer = document.getElementById("messages");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
-function resize() {
-  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-}
-window.addEventListener("resize", resize);
-resize();
-
-const vertexShaderSrc = `
-attribute vec2 position;
-varying vec2 vUv;
-void main() {
-  vUv = position * 0.5 + 0.5;
-  gl_Position = vec4(position, 0.0, 1.0);
-}
-`;
-
-const fragmentShaderSrc = `
-precision mediump float;
-varying vec2 vUv;
-uniform float time;
-void main() {
-  vec2 uv = vUv - 0.5;
-  float r = length(uv);
-  float pulse = 0.3 + 0.05 * sin(time * 3.0);
-  float glow = 0.02 / abs(r - pulse);
-  float energy = sin(r * 25.0 - time * 4.0) * 0.02;
-  vec3 color = vec3(0.0, 0.6 + 0.4 * sin(time), 1.0);
-  color *= glow * (1.0 + energy);
-  gl_FragColor = vec4(color, smoothstep(0.35, 0.0, r));
-}
-`;
-
-function compileShader(type, source) {
-  const shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  return shader;
+function addMessage(content, type) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", type);
+  msg.textContent = content;
+  messagesContainer.appendChild(msg);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSrc);
-const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSrc);
-
-const program = gl.createProgram();
-gl.attachShader(program, vertexShader);
-gl.attachShader(program, fragmentShader);
-gl.linkProgram(program);
-gl.useProgram(program);
-
-const buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
-
-const positionLoc = gl.getAttribLocation(program, "position");
-gl.enableVertexAttribArray(positionLoc);
-gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
-
-const timeLoc = gl.getUniformLocation(program, "time");
-
-function render(t) {
-  gl.clearColor(0,0,0,1);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.uniform1f(timeLoc, t * 0.001);
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  requestAnimationFrame(render);
-}
-requestAnimationFrame(render);
-
-// --- CHAT VISUEL + ÉCRIT ---
-const botMessage = document.getElementById("bot-message");
-const userInput = document.getElementById("user-input");
-
+sendBtn.addEventListener("click", sendMessage);
 userInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter" && userInput.value.trim() !== "") {
-    const userText = userInput.value.trim();
-    botMessage.innerText = "Analyse de votre message...";
-    userInput.value = "";
-    setTimeout(() => {
-      botMessage.innerText = `Ecommind : "${userText}" traité avec succès.`;
-    }, 1500);
-  }
+  if (e.key === "Enter") sendMessage();
 });
+
+function sendMessage() {
+  const text = userInput.value.trim();
+  if (!text) return;
+
+  addMessage(text, "user");
+  userInput.value = "";
+
+  setTimeout(() => {
+    addMessage("Ecommind : message reçu avec élégance.", "bot");
+  }, 1000);
+}

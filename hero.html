@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ecommind – Intelligence Visuelle</title>
-  <link rel="stylesheet" href="hero.css" />
+  <title>Ecommind Chat</title>
+  <link rel="stylesheet" href="chat.css" />
 </head>
 <body>
-  <main class="hero">
-    <div class="beam"></div>
-    <canvas id="orbCanvas"></canvas>
+  <div class="chat-bg"></div>
 
-    <div class="chat-bubble" id="bot-message">Bonjour, je vous écoute.</div>
-
-    <div class="chat-zone">
-      <input id="user-input" type="text" placeholder="Écrivez ou parlez à Ecommind..." />
-      <button class="mic">🎤</button>
+  <main class="chat-container">
+    <div id="messages" class="messages">
+      <div class="message user">Bonjour Ecommind 👋</div>
+      <div class="message bot">Bonjour, je vous écoute.</div>
     </div>
 
-    <button class="cta">⚡ Activer l’IA Ecommind</button>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Écrivez ici..." />
+      <button id="sendBtn">➤</button>
+    </div>
   </main>
 
-  <script src="hero.js"></script>
+  <script src="chat.js"></script>
 </body>
 </html>
