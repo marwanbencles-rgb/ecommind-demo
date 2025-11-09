@@ -1,3 +1,4 @@
+// --- ORBE WEBGL ---
 const canvas = document.getElementById("orbCanvas");
 const gl = canvas.getContext("webgl");
 
@@ -20,24 +21,17 @@ void main() {
 
 const fragmentShaderSrc = `
 precision mediump float;
-uniform float time;
 varying vec2 vUv;
-
+uniform float time;
 void main() {
   vec2 uv = vUv - 0.5;
   float r = length(uv);
-
-  // Pulsation intérieure
-  float pulse = 0.4 + 0.05 * sin(time * 3.0);
+  float pulse = 0.3 + 0.05 * sin(time * 3.0);
   float glow = 0.02 / abs(r - pulse);
-
-  // Vibration énergétique
-  float energy = sin(r * 30.0 - time * 3.0) * 0.02;
-
-  vec3 col = vec3(0.0, 0.6 + 0.4 * sin(time), 1.0);
-  col *= glow * (1.0 + energy);
-
-  gl_FragColor = vec4(col, smoothstep(0.35, 0.0, r));
+  float energy = sin(r * 25.0 - time * 4.0) * 0.02;
+  vec3 color = vec3(0.0, 0.6 + 0.4 * sin(time), 1.0);
+  color *= glow * (1.0 + energy);
+  gl_FragColor = vec4(color, smoothstep(0.35, 0.0, r));
 }
 `;
 
@@ -45,9 +39,6 @@ function compileShader(type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error(gl.getShaderInfoLog(shader));
-  }
   return shader;
 }
 
@@ -78,3 +69,18 @@ function render(t) {
   requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
+
+// --- CHAT VISUEL + ÉCRIT ---
+const botMessage = document.getElementById("bot-message");
+const userInput = document.getElementById("user-input");
+
+userInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter" && userInput.value.trim() !== "") {
+    const userText = userInput.value.trim();
+    botMessage.innerText = "Analyse de votre message...";
+    userInput.value = "";
+    setTimeout(() => {
+      botMessage.innerText = `Ecommind : "${userText}" traité avec succès.`;
+    }, 1500);
+  }
+});

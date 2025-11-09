@@ -3,20 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ecommind — IA Haute Performance</title>
+  <title>Ecommind – Intelligence Visuelle</title>
   <link rel="stylesheet" href="hero.css" />
 </head>
 <body>
-  <div class="hero">
+  <main class="hero">
     <div class="beam"></div>
     <canvas id="orbCanvas"></canvas>
 
-    <div class="content">
-      <h1 class="title"><span>Ecommind</span> Intelligence Dynamique</h1>
-      <p class="subtitle">Une IA pensée comme une voiture de luxe : rapide, silencieuse, et puissante.</p>
-      <button class="cta">⚡ Activer l’expérience</button>
+    <div class="chat-bubble" id="bot-message">Bonjour, je vous écoute.</div>
+
+    <div class="chat-zone">
+      <input id="user-input" type="text" placeholder="Écrivez ou parlez à Ecommind..." />
+      <button class="mic">🎤</button>
     </div>
-  </div>
+
+    <button class="cta">⚡ Activer l’IA Ecommind</button>
+  </main>
+
   <script src="hero.js"></script>
 </body>
 </html>
