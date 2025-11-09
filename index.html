@@ -10,14 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Ton CSS local -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="background-halo"></div>
+  <!-- Fond animé type "jeu" -->
+  <canvas id="bg-canvas"></canvas>
 
   <main>
-    <!-- SECTION 1 : “HAUT DE PAGE” – IMAGE 1 -->
+    <!-- SECTION 1 : CARDS + CTA + FOOTER -->
     <section class="top-section fade-up" data-animate>
       <div class="top-features">
         <article class="feature-card">
@@ -86,10 +86,10 @@
       </div>
     </section>
 
-    <!-- SECTION 2 : HERO DÉMO – IMAGE 2 -->
+    <!-- SECTION 2 : HERO DÉMO -->
     <section class="hero-section fade-up" data-animate>
       <div class="hero-beam"></div>
-      <div class="hero-circle-glow"></div>
+      <div class="hero-circle-glow" id="hero-parallax"></div>
 
       <div class="hero-content">
         <div class="hero-logo-main">ECOMMIND</div>
@@ -105,14 +105,14 @@
       </div>
     </section>
 
-    <!-- SECTION 3 : CTA / INTERFACE – IMAGE 3 -->
+    <!-- SECTION 3 : INTERFACE IA / ORBE -->
     <section class="demo-section fade-up" data-animate>
       <div class="demo-content">
         <div class="speech-bubble">
           Bonjour, je vous écoute.
         </div>
 
-        <div class="orb-wrapper">
+        <div class="orb-wrapper" id="orb-parallax">
           <div class="orb-outer-glow"></div>
           <div class="orb-inner">
             <div class="orb-lines"></div>
@@ -150,7 +150,6 @@
     </section>
   </main>
 
-  <!-- Ton JS local -->
   <script src="app.js" defer></script>
 </body>
 </html>
