@@ -20,16 +20,24 @@ void main() {
 
 const fragmentShaderSrc = `
 precision mediump float;
-varying vec2 vUv;
 uniform float time;
+varying vec2 vUv;
+
 void main() {
   vec2 uv = vUv - 0.5;
   float r = length(uv);
-  float a = atan(uv.y, uv.x);
-  float waves = 0.1 * sin(10.0*r - time*2.0 + 3.0*a);
-  float glow = 0.02 / abs(r - 0.25 + waves);
-  vec3 col = vec3(0.0, 0.5 + 0.5*sin(time*0.5), 1.0) * glow * 3.0;
-  gl_FragColor = vec4(col, smoothstep(0.4,0.0,r));
+
+  // Pulsation intérieure
+  float pulse = 0.4 + 0.05 * sin(time * 3.0);
+  float glow = 0.02 / abs(r - pulse);
+
+  // Vibration énergétique
+  float energy = sin(r * 30.0 - time * 3.0) * 0.02;
+
+  vec3 col = vec3(0.0, 0.6 + 0.4 * sin(time), 1.0);
+  col *= glow * (1.0 + energy);
+
+  gl_FragColor = vec4(col, smoothstep(0.35, 0.0, r));
 }
 `;
 
@@ -63,7 +71,7 @@ gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
 const timeLoc = gl.getUniformLocation(program, "time");
 
 function render(t) {
-  gl.clearColor(0,0,0,0);
+  gl.clearColor(0,0,0,1);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.uniform1f(timeLoc, t * 0.001);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
