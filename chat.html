@@ -3,23 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ecommind Chat</title>
+  <title>Ecommind – Specter Chat</title>
   <link rel="stylesheet" href="chat.css" />
 </head>
 <body>
-  <div class="chat-bg"></div>
+  <canvas id="stars"></canvas>
 
-  <main class="chat-container">
-    <div id="messages" class="messages">
-      <div class="message user">Bonjour Ecommind 👋</div>
-      <div class="message bot">Bonjour, je vous écoute.</div>
-    </div>
+  <div class="orb-container">
+    <div class="orb"></div>
+    <div class="orb-glow"></div>
+  </div>
 
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Écrivez ici..." />
-      <button id="sendBtn">➤</button>
-    </div>
-  </main>
+  <div class="chat-zone">
+    <div class="chat-message user">Bonjour Ecommind 👋</div>
+  </div>
+
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Écrivez ici..." />
+    <button id="sendBtn">➤</button>
+  </div>
 
   <script src="chat.js"></script>
 </body>
