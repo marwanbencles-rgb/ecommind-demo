@@ -1,15 +1,51 @@
 [build]
-  # On publie la racine du repo (là où sont tous tes .html / .css / .js)
+  # On publie la racine du repo (là où sont tes .html / .css / .js)
   publish = "."
+  # Pas de build : site 100% statique
   command = ""
 
 [build.environment]
+  # Optionnel mais propre, évite les surprises côté Node
   NODE_VERSION = "18"
 
-# Quand quelqu'un arrive sur /
-# on le redirige vers la page de ton choix.
-# Tu peux changer `/header.html` par `/hero.html` ou `/cta.html`.
+###################################
+# ROUTING / PAGES PRINCIPALES
+###################################
+
+# Page d'accueil : on sert la page CTA
 [[redirects]]
   from = "/"
-  to = "/header.html"
+  to = "/cta.html"
   status = 302
+
+# URLs propres pour chacune de tes sections
+[[redirects]]
+  from = "/cta"
+  to = "/cta.html"
+  status = 200
+
+[[redirects]]
+  from = "/hero"
+  to = "/hero.html"
+  status = 200
+
+[[redirects]]
+  from = "/header"
+  to = "/header.html"
+  status = 200
+
+# Variante avec slash à la fin (ex: /cta/)
+[[redirects]]
+  from = "/cta/"
+  to = "/cta.html"
+  status = 200
+
+[[redirects]]
+  from = "/hero/"
+  to = "/hero.html"
+  status = 200
+
+[[redirects]]
+  from = "/header/"
+  to = "/header.html"
+  status = 200
