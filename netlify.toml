@@ -2,33 +2,7 @@
   publish = "."
   command = ""
 
-[build.environment]
-  NODE_VERSION = "18"
-
-# / -> hero.html
-[[redirects]]
-  from = "/"
-  to = "/hero.html"
-  status = 302
-
-# URL propre pour le CTA
-[[redirects]]
-  from = "/cta"
-  to = "/cta.html"
-  status = 200
-
-[[redirects]]
-  from = "/cta/"
-  to = "/cta.html"
-  status = 200
-
-# URL propre pour revoir le hero explicitement
-[[redirects]]
-  from = "/hero"
-  to = "/hero.html"
-  status = 200
-
-[[redirects]]
-  from = "/hero/"
-  to = "/hero.html"
-  status = 200
+[[headers]]
+  for = "/*"
+  [headers.values]
+  Content-Type = "text/html; charset=utf-8"
