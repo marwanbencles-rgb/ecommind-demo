@@ -1,13 +1,9 @@
 [build]
-  publish = "."
   command = ""
+  publish = "."
 
-[[redirects]]
-  from = "/"
-  to = "/chat.html"
-  status = 200
-
+# Si tu ajoutes du routing côté JS plus tard, ça évite les erreurs 404
 [[redirects]]
   from = "/*"
-  to = "/chat.html"
+  to = "/index.html"
   status = 200
