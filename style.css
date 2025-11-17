@@ -1,0 +1,366 @@
+/* =========================
+   THEME & RESET
+   ========================= */
+:root {
+  --color-bg: #000000;
+  --color-bg-secondary: #0d1b2a;
+  --color-blue: #00bfff;
+  --color-gold: #c9a55e;
+  --color-white: #ffffff;
+
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-white);
+  font-family: var(--font-main);
+}
+
+/* =========================
+   HERO CHAT – SCÈNE GLOBALE
+   ========================= */
+
+.hero-chat {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  isolation: isolate;
+}
+
+/* Fond cinématique (glows + lignes) */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 120%, rgba(0, 191, 255, 0.18) 0, transparent 55%),
+    radial-gradient(circle at 10% 0%, rgba(0, 191, 255, 0.16) 0, transparent 55%),
+    radial-gradient(circle at 90% 0%, rgba(201, 165, 94, 0.14) 0, transparent 55%);
+  opacity: 0.9;
+}
+
+.hero-bg::before,
+.hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 191, 255, 0.09) 0,
+    rgba(0, 191, 255, 0.09) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+  mix-blend-mode: screen;
+}
+
+/* Conteneur central */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 6vh 18px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* =========================
+   TITRES
+   ========================= */
+
+.hero-text {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 2.7rem, 3rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  opacity: 0.88;
+}
+
+/* =========================
+   BULLE DE CHAT
+   ========================= */
+
+.hero-chat-bubble {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 36px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  background-color: rgba(13, 27, 42, 0.96);
+  border: 1px solid rgba(0, 191, 255, 0.7);
+  box-shadow:
+    0 0 22px rgba(0, 191, 255, 0.7),
+    0 0 1px rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(14px);
+  font-size: 1.02rem;
+  white-space: nowrap;
+}
+
+/* =========================
+   SPHÈRE / ORB
+   ========================= */
+
+.hero-orb-wrapper {
+  position: relative;
+  width: min(48vh, 330px);
+  height: min(48vh, 330px);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sphère principale */
+.hero-orb {
+  position: relative;
+  width: 65%;
+  height: 65%;
+  border-radius: 50%;
+  background-color: #001524;
+  box-shadow:
+    0 0 35px rgba(0, 191, 255, 0.95),
+    0 0 130px rgba(0, 191, 255, 0.9);
+  overflow: hidden;
+  animation: orbFloat 4.5s ease-in-out infinite;
+}
+
+/* Cœur lumineux */
+.hero-orb-core {
+  position: absolute;
+  inset: 15%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 0 24px rgba(0, 191, 255, 0.8),
+    0 0 40px rgba(0, 191, 255, 0.6);
+}
+
+/* Particules / étoiles */
+.hero-orb-particles {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0, transparent 55%),
+    radial-gradient(circle, rgba(201, 165, 94, 0.9) 0, transparent 60%);
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  animation: orbTwinkle 6s ease-in-out infinite alternate;
+}
+
+/* Anneaux autour de l’orbe */
+.hero-orb-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 191, 255, 0.5);
+  box-shadow: 0 0 24px rgba(0, 191, 255, 0.7);
+}
+
+.hero-orb-ring.ring-1 {
+  width: 90%;
+  height: 35%;
+  transform: rotateX(70deg);
+}
+
+.hero-orb-ring.ring-2 {
+  width: 70%;
+  height: 26%;
+  transform: rotateX(78deg) rotateZ(22deg);
+  opacity: 0.7;
+}
+
+.hero-orb-ring.ring-3 {
+  width: 50%;
+  height: 18%;
+  transform: rotateX(78deg) rotateZ(-22deg);
+  opacity: 0.45;
+}
+
+/* =========================
+   BARRE DE SAISIE
+   ========================= */
+
+.hero-input-bar {
+  margin-top: 42px;
+}
+
+.hero-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background-color: rgba(13, 27, 42, 0.98);
+  border: 1px solid rgba(0, 191, 255, 0.7);
+  box-shadow:
+    0 0 26px rgba(0, 191, 255, 0.8),
+    0 0 1px rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(16px);
+}
+
+/* Icône envoyer */
+.hero-input-send {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-input-send svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--color-blue);
+}
+
+/* Champ texte */
+.hero-input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-white);
+  font-size: 0.98rem;
+}
+
+.hero-input-field::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Micro */
+.hero-input-mic {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 165, 94, 0.95);
+  background-color: rgba(201, 165, 94, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 0 20px rgba(201, 165, 94, 0.95),
+    0 0 0 1px rgba(201, 165, 94, 0.7);
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.hero-input-mic svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--color-gold);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-input-mic:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow:
+    0 0 24px rgba(201, 165, 94, 1),
+    0 0 0 1px rgba(201, 165, 94, 0.9);
+}
+
+.hero-input-mic:active {
+  transform: scale(0.96);
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+
+@keyframes orbFloat {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes orbTwinkle {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.3;
+  }
+  40% {
+    transform: translate3d(2px, -4px, 0) scale(1.05);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate3d(-2px, 3px, 0) scale(1.02);
+    opacity: 0.35;
+  }
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 600px) {
+  .hero-content {
+    padding-top: 44px;
+    padding-inline: 18px;
+  }
+
+  .hero-chat-bubble {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .hero-input {
+    padding-inline: 14px;
+  }
+}
+
+@media (min-width: 900px) {
+  .hero-content {
+    max-width: 560px;
+    padding-top: 8vh;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .hero-orb-wrapper {
+    width: 360px;
+    height: 360px;
+  }
+}
