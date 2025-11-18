@@ -5,7 +5,7 @@
   <title>Ecommind – Orb Chat Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Police Inter -->
+  <!-- Police Inter / SF-like -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -13,11 +13,8 @@
     rel="stylesheet"
   />
 
-  <!-- Styles -->
-  <!-- Ton CSS principal (celui que tu m'as envoyé) -->
+  <!-- Styles globaux + chat -->
   <link rel="stylesheet" href="style.css" />
-  <!-- Le CSS dédié au chat + flux énergétique -->
-  <link rel="stylesheet" href="chat.css" />
 
   <!-- Libs 3D / Animations -->
   <script
@@ -29,33 +26,24 @@
     defer
   ></script>
 
-  <!-- Ton JS (orb + logique chat + flux énergétique) -->
+  <!-- Script principal (orb + chat + énergie) -->
   <script src="app.js" defer></script>
 </head>
 <body>
-  <!-- Fond 3D (orb / particules) contrôlé par app.js -->
+  <!-- ORBE 3D PLEIN ÉCRAN -->
   <div id="container"></div>
 
-  <!-- Couche pour le flux énergétique -->
+  <!-- Couche pour l'orbe d'énergie qui voyage vers le chat -->
   <div class="fx-layer"></div>
 
-  <!-- Titre (utilise déjà tes classes header + h1) -->
+  <!-- Titre principal -->
   <header class="header">
     <h1>Ecommind écoute.</h1>
   </header>
 
-  <!-- Chat en verre à droite avec historique -->
+  <!-- CHAT ÉCRIT À DROITE + BARRE IMESSAGE -->
   <section class="chat-zone">
-    <header class="chat-header">
-      <div class="chat-avatar">
-        <div class="chat-avatar-orb"></div>
-      </div>
-      <div>
-        <span class="chat-title">Ecommind</span>
-        <span class="chat-status">Canal IA d’automatisation</span>
-      </div>
-    </header>
-
+    <!-- Carte du chat -->
     <div class="chat-panel">
       <div class="chat-messages" id="chatMessages">
         <div class="chat-message chat-message-assistant">
@@ -66,38 +54,33 @@
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Input global en bas (reprend exactement tes classes) -->
-  <div class="input-container">
-    <div class="input-wrapper">
+    <!-- Barre iMessage sous la carte -->
+    <div class="imessage-bar">
       <input
         type="text"
         id="morphText"
-        placeholder="Tape ce que tu veux automatiser..."
+        placeholder="Message…"
         maxlength="80"
       />
       <button id="typeBtn">
-        <span class="button-content">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5 12H19M19 12L12 5M19 12L12 19"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <span>Envoyer</span>
-        </span>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M5 12H19M19 12L12 5M19 12L12 19"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </button>
     </div>
-  </div>
+  </section>
 </body>
 </html>
