@@ -1,0 +1,41 @@
+/* === BACKGROUND ASTRONAUTE — FICHIER DÉDIÉ === */
+
+.bg-astro {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    background: radial-gradient(
+        circle at 50% 30%,
+        rgba(255, 120, 180, 0.40) 0%,
+        rgba(90, 60, 255, 0.32) 25%,
+        rgba(20, 20, 40, 0.92) 65%,
+        rgba(5, 5, 15, 1) 100%
+    );
+
+    filter: blur(40px);
+    opacity: 0.95;
+}
+
+/* Glow animé */
+.bg-astro::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(
+        circle at 60% 35%,
+        rgba(255, 80, 150, 0.25),
+        rgba(100, 80, 255, 0.20),
+        transparent 70%
+    );
+    filter: blur(60px);
+    opacity: 0.85;
+    animation: astroFloat 9s ease-in-out infinite;
+}
+
+@keyframes astroFloat {
+    0% { transform: translateY(0px) scale(1.05); }
+    50% { transform: translateY(-40px) scale(1.13); }
+    100% { transform: translateY(0px) scale(1.05); }
+}
