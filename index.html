@@ -2,81 +2,101 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecommind – Demo IA</title>
+  <title>Ecommind – Orb Chat Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <!-- Police Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
 
-  <!-- Three.js pour la 3D -->
+  <!-- Styles -->
+  <!-- Ton CSS principal (celui que tu m'as envoyé) -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Le CSS dédié au chat + flux énergétique -->
+  <link rel="stylesheet" href="chat.css" />
+
+  <!-- Libs 3D / Animations -->
   <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"
+    src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+    defer
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"
     defer
   ></script>
 
-  <!-- GSAP pour les animations cinématiques -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
-    defer
-  ></script>
-
-  <!-- Ton script -->
+  <!-- Ton JS (orb + logique chat + flux énergétique) -->
   <script src="app.js" defer></script>
 </head>
 <body>
-  <div class="hero-chat">
-    <!-- Fond cinématique -->
-    <div class="hero-bg"></div>
+  <!-- Fond 3D (orb / particules) contrôlé par app.js -->
+  <div id="container"></div>
 
-    <!-- Contenu principal -->
-    <div class="hero-content">
-      <!-- Texte d’intro -->
-      <div class="hero-text">
-        <h1 class="hero-title">Ecommind vous écoute.</h1>
-        <p class="hero-subtitle">
-          Dites-lui ce que vous voulez automatiser.
-        </p>
+  <!-- Couche pour le flux énergétique -->
+  <div class="fx-layer"></div>
+
+  <!-- Titre (utilise déjà tes classes header + h1) -->
+  <header class="header">
+    <h1>Ecommind écoute.</h1>
+  </header>
+
+  <!-- Chat en verre à droite avec historique -->
+  <section class="chat-zone">
+    <header class="chat-header">
+      <div class="chat-avatar">
+        <div class="chat-avatar-orb"></div>
       </div>
-
-      <!-- Bulle de chat -->
-      <div class="hero-chat-bubble">
-        Bonjour, je vous écoute.
+      <div>
+        <span class="chat-title">Ecommind</span>
+        <span class="chat-status">Canal IA d’automatisation</span>
       </div>
+    </header>
 
-      <!-- Orb 3D (Three.js) -->
-      <div class="hero-orb-3d">
-        <canvas id="orbCanvas"></canvas>
-      </div>
-
-      <!-- Barre de saisie -->
-      <div class="hero-input-bar">
-        <div class="hero-input">
-          <div class="hero-input-send" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 11.5l18-8.5-4.5 18-5-7-5-2.5z"></path>
-            </svg>
+    <div class="chat-panel">
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-message chat-message-assistant">
+          <div class="chat-bubble">
+            Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser
+            et je le route vers votre futur système Ecommind.
           </div>
-
-          <input
-            type="text"
-            class="hero-input-field"
-            placeholder="Écrivez ou parlez à Ecommind..."
-            aria-label="Message à Ecommind"
-          />
-
-          <button
-            class="hero-input-mic"
-            type="button"
-            aria-label="Parler à Ecommind"
-          >
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 14a3 3 0 003-3V7a3 3 0 10-6 0v4a3 3 0 003 3z"
-              ></path>
-              <path d="M7 11a5 5 0 0010 0M12 16v4M9 20h6"></path>
-            </svg>
-          </button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Input global en bas (reprend exactement tes classes) -->
+  <div class="input-container">
+    <div class="input-wrapper">
+      <input
+        type="text"
+        id="morphText"
+        placeholder="Tape ce que tu veux automatiser..."
+        maxlength="80"
+      />
+      <button id="typeBtn">
+        <span class="button-content">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 12H19M19 12L12 5M19 12L12 19"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>Envoyer</span>
+        </span>
+      </button>
     </div>
   </div>
 </body>

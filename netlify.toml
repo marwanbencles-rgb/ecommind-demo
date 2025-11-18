@@ -1,9 +1,11 @@
 [build]
-  command = ""
+  # On sert directement le dossier racine (index.html, style.css, app.js, etc.)
   publish = "."
+  command = ""
 
-# Si tu ajoutes du routing côté JS plus tard, ça évite les erreurs 404
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# (Optionnel) Si plus tard tu transformes ça en SPA,
+# tu pourras décommenter ce bloc pour rediriger toutes les routes vers index.html
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200

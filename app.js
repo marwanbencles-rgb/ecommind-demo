@@ -1,228 +1,330 @@
-// ==========================
-//  Initialisation orb 3D
-// ==========================
+/* ============================================================
+   ORB 3D + PARTICLES (TA VERSION ORIGINALE)
+   ============================================================ */
 
-function initOrb() {
-  const canvas = document.getElementById("orbCanvas");
-  if (!canvas || !window.THREE) return;
+let scene, camera, renderer, particles;
+const count = 12000;
+let currentState = 'sphere';
 
-  const scene = new THREE.Scene();
-  scene.background = null;
+function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
 
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: true,
-  });
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000);
+    document.getElementById('container').appendChild(renderer.domElement);
 
-  const orbContainer = canvas.parentElement;
-  const rect = orbContainer.getBoundingClientRect();
+    camera.position.z = 25;
 
-  const camera = new THREE.PerspectiveCamera(
-    35,
-    rect.width / rect.height,
-    0.1,
-    100
-  );
-  camera.position.set(0, 0, 4);
+    createParticles();
+    setupEventListeners();
+    animate();
+}
 
-  renderer.setSize(rect.width, rect.height, false);
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+function createParticles() {
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
 
-  // Lumières
-  const hemiLight = new THREE.HemisphereLight(0x00bfff, 0x000000, 0.6);
-  scene.add(hemiLight);
+    function sphericalDistribution(i) {
+        const phi = Math.acos(-1 + (2 * i) / count);
+        const theta = Math.sqrt(count * Math.PI) * phi;
 
-  const pointLight = new THREE.PointLight(0x00bfff, 1.4, 10);
-  pointLight.position.set(2, 2, 3);
-  scene.add(pointLight);
+        return {
+            x: 8 * Math.cos(theta) * Math.sin(phi),
+            y: 8 * Math.sin(theta) * Math.sin(phi),
+            z: 8 * Math.cos(phi)
+        };
+    }
 
-  const backLight = new THREE.PointLight(0xc9a55e, 1.0, 10);
-  backLight.position.set(-3, -2, -2);
-  scene.add(backLight);
+    for (let i = 0; i < count; i++) {
+        const point = sphericalDistribution(i);
 
-  // Sphere principale
-  const sphereGeo = new THREE.SphereGeometry(1.1, 64, 64);
-  const sphereMat = new THREE.MeshPhysicalMaterial({
-    color: 0x047ab7,
-    metalness: 0.85,
-    roughness: 0.15,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.1,
-    emissive: 0x0080ff,
-    emissiveIntensity: 0.4,
-  });
-  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
-  scene.add(sphere);
+        positions[i * 3] = point.x + (Math.random() - 0.5) * 0.5;
+        positions[i * 3 + 1] = point.y + (Math.random() - 0.5) * 0.5;
+        positions[i * 3 + 2] = point.z + (Math.random() - 0.5) * 0.5;
 
-  // Anneaux (tors)
-  const ringMat = new THREE.MeshStandardMaterial({
-    color: 0x00bfff,
-    metalness: 0.9,
-    roughness: 0.25,
-    emissive: 0x00bfff,
-    emissiveIntensity: 0.2,
-  });
+        const depth = Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z) / 8;
 
-  const ring1 = new THREE.Mesh(
-    new THREE.TorusGeometry(1.4, 0.02, 16, 100),
-    ringMat
-  );
-  ring1.rotation.x = Math.PI / 2.2;
-  scene.add(ring1);
+        const color = new THREE.Color();
+        color.setHSL(0.5 + depth * 0.2, 0.7, 0.4 + depth * 0.3);
 
-  const ring2 = new THREE.Mesh(
-    new THREE.TorusGeometry(1.1, 0.025, 16, 100),
-    ringMat.clone()
-  );
-  ring2.rotation.x = Math.PI / 2.1;
-  ring2.rotation.z = 0.5;
-  scene.add(ring2);
+        colors[i * 3] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+    }
 
-  const ring3 = new THREE.Mesh(
-    new THREE.TorusGeometry(0.8, 0.02, 16, 100),
-    ringMat.clone()
-  );
-  ring3.rotation.x = Math.PI / 2.1;
-  ring3.rotation.z = -0.5;
-  scene.add(ring3);
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-  // Particules
-  const particleCount = 220;
-  const pos = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    const r = 1.6 + Math.random() * 0.8;
-    const theta = Math.random() * 2 * Math.PI;
-    const phi = Math.acos(2 * Math.random() - 1);
+    const material = new THREE.PointsMaterial({
+        size: 0.08,
+        vertexColors: true,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: true,
+    });
 
-    const x = r * Math.sin(phi) * Math.cos(theta);
-    const y = r * Math.sin(phi) * Math.sin(theta);
-    const z = r * Math.cos(phi);
+    particles = new THREE.Points(geometry, material);
+    particles.rotation.set(0, 0, 0);
+    scene.add(particles);
+}
 
-    pos[i * 3] = x;
-    pos[i * 3 + 1] = y;
-    pos[i * 3 + 2] = z;
-  }
+/* ============================================================
+   CHAT + FLUX ÉNERGÉTIQUE
+   ============================================================ */
 
-  const particlesGeo = new THREE.BufferGeometry();
-  particlesGeo.setAttribute(
-    "position",
-    new THREE.BufferAttribute(pos, 3)
-  );
+function addMessage(author, text) {
+    const chat = document.getElementById("chatMessages");
+    if (!chat) return;
 
-  const particlesMat = new THREE.PointsMaterial({
-    color: 0xffffff,
-    size: 0.02,
-    transparent: true,
-    opacity: 0.8,
-  });
+    const msg = document.createElement("div");
+    msg.className =
+        "chat-message " +
+        (author === "user" ? "chat-message-user" : "chat-message-assistant");
 
-  const particles = new THREE.Points(particlesGeo, particlesMat);
-  scene.add(particles);
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    bubble.textContent = text;
 
-  // Animation boucle
-  let lastTime = 0;
-  function animate(time) {
-    const delta = (time - lastTime) / 1000;
-    lastTime = time;
+    msg.appendChild(bubble);
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+}
 
-    sphere.rotation.y += delta * 0.35;
-    ring1.rotation.z += delta * 0.25;
-    ring2.rotation.z -= delta * 0.18;
-    ring3.rotation.z += delta * 0.14;
-    particles.rotation.y += delta * 0.08;
+function startEnergyFlow(text) {
+    const fxLayer = document.querySelector(".fx-layer");
+    const orb = document.getElementById("container");
+    const chatPanel = document.querySelector(".chat-panel");
+
+    const orbRect = orb.getBoundingClientRect();
+    const chatRect = chatPanel.getBoundingClientRect();
+
+    const startX = orbRect.left + orbRect.width / 2;
+    const startY = orbRect.top + orbRect.height / 2;
+
+    const endX = chatRect.left + 40;
+    const endY = chatRect.top + 40;
+
+    const orbFx = document.createElement("div");
+    orbFx.className = "energy-orb";
+    orbFx.style.left = `${startX}px`;
+    orbFx.style.top = `${startY}px`;
+
+    fxLayer.appendChild(orbFx);
+
+    gsap.to(orbFx, {
+        duration: 0.5,
+        x: endX - startX,
+        y: endY - startY,
+        ease: "power2.out",
+        onComplete: () => {
+            orbFx.remove();
+            chatPanel.classList.add("flash");
+
+            setTimeout(() => chatPanel.classList.remove("flash"), 250);
+
+            addMessage("user", text);
+
+            setTimeout(() => {
+                addMessage(
+                    "assistant",
+                    "Reçu. Je peux automatiser ça pour vous."
+                );
+            }, 250);
+        }
+    });
+}
+
+/* ============================================================
+   MORPHING DU TEXTE → ORB → CERCLE
+   ============================================================ */
+
+function setupEventListeners() {
+    const btn = document.getElementById("typeBtn");
+    const input = document.getElementById("morphText");
+
+    function handleSend() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        startEnergyFlow(text);
+        morphToText(text);
+        input.value = "";
+    }
+
+    btn.addEventListener("click", handleSend);
+
+    input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") handleSend();
+    });
+}
+
+function createTextPoints(text) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const fontSize = 100;
+    const padding = 20;
+
+    ctx.font = `bold ${fontSize}px Arial`;
+    const metrics = ctx.measureText(text);
+
+    canvas.width = metrics.width + padding * 2;
+    canvas.height = fontSize + padding * 2;
+
+    ctx.fillStyle = "white";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+
+    const points = [];
+    const threshold = 128;
+
+    for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i] > threshold && Math.random() < 0.3) {
+            const x = (i / 4) % canvas.width;
+            const y = Math.floor(i / 4 / canvas.width);
+
+            points.push({
+                x: (x - canvas.width / 2) / (fontSize / 10),
+                y: -(y - canvas.height / 2) / (fontSize / 10),
+            });
+        }
+    }
+
+    return points;
+}
+
+function morphToText(text) {
+    currentState = "text";
+    const points = createTextPoints(text);
+
+    const positions = particles.geometry.attributes.position.array;
+    const target = new Float32Array(count * 3);
+
+    gsap.to(particles.rotation, {
+        x: 0, y: 0, z: 0,
+        duration: 0.6
+    });
+
+    for (let i = 0; i < count; i++) {
+        if (i < points.length) {
+            target[i * 3] = points[i].x;
+            target[i * 3 + 1] = points[i].y;
+            target[i * 3 + 2] = 0;
+        } else {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * 20 + 10;
+            target[i * 3] = Math.cos(angle) * radius;
+            target[i * 3 + 1] = Math.sin(angle) * radius;
+            target[i * 3 + 2] = (Math.random() - 0.5) * 10;
+        }
+    }
+
+    for (let i = 0; i < positions.length; i += 3) {
+        gsap.to(positions, {
+            [i]: target[i],
+            [i + 1]: target[i + 1],
+            [i + 2]: target[i + 2],
+            duration: 2,
+            ease: "power2.inOut",
+            onUpdate: () => {
+                particles.geometry.attributes.position.needsUpdate = true;
+            }
+        });
+    }
+
+    setTimeout(morphToCircle, 3500);
+}
+
+function morphToCircle() {
+    currentState = "sphere";
+
+    const positions = particles.geometry.attributes.position.array;
+    const colors = particles.geometry.attributes.color.array;
+
+    const target = new Float32Array(count * 3);
+
+    function sphericalDistribution(i) {
+        const phi = Math.acos(-1 + (2 * i) / count);
+        const theta = Math.sqrt(count * Math.PI) * phi;
+
+        return {
+            x: 8 * Math.cos(theta) * Math.sin(phi),
+            y: 8 * Math.sin(theta) * Math.sin(phi),
+            z: 8 * Math.cos(phi),
+        };
+    }
+
+    for (let i = 0; i < count; i++) {
+        const p = sphericalDistribution(i);
+
+        target[i * 3] = p.x + (Math.random() - 0.5) * 0.5;
+        target[i * 3 + 1] = p.y + (Math.random() - 0.5) * 0.5;
+        target[i * 3 + 2] = p.z + (Math.random() - 0.5) * 0.5;
+
+        const depth = Math.sqrt(p.x * p.x + p.y * p.y + p.z * p.z) / 8;
+
+        const color = new THREE.Color();
+        color.setHSL(0.5 + depth * 0.2, 0.7, 0.4 + depth * 0.3);
+
+        colors[i * 3] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+    }
+
+    for (let i = 0; i < positions.length; i += 3) {
+        gsap.to(positions, {
+            [i]: target[i],
+            [i + 1]: target[i + 1],
+            [i + 2]: target[i + 2],
+            duration: 2,
+            ease: "power2.inOut",
+            onUpdate: () => {
+                particles.geometry.attributes.position.needsUpdate = true;
+            }
+        });
+    }
+
+    gsap.to(colors, {
+        duration: 2,
+        ease: "power2.inOut",
+        onUpdate: () => {
+            particles.geometry.attributes.color.needsUpdate = true;
+        }
+    });
+}
+
+/* ============================================================
+   ANIMATION PRINCIPALE
+   ============================================================ */
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    if (currentState === "sphere") {
+        particles.rotation.y += 0.002;
+    }
 
     renderer.render(scene, camera);
-    requestAnimationFrame(animate);
-  }
-  requestAnimationFrame(animate);
+}
 
-  // Resize
-  window.addEventListener("resize", () => {
-    const r = orbContainer.getBoundingClientRect();
-    camera.aspect = r.width / r.height;
+window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(r.width, r.height, false);
-  });
-}
-
-// ==========================
-//  Animations GSAP
-// ==========================
-
-function initCinematic() {
-  if (!window.gsap) return;
-
-  gsap.from(".hero-title", {
-    y: -20,
-    opacity: 0,
-    duration: 0.9,
-    ease: "power3.out",
-  });
-
-  gsap.from(".hero-subtitle", {
-    y: -10,
-    opacity: 0,
-    delay: 0.2,
-    duration: 0.8,
-    ease: "power3.out",
-  });
-
-  gsap.from(".hero-chat-bubble", {
-    y: 20,
-    opacity: 0,
-    delay: 0.45,
-    duration: 0.9,
-    ease: "power3.out",
-  });
-
-  gsap.from(".hero-orb-3d", {
-    scale: 0.7,
-    opacity: 0,
-    delay: 0.7,
-    duration: 1.2,
-    ease: "power4.out",
-  });
-
-  gsap.from(".hero-input-bar", {
-    y: 40,
-    opacity: 0,
-    delay: 1.1,
-    duration: 0.9,
-    ease: "power3.out",
-  });
-
-  const mic = document.querySelector(".hero-input-mic");
-  if (mic) {
-    mic.addEventListener("click", () => {
-      gsap.fromTo(
-        mic,
-        { boxShadow: "0 0 0px rgba(201,165,94,1)" },
-        {
-          boxShadow:
-            "0 0 26px rgba(201,165,94,1), 0 0 0 1px rgba(201,165,94,0.9)",
-          duration: 0.25,
-          yoyo: true,
-          repeat: 1,
-          ease: "power2.out",
-        }
-      );
-    });
-  }
-
-  const input = document.querySelector(".hero-input-field");
-  if (input) {
-    setTimeout(() => {
-      input.focus();
-    }, 1500);
-  }
-}
-
-// ==========================
-//  BOOT
-// ==========================
-
-window.addEventListener("load", () => {
-  initOrb();
-  initCinematic();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+init();
