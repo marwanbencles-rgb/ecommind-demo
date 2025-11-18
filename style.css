@@ -186,3 +186,48 @@
     bottom: 8rem;
   }
 }
+/* === BACKGROUND ASTRONAUTE STYLE === */
+
+.bg-astro {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at 50% 30%,
+        rgba(255, 120, 180, 0.35) 0%,
+        rgba(90, 60, 255, 0.30) 25%,
+        rgba(20, 20, 40, 0.90) 65%,
+        rgba(5, 5, 15, 1) 100%
+    );
+    filter: blur(35px);
+    opacity: 0.95;
+}
+
+/* Ajout d'un léger glow animé */
+.bg-astro::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(
+        circle at 60% 35%,
+        rgba(255, 80, 150, 0.22),
+        rgba(100, 80, 255, 0.18),
+        transparent 70%
+    );
+    filter: blur(50px);
+    animation: astroFloat 9s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+@keyframes astroFloat {
+    0% { transform: translateY(0px) scale(1.05); }
+    50% { transform: translateY(-35px) scale(1.12); }
+    100% { transform: translateY(0px) scale(1.05); }
+}
+
+/* Pour être sûr que tout le reste passe devant */
+#container, .fx-layer, .chat-zone {
+    position: relative;
+    z-index: 2;
+}
