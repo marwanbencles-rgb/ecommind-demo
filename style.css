@@ -206,3 +206,119 @@
     bottom: 7.2rem;
   }
 }
+/* ======================= CHAT ZONE ======================= */
+
+.chat-zone {
+  position: fixed;
+  right: 4vw;
+  top: 22vh;
+  width: min(360px, 90vw);
+  z-index: 99 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ======================= CARTE ASTRO ======================= */
+
+.chat-panel {
+  position: relative;
+  padding: 14px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top left, rgba(255,110,127,0.22), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(114,137,218,0.24), transparent 55%),
+    rgba(4,7,18,0.90);
+  backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 25px rgba(255,110,127,0.45);
+  min-height: 130px;
+  max-height: 240px;
+  overflow: hidden;
+  z-index: 200;
+}
+
+/* Messages */
+.chat-messages {
+  position: absolute;
+  inset: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Bulles */
+.chat-bubble {
+  padding: 7px 12px;
+  border-radius: 10px;
+  max-width: 80%;
+  backdrop-filter: blur(14px);
+}
+
+.chat-message-assistant .chat-bubble {
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.92);
+}
+
+.chat-message-user .chat-bubble {
+  background: linear-gradient(135deg, #00ff99, #00c96a);
+  color: #002214;
+  box-shadow: 0 0 16px rgba(0,255,153,0.5);
+}
+
+/* ======================= BARRE IMESSAGE ======================= */
+
+.imessage-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  z-index: 300;
+}
+
+.imessage-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  color: #fff;
+  outline: none;
+}
+
+.imessage-bar input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.send-btn {
+  background: linear-gradient(135deg, #007aff, #0052ff);
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 14px rgba(0,122,255,0.8);
+}
+
+/* ORB D’ÉNERGIE */
+.energy-orb {
+  z-index: 999 !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .chat-zone {
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    top: auto;
+    bottom: 8.5rem;
+  }
+}
