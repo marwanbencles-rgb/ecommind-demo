@@ -15,7 +15,7 @@ function init() {
         1000
     );
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true , alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000);
     document.getElementById('container').appendChild(renderer.domElement);
