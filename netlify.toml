@@ -2,13 +2,13 @@
   publish = "./"
   command = ""
 
-# Redirection propre (corrige les erreurs 404 sur Netlify)
+# Évite les 404 (renvoie toujours index.html)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Force le bon type MIME pour CSS et JS
+# Types MIME propres pour CSS / JS
 [[headers]]
   for = "*.css"
   [headers.values]

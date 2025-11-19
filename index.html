@@ -2,23 +2,23 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecommind – Orb Chat Demo</title>
+  <title>Ecommind – Demo Orb Chat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Police Inter / SF-like -->
+  <!-- Police -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
-    <link rel="stylesheet" href="background.css">
-
   />
 
-  <!-- Styles globaux + chat -->
+  <!-- Styles principaux (orb + chat) -->
   <link rel="stylesheet" href="style.css" />
+  <!-- Fond astronaute -->
+  <link rel="stylesheet" href="background.css" />
 
-  <!-- Libs 3D / Animations -->
+  <!-- Libs 3D / anim -->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
     defer
@@ -28,16 +28,17 @@
     defer
   ></script>
 
-  <!-- Script principal (orb + chat + énergie) -->
+  <!-- Script principal -->
   <script src="app.js" defer></script>
 </head>
 <body>
- 
+  <!-- FOND ASTRONAUTE ANIMÉ -->
+  <div class="bg-astro"></div>
 
-  <!-- ORBE 3D PLEIN ÉCRAN -->
+  <!-- ORBE 3D -->
   <div id="container"></div>
 
-  <!-- Couche pour l'orbe d'énergie qui voyage vers le chat -->
+  <!-- Couche pour l’orbe d’énergie (utilisée par app.js) -->
   <div class="fx-layer"></div>
 
   <!-- Titre principal -->
@@ -45,9 +46,9 @@
     <h1>Ecommind écoute.</h1>
   </header>
 
-  <!-- CHAT ÉCRIT À DROITE + BARRE IMESSAGE -->
+  <!-- CHAT ÉCRIT + BARRE IMESSAGE -->
   <section class="chat-zone">
-    <!-- Carte du chat -->
+    <!-- Carte de chat -->
     <div class="chat-panel">
       <div class="chat-messages" id="chatMessages">
         <div class="chat-message chat-message-assistant">
@@ -59,7 +60,7 @@
       </div>
     </div>
 
-    <!-- Barre iMessage sous la carte -->
+    <!-- Barre type iMessage -->
     <div class="imessage-bar">
       <input
         type="text"
@@ -86,7 +87,5 @@
       </button>
     </div>
   </section>
-  <div class="bg-astro"></div>
-
 </body>
 </html>
