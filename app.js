@@ -16,7 +16,8 @@ function init() {
   renderer.setClearColor(0x000000, 0);
   document.getElementById('container').appendChild(renderer.domElement);
 
-  camera.position.z = 25;
+  // On recule légèrement la caméra pour mieux voir le texte
+  camera.position.z = 27;
 
   createParticles();
   setupEventListeners();
@@ -132,7 +133,7 @@ function triggerOrbWithHide(text) {
 
   morphToText(text);
 
-  // Temps total de l’animation (texte visible + retour en sphère)
+  // Temps total de l’animation (texte + retour sphère)
   const totalDurationMs = 6000;
 
   setTimeout(() => {
@@ -142,11 +143,21 @@ function triggerOrbWithHide(text) {
   }, totalDurationMs);
 }
 
+/* =========================
+   Génération des points du texte
+   Texte toujours à l’échelle dans l’orbe
+   ========================= */
+
 function createTextPoints(text) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
-  const fontSize = 100;
-  const padding = 20;
+
+  // 1) Font dynamique : plus le texte est long, plus la taille baisse
+  const baseSize = 140;
+  const minSize = 48;
+  const fontSize = Math.max(minSize, baseSize - text.length * 2.5);
+
+  const padding = 40;
 
   ctx.font = `bold ${fontSize}px Arial`;
   const textMetrics = ctx.measureText(text);
@@ -167,15 +178,19 @@ function createTextPoints(text) {
   const points = [];
   const threshold = 128;
 
+  // 2) Mapping intelligent : on adapte la largeur max du texte dans la scène
+  const targetWorldWidth = 16; // largeur max du texte en unités 3D
+  const scale = targetWorldWidth / canvas.width;
+
   for (let i = 0; i < pixels.length; i += 4) {
     if (pixels[i] > threshold) {
       const x = (i / 4) % canvas.width;
       const y = Math.floor(i / 4 / canvas.width);
 
-      if (Math.random() < 0.3) {
+      if (Math.random() < 0.35) {
         points.push({
-          x: (x - canvas.width / 2) / (fontSize / 10),
-          y: -(y - canvas.height / 2) / (fontSize / 10)
+          x: (x - canvas.width / 2) * scale,
+          y: -(y - canvas.height / 2) * scale
         });
       }
     }
@@ -224,7 +239,6 @@ function morphToText(text) {
     });
   }
 
-  // Après quelques secondes, retour à la sphère
   setTimeout(() => {
     morphToCircle();
   }, 4000);
