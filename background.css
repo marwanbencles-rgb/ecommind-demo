@@ -1,70 +1,32 @@
-/* ============================================================
-   BACKGROUND GLOBAL ECOMMIND — VERSION FINALE
-   S'applique à TOUT le site, tous formats (PC/mobile/4K/ultrawide)
-   ============================================================ */
+/* === BACKGROUND FULLSCREEN ECOMMIND === */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: black;
+    font-family: "Inter", sans-serif;
+}
 
-/* ---- IMAGE DE FOND PRINCIPALE ---- */
-/* Mets ton image ici : remplace le nom du fichier si besoin */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: -1;
 
-    background-image: url("assets/fond-ecommind.png");   /* 🔥 CHANGE ICI */
-    background-size: cover;       /* Adapte à tous les écrans */
-    background-position: center;  /* Toujours centré */
-    background-repeat: no-repeat; /* Pas de répétition */
+    background-image: url("assets/background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-    /* Effets premium */
-    filter: brightness(1.15) saturate(1.15);
+    /* Effets de style */
     opacity: 1;
-
-    /* Effet "fixé" (comme Apple) */
-    will-change: transform;
+    filter: brightness(1.1) saturate(1.2) contrast(1.1);
 }
 
-
-/* ============================================================
-   OPTIONNEL : Glow cosmique animé derrière l’orb
-   (tu peux l’activer si tu veux recréer l’effet Astro/Figma)
-   ============================================================ */
-
-.bg-astro {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-
-    background: radial-gradient(
-        circle at 50% 30%,
-        rgba(255, 120, 180, 0.40) 0%,
-        rgba(90, 60, 255, 0.32) 25%,
-        rgba(20, 20, 40, 0.92) 65%,
-        rgba(5, 5, 15, 1) 100%
-    );
-
-    filter: blur(40px);
-    opacity: 0.85;
-}
-
-.bg-astro::before {
-    content: "";
-    position: absolute;
-    inset: -20%;
-    background: radial-gradient(
-        circle at 60% 35%,
-        rgba(255, 80, 150, 0.25),
-        rgba(100, 80, 255, 0.20),
-        transparent 70%
-    );
-    filter: blur(60px);
-    opacity: 0.8;
-    animation: astroFloat 9s ease-in-out infinite;
-}
-
-@keyframes astroFloat {
-    0% { transform: translateY(0px) scale(1.05); }
-    50% { transform: translateY(-40px) scale(1.13); }
-    100% { transform: translateY(0px) scale(1.05); }
+/* Rend le fond encore plus propre sur mobile */
+@media (max-width: 768px) {
+    body::before {
+        background-position: center top;
+        filter: brightness(1.25);
+    }
 }

@@ -1,91 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Ecommind – Demo Orb Chat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommind Demo</title>
 
-  <!-- Police -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+    <!-- Font + Three.js + GSAP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Styles principaux (orb + chat) -->
-  <link rel="stylesheet" href="style.css" />
-  <!-- Fond astronaute -->
-  <link rel="stylesheet" href="background.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-  <!-- Libs 3D / anim -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
-    defer
-  ></script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"
-    defer
-  ></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="background.css">
+    <link rel="stylesheet" href="style.css">
 
-  <!-- Script principal -->
-  <script src="app.js" defer></script>
 </head>
+
 <body>
-  <!-- FOND ASTRONAUTE ANIMÉ -->
-  <div class="bg-astro"></div>
 
-  <!-- ORBE 3D -->
-  <div id="container"></div>
+    <!-- TITRE -->
+    <h1 class="hero-title">Ecommind-Agency.</h1>
 
-  <!-- Couche pour l’orbe d’énergie (utilisée par app.js) -->
-  <div class="fx-layer"></div>
+    <!-- ORBE / PARTICLES -->
+    <div id="container"></div>
 
-  <!-- Titre principal -->
-  <header class="header">
-    <h1>Ecommind écoute.</h1>
-  </header>
-
-  <!-- CHAT ÉCRIT + BARRE IMESSAGE -->
-  <section class="chat-zone">
-    <!-- Carte de chat -->
-    <div class="chat-panel">
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-message chat-message-assistant">
-          <div class="chat-bubble">
-            Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser
-            et je le route vers votre futur système Ecommind.
-          </div>
+    <!-- CHAT -->
+    <div class="chat-box">
+        <div class="chat-message bot">
+            Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser et je vous guide vers votre futur système Ecommind.
         </div>
-      </div>
+
+        <div class="chat-input-wrapper">
+            <input type="text" id="chatInput" placeholder="Message..." />
+            <button id="sendBtn" class="send-btn">
+                ➜
+            </button>
+        </div>
     </div>
 
-    <!-- Barre type iMessage -->
-    <div class="imessage-bar">
-      <input
-        type="text"
-        id="morphText"
-        placeholder="Message…"
-        maxlength="80"
-      />
-      <button id="typeBtn">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M5 12H19M19 12L12 5M19 12L12 19"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
-    </div>
-  </section>
+    <!-- Script -->
+    <script src="app.js"></script>
+
 </body>
 </html>

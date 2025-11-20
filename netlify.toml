@@ -1,20 +1,8 @@
 [build]
-  publish = "./"
+  publish = "/"
   command = ""
 
-# Évite les 404 (renvoie toujours index.html)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-# Types MIME propres pour CSS / JS
-[[headers]]
-  for = "*.css"
-  [headers.values]
-    Content-Type = "text/css"
-
-[[headers]]
-  for = "*.js"
-  [headers.values]
-    Content-Type = "application/javascript"
