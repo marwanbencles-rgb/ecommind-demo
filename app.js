@@ -16,8 +16,7 @@ function init() {
   renderer.setClearColor(0x000000, 0);
   document.getElementById('container').appendChild(renderer.domElement);
 
-  // On recule légèrement la caméra pour mieux voir le texte
-  camera.position.z = 27;
+  camera.position.z = 27; // un peu plus loin, confort visuel
 
   createParticles();
   setupEventListeners();
@@ -105,7 +104,8 @@ function setupEventListeners() {
   });
 }
 
-/* Ajoute le message utilisateur dans le chat */
+/* ====== CHAT 2D ====== */
+
 function addUserMessage(text) {
   const chatMessages = document.getElementById('chatMessages');
   if (!chatMessages) return;
@@ -123,39 +123,68 @@ function addUserMessage(text) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/* Cache le chat, lance l’animation de l’orbe, puis réaffiche le chat */
+/* ====== LOGIQUE ORBE : cacher le chat + jouer mot par mot ====== */
+
 function triggerOrbWithHide(text) {
   const chatZone = document.querySelector('.chat-zone');
+  if (chatZone) chatZone.classList.add('chat-hidden');
 
-  if (chatZone) {
-    chatZone.classList.add('chat-hidden');
+  const words = text.split(/\s+/).filter(Boolean);
+  // on limite pour pas que ça dure 1 minute sur un texte énorme
+  const maxWords = 12;
+  const sequence = words.slice(0, maxWords);
+
+  playWordSequence(sequence, 0, () => {
+    // une fois terminé, on repasse en sphère et on réaffiche le chat
+    morphToCircleFast(() => {
+      if (chatZone) chatZone.classList.remove('chat-hidden');
+    });
+  });
+}
+
+/**
+ * Joue les mots les uns après les autres dans l'orbe.
+ * Chaque mot :
+ *  - morph rapide vers le texte
+ *  - petit temps de pause
+ *  - retour rapide en sphère
+ */
+function playWordSequence(words, index, onDone) {
+  if (index >= words.length) {
+    if (onDone) onDone();
+    return;
   }
 
-  morphToText(text);
+  const word = words[index];
 
-  // Temps total de l’animation (texte + retour sphère)
-  const totalDurationMs = 6000;
+  // Durées (en secondes) : rapide
+  const morphDuration = 0.35;
+  const holdDuration = 0.12;
+  const backDuration = 0.25;
 
-  setTimeout(() => {
-    if (chatZone) {
-      chatZone.classList.remove('chat-hidden');
-    }
-  }, totalDurationMs);
+  morphToText(word, morphDuration, holdDuration, () => {
+    morphToCircleFast(() => {
+      // enchaîne sur le mot suivant très vite
+      setTimeout(() => {
+        playWordSequence(words, index + 1, onDone);
+      }, backDuration * 350); // petit délai pour la fluidité
+    }, backDuration);
+  });
 }
 
 /* =========================
    Génération des points du texte
-   Texte toujours à l’échelle dans l’orbe
+   (1 seul mot, donc on peut le rendre gros)
    ========================= */
 
 function createTextPoints(text) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
-  // 1) Font dynamique : plus le texte est long, plus la taille baisse
-  const baseSize = 140;
-  const minSize = 48;
-  const fontSize = Math.max(minSize, baseSize - text.length * 2.5);
+  // Ici on veut un mot bien gros
+  const baseSize = 180;
+  const minSize = 80;
+  const fontSize = Math.max(minSize, baseSize - text.length * 4);
 
   const padding = 40;
 
@@ -178,8 +207,8 @@ function createTextPoints(text) {
   const points = [];
   const threshold = 128;
 
-  // 2) Mapping intelligent : on adapte la largeur max du texte dans la scène
-  const targetWorldWidth = 16; // largeur max du texte en unités 3D
+  // largeur max du mot dans la scène (plus petit = mot plus gros)
+  const targetWorldWidth = 11;
   const scale = targetWorldWidth / canvas.width;
 
   for (let i = 0; i < pixels.length; i += 4) {
@@ -187,7 +216,7 @@ function createTextPoints(text) {
       const x = (i / 4) % canvas.width;
       const y = Math.floor(i / 4 / canvas.width);
 
-      if (Math.random() < 0.35) {
+      if (Math.random() < 0.4) {
         points.push({
           x: (x - canvas.width / 2) * scale,
           y: -(y - canvas.height / 2) * scale
@@ -199,7 +228,10 @@ function createTextPoints(text) {
   return points;
 }
 
-function morphToText(text) {
+/**
+ * Morph vers le texte (un mot), puis appelle onComplete après
+ */
+function morphToText(text, morphDuration = 0.35, holdDuration = 0.12, onComplete) {
   currentState = 'text';
   const textPoints = createTextPoints(text);
   const positions = particles.geometry.attributes.position.array;
@@ -209,7 +241,7 @@ function morphToText(text) {
     x: 0,
     y: 0,
     z: 0,
-    duration: 0.5
+    duration: morphDuration * 0.8
   });
 
   for (let i = 0; i < count; i++) {
@@ -231,7 +263,7 @@ function morphToText(text) {
       [i]: targetPositions[i],
       [i + 1]: targetPositions[i + 1],
       [i + 2]: targetPositions[i + 2],
-      duration: 2,
+      duration: morphDuration,
       ease: 'power2.inOut',
       onUpdate: () => {
         particles.geometry.attributes.position.needsUpdate = true;
@@ -239,12 +271,17 @@ function morphToText(text) {
     });
   }
 
+  // callback après morph + petit temps de pause
+  const totalMs = (morphDuration + holdDuration) * 1000;
   setTimeout(() => {
-    morphToCircle();
-  }, 4000);
+    if (onComplete) onComplete();
+  }, totalMs);
 }
 
-function morphToCircle() {
+/**
+ * Retour rapide à la sphère
+ */
+function morphToCircleFast(onComplete, duration = 0.25) {
   currentState = 'sphere';
   const positions = particles.geometry.attributes.position.array;
   const targetPositions = new Float32Array(count * 3);
@@ -287,7 +324,7 @@ function morphToCircle() {
       [i]: targetPositions[i],
       [i + 1]: targetPositions[i + 1],
       [i + 2]: targetPositions[i + 2],
-      duration: 2,
+      duration,
       ease: 'power2.inOut',
       onUpdate: () => {
         particles.geometry.attributes.position.needsUpdate = true;
@@ -300,20 +337,26 @@ function morphToCircle() {
       [i]: colors[i],
       [i + 1]: colors[i + 1],
       [i + 2]: colors[i + 2],
-      duration: 2,
+      duration,
       ease: 'power2.inOut',
       onUpdate: () => {
         particles.geometry.attributes.color.needsUpdate = true;
       }
     });
   }
+
+  if (onComplete) {
+    setTimeout(onComplete, duration * 1000 + 80);
+  }
 }
+
+/* ====== LOOP ====== */
 
 function animate() {
   requestAnimationFrame(animate);
 
   if (currentState === 'sphere') {
-    particles.rotation.y += 0.002;
+    particles.rotation.y += 0.004; // un peu plus rapide
   }
 
   renderer.render(scene, camera);
