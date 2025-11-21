@@ -10,24 +10,27 @@
   --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: "Poppins", system-ui, sans-serif;
-  background: radial-gradient(circle at 50% -20%, #042438 0%, #000000 65%);
-  color: var(--white);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  -webkit-font-smoothing: antialiased;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-main {
+/* ⚠️ ON NE TOUCHE PLUS AU BODY NI AU MAIN ICI */
+
+/* Conteneur footer CTA */
+.cta-footer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 80px 20px 60px;
+  margin-top: 80px;            /* pousse le CTA sous le hero + chat */
+}
+
+.cta-footer-inner {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px 80px;
 }
 
 /* Animation d’apparition */
@@ -36,6 +39,7 @@ main {
   transform: translateY(30px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
+
 .fade-up.visible {
   opacity: 1;
   transform: translateY(0);
@@ -76,7 +80,6 @@ main {
 }
 
 .feature-card::after {
-  /* léger highlight en diagonale */
   content: "";
   position: absolute;
   top: -60%;
@@ -115,6 +118,7 @@ main {
   font-weight: 600;
   margin-bottom: 8px;
 }
+
 .feature-title .gold { color: var(--gold); }
 .feature-title .blue { color: var(--blue-tech); }
 
@@ -143,6 +147,7 @@ main {
   font-weight: 600;
   margin-bottom: 12px;
 }
+
 .cta-title .brand { color: var(--gold); }
 
 .cta-subtitle {
@@ -176,6 +181,7 @@ main {
   align-items: center;
   gap: 10px;
 }
+
 .cta-main-icon {
   color: var(--gold);
   font-size: 1.05rem;
@@ -197,7 +203,10 @@ main {
 
 /* Responsive */
 @media (max-width: 900px) {
-  main { padding-inline: 16px; }
+  .cta-footer {
+    padding: 60px 16px 40px;
+    margin-top: 40px;
+  }
 }
 
 @media (max-width: 640px) {
