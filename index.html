@@ -39,9 +39,34 @@
     </div>
   </header>
 
-  <!-- ========================================================= -->
-  <!-- ================ CTA INSÉRÉ ICI ========================== -->
-  <!-- ========================================================= -->
+  <!-- ==================== CHAT À DROITE ======================= -->
+
+  <main class="layout-main">
+    <section class="chat-wrapper">
+      <div class="chat-zone">
+
+        <div class="chat-card">
+          <div class="chat-message chat-message-bot">
+            <div class="chat-bubble">
+              Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser et je vous route vers votre futur système Ecommind.
+            </div>
+          </div>
+
+          <div id="chatMessages" class="chat-messages"></div>
+        </div>
+
+        <form class="chat-input-row" onsubmit="event.preventDefault(); document.getElementById('typeBtn').click();">
+          <input type="text" id="morphText" class="chat-input" placeholder="Message..." autocomplete="off">
+          <button type="button" id="typeBtn" class="chat-send-btn">
+            <span class="chat-send-inner">→</span>
+          </button>
+        </form>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= CTA EN BAS DE PAGE ===================== -->
 
   <main>
     <section class="cta-section fade-up" data-animate>
@@ -102,35 +127,6 @@
         <p class="cta-reassurance">
           Inclus : maintenance illimitée, monitoring 24/7, cybersécurité avancée, sauvegardes automatisées.
         </p>
-      </div>
-    </section>
-  </main>
-
-  <!-- ========================================================= -->
-  <!-- ==================== CHAT À DROITE ======================= -->
-  <!-- ========================================================= -->
-
-  <main class="layout-main">
-    <section class="chat-wrapper">
-      <div class="chat-zone">
-
-        <div class="chat-card">
-          <div class="chat-message chat-message-bot">
-            <div class="chat-bubble">
-              Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser et je vous route vers votre futur système Ecommind.
-            </div>
-          </div>
-
-          <div id="chatMessages" class="chat-messages"></div>
-        </div>
-
-        <form class="chat-input-row" onsubmit="event.preventDefault(); document.getElementById('typeBtn').click();">
-          <input type="text" id="morphText" class="chat-input" placeholder="Message..." autocomplete="off">
-          <button type="button" id="typeBtn" class="chat-send-btn">
-            <span class="chat-send-inner">→</span>
-          </button>
-        </form>
-
       </div>
     </section>
   </main>
