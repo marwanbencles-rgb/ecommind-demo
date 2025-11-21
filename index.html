@@ -16,7 +16,8 @@
   <!-- CSS -->
   <link rel="stylesheet" href="background.css" />
   <link rel="stylesheet" href="style.css" />
-
+  <link rel="stylesheet" href="cta.css">
+  
   <!-- Libs JS -->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
@@ -136,28 +137,21 @@
           </p>
         </article>
       </div>
+<!-- conteneur pour le footer -->
+<div id="footer-cta"></div>
 
-      <div class="cta-main-block">
-        <h2 class="cta-title">
-          Avec l’abonnement <span class="brand">Ecommind</span>, votre système est
-          maintenu, sécurisé et surveillé en continu.
-        </h2>
-        <p class="cta-subtitle">
-          Pas de factures surprises, pas de prestataires différents pour chaque problème.
-          Un abonnement clair. Une équipe qui prend la responsabilité technique.
-        </p>
+<script>
+  fetch("cta.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer-cta").innerHTML = html;
+    });
+</script>
 
-        <div class="cta-button-wrapper">
-          <button class="cta-main" id="cta-subscribe">
-            <span class="cta-main-icon">⚡</span>
-            <span>Sécuriser mon business avec Ecommind</span>
-          </button>
-        </div>
+<!-- CTA JS déjà chargé ici -->
+<script src="cta.js" defer></script>
 
-        <p class="cta-reassurance">
-          Inclus : maintenance illimitée, monitoring 24/7, cybersécurité avancée, sauvegardes automatisées.
-        </p>
-      </div>
+      
     </section>
 </body>
 </html>
