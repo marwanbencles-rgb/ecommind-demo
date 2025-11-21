@@ -2,162 +2,118 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecommind – Demo Orb Chat</title>
+  <title>Ecommind – Demo Orb & Chat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Police principale -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
-  />
+  >
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="background.css" />
-  <link rel="stylesheet" href="style.css" />
+  <!-- Styles globaux (orb + chat) -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Fond astro responsive (ton image background.png) -->
+  <link rel="stylesheet" href="background.css">
 
-  <!-- Libs JS -->
+  <!-- Librairies 3D / animation -->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
     defer
   ></script>
   <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
+    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"
     defer
   ></script>
 
-  <!-- Script principal (orb + chat) -->
+  <!-- Logique orb + chat (la version app.js qu’on a travaillée) -->
   <script src="app.js" defer></script>
 </head>
 <body>
-  <!-- Fond image = géré par background.css (body::before) -->
-
-  <!-- (optionnel) Glow supplémentaire si tu gardes .bg-astro dans background.css -->
-  <div class="bg-astro"></div>
-
-  <!-- ORB 3D -->
+  <!-- Canvas 3D pour l'orbe de particules -->
   <div id="container"></div>
-  <div class="fx-layer"></div>
 
-  <!-- TITRE -->
-  <header class="header">
-    <h1>Ecommind écoute.</h1>
-  </header>
+  <!-- Bandeau / hero titre -->
+  <header class="hero-header">
+    <div class="hero-inner">
+      <h1 class="hero-title">
+        <span class="hero-brand">Ecommind</span> écoute.
+      </h1>
+      <p class="hero-subtitle">
+        Dites-lui ce que vous voulez automatiser. L’orbe traduit votre message
+        en énergie, le chat garde la trace de tout.
+      </p>
 
-  <!-- CHAT VERRE STYLE IOS -->
-  <section class="chat-zone">
-    <!-- Carte de chat -->
-    <div class="chat-panel">
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-message chat-message-assistant">
-          <div class="chat-bubble">
-            Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser
-            et je le route vers votre futur système Ecommind.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Barre iMessage -->
-    <div class="imessage-bar">
-      <input
-        type="text"
-        id="morphText"
-        placeholder="Message…"
-        maxlength="80"
-      />
-      <button id="typeBtn">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M5 12H19M19 12L12 5M19 12L12 19"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+      <!-- 🔗 CTA qui APPELLE la page cta.html -->
+      <button
+        class="hero-cta-button"
+        onclick="window.location.href='cta.html'"
+        type="button"
+      >
+        Découvrir l’abonnement Ecommind
       </button>
     </div>
-  </section>
-  <section class="cta-section fade-up" data-animate>
-      <div class="cta-badges">
-        <!-- ARGUMENT 1 -->
-        <article class="feature-card">
-          <div class="feature-icon">🛠</div>
-          <h3 class="feature-title">
-            Maintenance illimitée, <span class="gold">sans frais cachés</span>
-          </h3>
-          <p class="feature-quote">
-            « Chaque bug, chaque mise à jour est incluse dans votre abonnement. »
-          </p>
-          <p class="feature-text">
-            Correctifs, mises à jour et optimisations sont pris en charge en continu.
-            Vous n’achetez plus des heures d’intervention : vous achetez un système
-            qui reste opérationnel.
-          </p>
-        </article>
+  </header>
 
-        <!-- ARGUMENT 2 -->
-        <article class="feature-card">
-          <div class="feature-icon">🛡</div>
-          <h3 class="feature-title">
-            Cybersécurité intégrée, <span class="blue">pilotée par IA</span>
-          </h3>
-          <p class="feature-quote">
-            « Votre boutique reste en ligne, vos données restent protégées. »
-          </p>
-          <p class="feature-text">
-            Pare-feu, surveillance temps réel, sauvegardes chiffrées et
-            plan de reprise après incident : l’abonnement inclut une défense
-            active, pas seulement un antivirus symbolique.
-          </p>
-        </article>
+  <!-- Zone chat à droite façon iMessage / verre -->
+  <main class="layout-main">
+    <section class="chat-wrapper">
+      <div class="chat-zone">
+        <!-- Carte de chat principale -->
+        <div class="chat-card">
+          <!-- Premier message système (bulle bot) -->
+          <div class="chat-message chat-message-bot">
+            <div class="chat-bubble">
+              Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser
+              et je vous route vers votre futur système Ecommind.
+            </div>
+          </div>
 
-        <!-- ARGUMENT 3 -->
-        <article class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3 class="feature-title">
-            SLA clair, <span class="gold">réponse en quelques minutes</span>
-          </h3>
-          <p class="feature-quote">
-            « Quand quelque chose bloque, vous n’êtes plus seul. »
-          </p>
-          <p class="feature-text">
-            Canal prioritaire, temps de réponse garanti et suivi des incidents :
-            vous savez qui surveille votre business, quand nous intervenons
-            et ce qui a été résolu.
-          </p>
-        </article>
-      </div>
-
-      <div class="cta-main-block">
-        <h2 class="cta-title">
-          Avec l’abonnement <span class="brand">Ecommind</span>, votre système est
-          maintenu, sécurisé et surveillé en continu.
-        </h2>
-        <p class="cta-subtitle">
-          Pas de factures surprises, pas de prestataires différents pour chaque problème.
-          Un abonnement clair. Une équipe qui prend la responsabilité technique.
-        </p>
-
-        <div class="cta-button-wrapper">
-          <button class="cta-main" id="cta-subscribe">
-            <span class="cta-main-icon">⚡</span>
-            <span>Sécuriser mon business avec Ecommind</span>
-          </button>
+          <!-- Messages dynamiques (utilisateur + bot) -->
+          <div id="chatMessages" class="chat-messages"></div>
         </div>
 
-        <p class="cta-reassurance">
-          Inclus : maintenance illimitée, monitoring 24/7, cybersécurité avancée, sauvegardes automatisées.
-        </p>
+        <!-- Barre de saisie type iOS -->
+        <form
+          class="chat-input-row"
+          onsubmit="event.preventDefault(); document.getElementById('typeBtn').click();"
+        >
+          <input
+            type="text"
+            id="morphText"
+            class="chat-input"
+            placeholder="Message..."
+            autocomplete="off"
+          >
+          <button
+            type="button"
+            id="typeBtn"
+            class="chat-send-btn"
+            aria-label="Envoyer"
+          >
+            <span class="chat-send-inner">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 12H19M19 12L12 5M19 12L12 19"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
+        </form>
       </div>
     </section>
+  </main>
 </body>
 </html>
