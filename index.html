@@ -17,27 +17,25 @@
     rel="stylesheet"
   >
 
-  <!-- Styles globaux -->
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="background.css">
 
-  <!-- Styles CTA -->
-  <link rel="stylesheet" href="cta.css">
 
-  <!-- Three.js & GSAP -->
+  <!-- Libs 3D / Anim -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js" defer></script>
 
-  <!-- Orb + Chat -->
+  <!-- Orbe + chat -->
   <script src="app.js" defer></script>
 </head>
 
 <body>
-  <!-- ORB 3D EN FOND -->
-  <div id="container"></div>
 
-  <!-- HERO TOP -->
-  <header class="hero-header">
+  <!-- ================================================== -->
+  <!-- ===================== HEADER ====================== -->
+  <!-- ================================================== -->
+
+  <header id="site-header" class="hero-header">
     <div class="hero-inner">
       <h1 class="hero-title">
         <span class="hero-brand">Ecommind</span> écoute.
@@ -48,124 +46,140 @@
     </div>
   </header>
 
-  <!-- SECTION CTA (cartes + footer) -->
-  <main class="layout-main">
-    <section class="cta-section fade-up" data-animate>
+  <!-- ================================================== -->
+  <!-- ====================== HERO ======================= -->
+  <!--  Orbe 3D + Chat écrit à droite                     -->
+  <!-- ================================================== -->
 
-      <!-- Cartes arguments -->
-      <div class="cta-badges">
+  <main id="page-main">
 
-        <!-- ARGUMENT 1 -->
-        <article class="feature-card">
-          <div class="feature-icon">🛠</div>
-          <h3 class="feature-title">
-            Maintenance illimitée, <span class="gold">sans frais cachés</span>
-          </h3>
-          <p class="feature-quote">
-            « Chaque bug, chaque mise à jour est incluse dans votre abonnement. »
-          </p>
-          <p class="feature-text">
-            Correctifs, mises à jour et optimisations sont pris en charge en continu.
-            Vous n’achetez plus des heures d’intervention : vous achetez un système
-            qui reste opérationnel sans surprise.
-          </p>
-        </article>
+    <!-- Orbe 3D (ne pas toucher l’ID #container) -->
+    <section id="hero-section">
+      <section class="orb-hero">
+        <div id="container"></div>
+      </section>
 
-        <!-- ARGUMENT 2 -->
-        <article class="feature-card">
-          <div class="feature-icon">🛡</div>
-          <h3 class="feature-title">
-            Cybersécurité intégrée, <span class="blue">pilotée par IA</span>
-          </h3>
-          <p class="feature-quote">
-            « Votre boutique reste en ligne, vos données restent protégées. »
-          </p>
-          <p class="feature-text">
-            Pare-feu intelligent, surveillance temps réel 24/7, sauvegardes chiffrées
-            et plan de reprise après incident : l’abonnement inclut une défense active,
-            pas seulement un antivirus symbolique.
-          </p>
-        </article>
+      <!-- Chat écrit (structure et IDs conservés) -->
+      <section class="chat-wrapper">
+        <div class="chat-zone">
 
-        <!-- ARGUMENT 3 -->
-        <article class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3 class="feature-title">
-            SLA clair, <span class="gold">réponse en quelques minutes</span>
-          </h3>
-          <p class="feature-quote">
-            « Quand quelque chose bloque, vous n’êtes plus seul. »
-          </p>
-          <p class="feature-text">
-            Canal prioritaire, temps de réponse garanti et suivi des incidents :
-            vous savez qui surveille votre business, quand nous intervenons
-            et ce qui a été résolu.
-          </p>
-        </article>
+          <div class="chat-card">
+            <div class="chat-message chat-message-bot">
+              <div class="chat-bubble">
+                Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser
+                et je vous route vers votre futur système Ecommind.
+              </div>
+            </div>
 
-      </div>
-
-      <!-- Bloc footer CTA -->
-      <div class="cta-main-block">
-        <h2 class="cta-title">
-          Avec l’abonnement <span class="brand">Ecommind</span>, votre système
-          reste sécurisé et opérationnel.
-        </h2>
-
-        <p class="cta-subtitle">
-          Pas de factures surprises. Pas de prestataires multiples.
-          Une seule équipe qui prend la responsabilité technique de votre business.
-        </p>
-
-        <div class="cta-button-wrapper">
-          <button class="cta-main" id="cta-subscribe">
-            <span class="cta-main-icon">⚡</span>
-            <span>Sécuriser mon business avec Ecommind</span>
-          </button>
-        </div>
-
-        <p class="cta-reassurance">
-          Inclus : maintenance illimitée — monitoring 24/7 — cybersécurité avancée —
-          sauvegardes automatiques.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <!-- CHAT VERRE FIXÉ À DROITE -->
-  <section class="chat-wrapper">
-    <div class="chat-zone">
-
-      <div class="chat-card">
-        <div class="chat-message chat-message-bot">
-          <div class="chat-bubble">
-            Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser
-            et je vous route vers votre futur système Ecommind.
+            <div id="chatMessages" class="chat-messages"></div>
           </div>
+
+          <form
+            class="chat-input-row"
+            onsubmit="event.preventDefault(); document.getElementById('typeBtn').click();"
+          >
+            <input
+              type="text"
+              id="morphText"
+              class="chat-input"
+              placeholder="Message..."
+              autocomplete="off"
+            >
+            <button type="button" id="typeBtn" class="chat-send-btn">
+              <span class="chat-send-inner">→</span>
+            </button>
+          </form>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- ================================================== -->
+    <!-- ===================== FOOTER ====================== -->
+    <!--      CTA abonnement Ecommind (déjà prêt)          -->
+    <!-- ================================================== -->
+
+    <footer id="site-footer">
+      <section class="cta-section fade-up" data-animate>
+
+        <div class="cta-badges">
+
+          <!-- ARGUMENT 1 -->
+          <article class="feature-card">
+            <div class="feature-icon">🛠</div>
+            <h3 class="feature-title">
+              Maintenance illimitée, <span class="gold">sans frais cachés</span>
+            </h3>
+            <p class="feature-quote">
+              « Chaque bug, chaque mise à jour est incluse dans votre abonnement. »
+            </p>
+            <p class="feature-text">
+              Correctifs, mises à jour et optimisations sont pris en charge en continu.
+              Vous n’achetez plus des heures d’intervention : vous achetez un système
+              qui reste opérationnel.
+            </p>
+          </article>
+
+          <!-- ARGUMENT 2 -->
+          <article class="feature-card">
+            <div class="feature-icon">🛡</div>
+            <h3 class="feature-title">
+              Cybersécurité intégrée, <span class="blue">pilotée par IA</span>
+            </h3>
+            <p class="feature-quote">
+              « Votre boutique reste en ligne, vos données restent protégées. »
+            </p>
+            <p class="feature-text">
+              Pare-feu, surveillance temps réel, sauvegardes chiffrées et
+              plan de reprise après incident : l’abonnement inclut une défense
+              active, pas seulement un antivirus symbolique.
+            </p>
+          </article>
+
+          <!-- ARGUMENT 3 -->
+          <article class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">
+              SLA clair, <span class="gold">réponse en quelques minutes</span>
+            </h3>
+            <p class="feature-quote">
+              « Quand quelque chose bloque, vous n’êtes plus seul. »
+            </p>
+            <p class="feature-text">
+              Canal prioritaire, temps de réponse garanti et suivi des incidents :
+              vous savez qui surveille votre business, quand nous intervenons
+              et ce qui a été résolu.
+            </p>
+          </article>
+
         </div>
 
-        <!-- messages utilisateur / bot injectés ici par app.js -->
-        <div id="chatMessages" class="chat-messages"></div>
-      </div>
+        <div class="cta-main-block">
+          <h2 class="cta-title">
+            Avec l’abonnement <span class="brand">Ecommind</span>, votre système est
+            maintenu, sécurisé et surveillé en continu.
+          </h2>
+          <p class="cta-subtitle">
+            Pas de factures surprises, pas de prestataires différents pour chaque problème.
+            Un abonnement clair. Une équipe qui prend la responsabilité technique.
+          </p>
 
-      <form
-        class="chat-input-row"
-        onsubmit="event.preventDefault(); document.getElementById('typeBtn').click();"
-      >
-        <input
-          type="text"
-          id="morphText"
-          class="chat-input"
-          placeholder="Message..."
-          autocomplete="off"
-        >
-        <button type="button" id="typeBtn" class="chat-send-btn">
-          <span class="chat-send-inner">→</span>
-        </button>
-      </form>
+          <div class="cta-button-wrapper">
+            <button class="cta-main" id="cta-subscribe">
+              <span class="cta-main-icon">⚡</span>
+              <span>Sécuriser mon business avec Ecommind</span>
+            </button>
+          </div>
 
-    </div>
-  </section>
+          <p class="cta-reassurance">
+            Inclus : maintenance illimitée, monitoring 24/7, cybersécurité avancée, sauvegardes automatisées.
+          </p>
+        </div>
+
+      </section>
+    </footer>
+
+  </main>
 
   <!-- JS CTA -->
   <script src="cta.js" defer></script>

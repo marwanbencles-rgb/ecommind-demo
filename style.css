@@ -1,208 +1,350 @@
-/* ============================================
-   GLOBAL
-============================================ */
+/* =======================================================
+   GLOBAL RESET
+======================================================= */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    background: #000;
-    font-family: "Inter", sans-serif;
-    color: #fff;
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background: #000;
+  font-family: "Inter", sans-serif;
+  color: #fff;
 }
 
 body {
-    position: relative;
+  position: relative;
 }
 
-/* ============================================
-   BACKGROUND GLOBAL
-============================================ */
+/* =======================================================
+   BACKGROUND GLOBAL (cosmos fixe partout)
+======================================================= */
 body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: url("background.png") center/cover no-repeat fixed;
-    opacity: 0.65;
-    z-index: -10;
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("background.png") center / cover no-repeat fixed;
+  opacity: 0.65;
+  z-index: -10;
 }
 
-/* ============================================
-   HERO ORB SECTION
-   (orb défile avec la page + position stable)
-============================================ */
-.orb-hero {
-    position: relative;
-    width: 100%;
-    height: 420px; /* Ajustable */
-    margin-top: 40px;
-    margin-bottom: 80px;
-    pointer-events: none;
-}
-
-#container {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-/* ============================================
-   HERO TEXT
-============================================ */
+/* =======================================================
+   HEADER
+======================================================= */
 .hero-header {
-    width: 100%;
-    text-align: center;
-    padding-top: 10px;
-    margin-bottom: 40px;
+  width: 100%;
+  text-align: center;
+  padding-top: 25px;
+  margin-bottom: 40px;
+}
+
+.hero-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .hero-title {
-    font-size: 2.8rem;
-    font-weight: 700;
+  font-size: 2.8rem;
+  font-weight: 700;
 }
 
 .hero-brand {
-    color: #00BFFF;
-    font-weight: 900;
+  color: #00bfff;
+  font-weight: 900;
 }
 
 .hero-subtitle {
-    margin-top: 10px;
-    font-size: 1.1rem;
-    opacity: 0.8;
+  margin-top: 10px;
+  font-size: 1.1rem;
+  opacity: 0.8;
 }
 
-/* ============================================
-   CHAT – APPLE VISIONOS STYLE (à droite)
-============================================ */
-.layout-main {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-top: 20px;
+/* =======================================================
+   HERO – ORBE 3D (défile avec la page)
+======================================================= */
+.orb-hero {
+  position: relative;
+  width: 100%;
+  height: 420px; /* ajuste si tu veux plus grand/petit */
+  margin-top: 40px;
+  margin-bottom: 80px;
+  pointer-events: none;
 }
 
+#container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* =======================================================
+   HERO – CHAT ÉCRIT (droite)
+======================================================= */
 .chat-wrapper {
-    width: 420px;
-    margin-right: 20px;
+  width: 420px;
+  margin: 0 auto 40px auto;
 }
 
 .chat-zone {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .chat-card {
-    backdrop-filter: blur(14px);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 18px;
-    padding: 20px;
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  padding: 20px;
 }
 
 .chat-messages {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 280px;
-    overflow-y: auto;
-    padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .chat-message {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 }
 
 .chat-message-bot .chat-bubble {
-    background: rgba(255, 255, 255, 0.12);
-    color: white;
-    backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  backdrop-filter: blur(12px);
 }
 
 .chat-bubble {
-    padding: 12px 16px;
-    border-radius: 14px;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    max-width: 90%;
-    animation: fadeIn 0.3s ease;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  max-width: 90%;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
 }
 
-/* ============================================
-   INPUT DU CHAT (Apple style)
-============================================ */
+/* Input du chat */
 .chat-input-row {
-    display: flex;
-    gap: 10px;
-    backdrop-filter: blur(16px);
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 10px;
+  display: flex;
+  gap: 10px;
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 10px;
 }
 
 .chat-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1rem;
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
 }
 
 .chat-input:focus {
-    outline: none;
+  outline: none;
 }
 
 .chat-send-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    border: none;
-    background: rgba(0, 191, 255, 0.35);
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.25s ease;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(0, 191, 255, 0.35);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
 .chat-send-btn:hover {
-    background: rgba(0, 191, 255, 0.55);
+  background: rgba(0, 191, 255, 0.55);
 }
 
-/* ============================================
-   ANIMATIONS
-============================================ */
+.chat-send-inner {
+  display: inline-block;
+}
+
+/* Anim apparition bulles */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* ============================================
+/* =======================================================
+   FOOTER – CTA ECOMMIND
+======================================================= */
+.cta-section {
+  padding: 60px 20px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cartes arguments */
+.cta-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.feature-card {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 13, 30, 0.88);
+  padding: 24px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.85);
+}
+
+.feature-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.feature-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.feature-title .gold {
+  color: #c9a55e;
+}
+.feature-title .blue {
+  color: #00bfff;
+}
+
+.feature-quote {
+  font-size: 0.9rem;
+  font-style: italic;
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+
+.feature-text {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+/* Bloc CTA principal */
+.cta-main-block {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.cta-title {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.brand {
+  color: #c9a55e;
+}
+
+.cta-subtitle {
+  margin-top: 16px;
+  font-size: 0.98rem;
+  opacity: 0.85;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button-wrapper {
+  margin-top: 24px;
+}
+
+.cta-main {
+  background: #000;
+  border: 1px solid #c9a55e;
+  border-radius: 999px;
+  padding: 16px 40px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+  box-shadow: 0 0 20px rgba(201, 165, 94, 0.5);
+}
+
+.cta-main:hover {
+  background: rgba(10, 10, 10, 0.95);
+  box-shadow: 0 0 35px rgba(201, 165, 94, 0.7);
+  transform: translateY(-2px);
+}
+
+.cta-main-icon {
+  color: #c9a55e;
+}
+
+.cta-reassurance {
+  margin-top: 16px;
+  font-size: 0.88rem;
+  opacity: 0.85;
+}
+
+/* =======================================================
    RESPONSIVE
-============================================ */
-@media (max-width: 950px) {
-    .chat-wrapper {
-        width: 100%;
-        margin-right: 0;
-        padding: 0 20px;
-    }
+======================================================= */
+@media (max-width: 900px) {
+  .orb-hero {
+    height: 320px;
+    margin-bottom: 60px;
+  }
+
+  .chat-wrapper {
+    width: 100%;
+    padding: 0 20px;
+    margin-bottom: 40px;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
 }
 
 @media (max-width: 600px) {
-    .chat-wrapper {
-        width: 100%;
-        padding: 0 10px;
-    }
+  .chat-wrapper {
+    padding: 0 10px;
+  }
 
-    .chat-card {
-        padding: 14px;
-    }
+  .chat-card {
+    padding: 14px;
+  }
+
+  .cta-section {
+    padding-inline: 16px;
+  }
 }
