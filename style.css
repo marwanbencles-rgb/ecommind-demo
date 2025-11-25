@@ -1,212 +1,310 @@
-/* =======================================================
-   GLOBAL RESET
-======================================================= */
+/* =========================
+   RESET & BASE
+   ========================= */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html,
 body {
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  background: #000;
-  font-family: "Inter", sans-serif;
-  color: #fff;
+  background: #000000;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
 }
 
-body {
-  position: relative;
-}
-
-/* =======================================================
-   BACKGROUND GLOBAL (cosmos fixe partout)
-======================================================= */
-body::before {
-  content: "";
+/* Orb 3D plein écran (canvas three.js) */
+#container {
   position: fixed;
   inset: 0;
-  background: url("background.png") center / cover no-repeat fixed;
-  opacity: 0.65;
-  z-index: -10;
+  z-index: 1;
 }
 
-/* =======================================================
-   HEADER
-======================================================= */
-.hero-header {
-  width: 100%;
-  text-align: center;
-  padding-top: 25px;
-  margin-bottom: 40px;
+/* Couche pour les effets visuels (orbe d'énergie) */
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
 }
 
-.hero-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* Titre Ecommind */
+.header {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 50;
+  mix-blend-mode: difference;
 }
 
-.hero-title {
-  font-size: 2.8rem;
-  font-weight: 700;
-}
-
-.hero-brand {
-  color: #00bfff;
+.header h1 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
   font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #ff6e7f, #bfe9ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0.9;
+  letter-spacing: -1px;
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.25));
 }
 
-.hero-subtitle {
-  margin-top: 10px;
-  font-size: 1.1rem;
-  opacity: 0.8;
+/* =========================
+   CHAT ÉCRIT – CARTE + BARRE
+   ========================= */
+
+/* Zone entière du chat, fixée à droite */
+.chat-zone {
+  position: fixed;
+  right: 4vw;
+  top: 18vh;
+  width: min(380px, 92vw);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Inter", sans-serif;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-/* =======================================================
-   HERO – ORBE 3D (défile avec la page)
-======================================================= */
-.orb-hero {
-  position: relative;
-  width: 100%;
-  height: 420px; /* ajuste si tu veux plus grand/petit */
-  margin-top: 40px;
-  margin-bottom: 80px;
+/* Quand on cache le chat pendant l’animation de l’orbe */
+.chat-zone.chat-hidden {
+  opacity: 0;
+  transform: translateX(24px);
   pointer-events: none;
 }
 
-#container {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+/* Carte de chat (style Astro / futuriste) */
+.chat-panel {
+  position: relative;
+  padding: 14px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top left, rgba(255,110,127,0.24), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(114,137,218,0.26), transparent 55%),
+    rgba(4,7,18,0.90);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.80),
+    0 0 26px rgba(255,110,127,0.45);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  min-height: 130px;
+  max-height: clamp(180px, 40vh, 240px);
+  overflow: hidden;
 }
 
-/* =======================================================
-   HERO – CHAT ÉCRIT (droite)
-======================================================= */
-.chat-wrapper {
-  width: 420px;
-  margin: 0 auto 40px auto;
-}
-
-.chat-zone {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.chat-card {
-  backdrop-filter: blur(14px);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 18px;
-  padding: 20px;
-}
-
+/* Zone scrollable des messages */
 .chat-messages {
+  max-height: 210px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: 280px;
-  overflow-y: auto;
-  padding-right: 6px;
+  gap: 6px;
+  padding-right: 4px;
 }
 
+.chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.35);
+  border-radius: 999px;
+}
+
+/* Messages */
 .chat-message {
   display: flex;
-  width: 100%;
-}
-
-.chat-message-bot .chat-bubble {
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
-  backdrop-filter: blur(12px);
-}
-
-.chat-bubble {
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-size: 0.95rem;
-  max-width: 90%;
+  font-size: 0.86rem;
   line-height: 1.4;
-  animation: fadeIn 0.3s ease;
 }
 
-/* Input du chat */
-.chat-input-row {
+.chat-message-user {
+  justify-content: flex-end;
+}
+
+.chat-message-assistant {
+  justify-content: flex-start;
+}
+
+/* Bulles – texte adaptatif */
+.chat-bubble {
+  max-width: clamp(75%, 80vw, 85%);
+  padding: 6px 11px;
+  border-radius: 10px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: clamp(0.82rem, 2vw, 1rem);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Bulle assistant (Ecommind) */
+.chat-message-assistant .chat-bubble {
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.92);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.70);
+}
+
+/* Bulle utilisateur (pastille verte) */
+.chat-message-user .chat-bubble {
+  background: linear-gradient(135deg, #00ff99, #00c96a);
+  color: #022515;
+  box-shadow:
+    0 0 18px rgba(0,255,153,0.65),
+    0 0 0 1px rgba(255,255,255,0.4);
+}
+
+/* =========================
+   BARRE IMESSAGE SOUS LA CARTE
+   ========================= */
+
+.imessage-bar {
   display: flex;
+  align-items: center;
   gap: 10px;
-  backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.16),
+      rgba(0,0,0,0.78)
+    );
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.75),
+    0 0 20px rgba(0,122,255,0.35);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
 }
 
-.chat-input {
+/* Champ texte dans la barre */
+.imessage-bar #morphText {
   flex: 1;
   background: transparent;
   border: none;
-  color: white;
-  font-size: 1rem;
-}
-
-.chat-input:focus {
+  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  color: #ffffff;
   outline: none;
 }
 
-.chat-send-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+.imessage-bar #morphText::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+/* Bouton envoyer (flèche) */
+.imessage-bar #typeBtn {
+  background: linear-gradient(135deg, #007aff, #0052ff);
   border: none;
-  background: rgba(0, 191, 255, 0.35);
-  color: white;
-  font-weight: 700;
+  border-radius: 999px;
+  padding: 7px 11px;
   cursor: pointer;
-  transition: 0.25s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 16px rgba(0,122,255,0.9),
+    0 0 0 1px rgba(255,255,255,0.4);
+  color: #ffffff;
 }
 
-.chat-send-btn:hover {
-  background: rgba(0, 191, 255, 0.55);
+.imessage-bar #typeBtn svg {
+  display: block;
 }
 
-.chat-send-inner {
-  display: inline-block;
-}
+/* =========================
+   RESPONSIVE
+   ========================= */
 
-/* Anim apparition bulles */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
+@media (max-width: 900px) {
+  .chat-zone {
+    right: 2rem;
+    top: 16vh;
+    width: min(340px, 92vw);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
-/* =======================================================
-   FOOTER – CTA ECOMMIND
-======================================================= */
-.cta-section {
-  padding: 60px 20px 80px;
+@media (max-width: 640px) {
+  .chat-zone {
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    top: auto;
+    bottom: 7rem;
+  }
+
+  .chat-zone.chat-hidden {
+    transform: translateX(-50%) translateY(16px);
+  }
+
+  .header {
+    top: 1.3rem;
+    left: 1.3rem;
+  }
+}
+:root {
+  --bg-main: #000000;
+  --gold: #C9A55E;
+  --blue-tech: #00BFFF;
+  --white: #FFFFFF;
+  --muted: #9CAEC7;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --radius-lg: 24px;
+  --transition-fast: 0.2s ease-out;
+  --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ⚠️ body supprimé pour ne pas casser l’orbe et le background global
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  background: radial-gradient(circle at 50% -20%, #042438 0%, #000000 65%);
+  color: var(--white);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  -webkit-font-smoothing: antialiased;
+}
+*/
+
+main {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 40px 20px 80px;
 }
 
+/* Animation d’apparition */
 .fade-up {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
-
 .fade-up.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ===========================
+   SECTION CTA ABONNEMENT
+   =========================== */
+
+.cta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
 }
 
 /* Cartes arguments */
@@ -214,137 +312,153 @@ body::before {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
-  margin-bottom: 40px;
 }
 
 .feature-card {
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(5, 13, 30, 0.88);
-  padding: 24px;
-  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.85);
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(0, 191, 255, 0.18), transparent 55%),
+    linear-gradient(145deg, rgba(5, 13, 30, 0.98), rgba(3, 6, 18, 0.98));
+  padding: 26px 24px 28px;
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background 0.25s ease-out;
+  transform-style: preserve-3d;
+  overflow: hidden;
+}
+
+.feature-card::after {
+  /* léger highlight en diagonale */
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -40%;
+  width: 70%;
+  height: 220%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.18), transparent 60%);
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.25s ease-out, transform 0.35s ease-out;
+  pointer-events: none;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px) rotateX(5deg) rotateY(-4deg);
+  border-color: rgba(201, 165, 94, 0.9);
+  box-shadow:
+    0 34px 80px rgba(0, 0, 0, 0.98),
+    0 0 28px rgba(0, 191, 255, 0.45);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(0, 191, 255, 0.22), transparent 60%),
+    linear-gradient(145deg, rgba(8, 18, 40, 0.98), rgba(3, 6, 18, 1));
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+  transform: translateX(40px);
 }
 
 .feature-icon {
-  font-size: 24px;
+  font-size: 26px;
   margin-bottom: 10px;
 }
 
 .feature-title {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   margin-bottom: 8px;
 }
-
-.feature-title .gold {
-  color: #c9a55e;
-}
-.feature-title .blue {
-  color: #00bfff;
-}
+.feature-title .gold { color: var(--gold); }
+.feature-title .blue { color: var(--blue-tech); }
 
 .feature-quote {
   font-size: 0.9rem;
   font-style: italic;
-  opacity: 0.85;
-  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 10px;
 }
 
 .feature-text {
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: var(--muted);
   line-height: 1.5;
 }
 
 /* Bloc CTA principal */
 .cta-main-block {
   text-align: center;
-  margin-top: 20px;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
 .cta-title {
-  font-size: 2rem;
+  font-size: clamp(1.8rem, 2.4vw, 2.3rem);
   font-weight: 600;
+  margin-bottom: 12px;
 }
-
-.brand {
-  color: #c9a55e;
-}
+.cta-title .brand { color: var(--gold); }
 
 .cta-subtitle {
-  margin-top: 16px;
+  color: var(--muted);
   font-size: 0.98rem;
-  opacity: 0.85;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 620px;
+  margin: 0 auto 28px auto;
+  line-height: 1.5;
 }
 
 .cta-button-wrapper {
-  margin-top: 24px;
+  display: flex;
+  justify-content: center;
 }
 
 .cta-main {
-  background: #000;
-  border: 1px solid #c9a55e;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid var(--gold);
   border-radius: 999px;
   padding: 16px 40px;
-  color: #fff;
-  cursor: pointer;
+  color: var(--white);
+  text-transform: uppercase;
   font-weight: 600;
+  font-size: 0.96rem;
+  cursor: pointer;
+  transition: all 0.22s ease-in-out;
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.96),
+    0 0 24px rgba(201, 165, 94, 0.55);
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  transition: 0.2s;
-  box-shadow: 0 0 20px rgba(201, 165, 94, 0.5);
+}
+.cta-main-icon {
+  color: var(--gold);
+  font-size: 1.05rem;
 }
 
 .cta-main:hover {
-  background: rgba(10, 10, 10, 0.95);
-  box-shadow: 0 0 35px rgba(201, 165, 94, 0.7);
-  transform: translateY(-2px);
-}
-
-.cta-main-icon {
-  color: #c9a55e;
+  background: rgba(10, 10, 10, 0.98);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 1),
+    0 0 36px rgba(201, 165, 94, 0.75);
+  transform: translateY(-3px);
 }
 
 .cta-reassurance {
   margin-top: 16px;
-  font-size: 0.88rem;
-  opacity: 0.85;
+  font-size: 0.86rem;
+  color: rgba(156, 174, 199, 0.9);
 }
 
-/* =======================================================
-   RESPONSIVE
-======================================================= */
+/* Responsive */
 @media (max-width: 900px) {
-  .orb-hero {
-    height: 320px;
-    margin-bottom: 60px;
-  }
-
-  .chat-wrapper {
-    width: 100%;
-    padding: 0 20px;
-    margin-bottom: 40px;
-  }
-
-  .hero-title {
-    font-size: 2.2rem;
-  }
+  main { padding-inline: 16px; }
 }
 
-@media (max-width: 600px) {
-  .chat-wrapper {
-    padding: 0 10px;
-  }
-
-  .chat-card {
-    padding: 14px;
-  }
-
-  .cta-section {
-    padding-inline: 16px;
-  }
+@media (max-width: 640px) {
+  .cta-section { gap: 40px; }
+  .cta-main { width: 100%; justify-content: center; }
 }

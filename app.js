@@ -1,10 +1,6 @@
-/* ============================================================
-   ORB 3D — ECOMMIND
-============================================================ */
-
 let scene, camera, renderer, particles;
 const count = 12000;
-let currentState = "sphere";
+let currentState = 'sphere';
 
 function init() {
   scene = new THREE.Scene();
@@ -15,21 +11,17 @@ function init() {
     1000
   );
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x000000);
-  document.getElementById("container").appendChild(renderer.domElement);
+  renderer.setClearColor(0x000000, 0);
+  document.getElementById('container').appendChild(renderer.domElement);
 
-  camera.position.z = 25;
+  camera.position.z = 27; // un peu plus loin, confort visuel
 
   createParticles();
   setupEventListeners();
   animate();
 }
-
-/* ============================================================
-   PARTICULES GÉNÉRALES
-============================================================ */
 
 function createParticles() {
   const geometry = new THREE.BufferGeometry();
@@ -43,245 +35,331 @@ function createParticles() {
     return {
       x: 8 * Math.cos(theta) * Math.sin(phi),
       y: 8 * Math.sin(theta) * Math.sin(phi),
-      z: 8 * Math.cos(phi),
+      z: 8 * Math.cos(phi)
     };
   }
 
   for (let i = 0; i < count; i++) {
-    const p = sphericalDistribution(i);
+    const point = sphericalDistribution(i);
 
-    positions[i * 3] = p.x + (Math.random() - 0.5) * 0.5;
-    positions[i * 3 + 1] = p.y + (Math.random() - 0.5) * 0.5;
-    positions[i * 3 + 2] = p.z + (Math.random() - 0.5) * 0.5;
+    positions[i * 3] = point.x + (Math.random() - 0.5) * 0.5;
+    positions[i * 3 + 1] = point.y + (Math.random() - 0.5) * 0.5;
+    positions[i * 3 + 2] = point.z + (Math.random() - 0.5) * 0.5;
 
     const color = new THREE.Color();
-    const depth = Math.sqrt(p.x * p.x + p.y * p.y + p.z * p.z) / 8;
-    color.setHSL(0.55 + depth * 0.2, 0.7, 0.45 + depth * 0.3);
+    const depth =
+      Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z) / 8;
+    color.setHSL(0.5 + depth * 0.2, 0.7, 0.4 + depth * 0.3);
 
     colors[i * 3] = color.r;
     colors[i * 3 + 1] = color.g;
     colors[i * 3 + 2] = color.b;
   }
 
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
   const material = new THREE.PointsMaterial({
     size: 0.08,
     vertexColors: true,
     blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.85,
-    sizeAttenuation: true,
+    opacity: 0.8,
+    sizeAttenuation: true
   });
 
   if (particles) scene.remove(particles);
-
   particles = new THREE.Points(geometry, material);
+  particles.rotation.x = 0;
+  particles.rotation.y = 0;
+  particles.rotation.z = 0;
   scene.add(particles);
 }
 
-/* ============================================================
-   EVENTS
-============================================================ */
-
 function setupEventListeners() {
-  const typeBtn = document.getElementById("typeBtn");
-  const input = document.getElementById("morphText");
+  const typeBtn = document.getElementById('typeBtn');
+  const input = document.getElementById('morphText');
 
-  typeBtn.addEventListener("click", () => handleInput());
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleInput();
+  function handleSend() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    addUserMessage(text);
+    triggerOrbWithHide(text);
+    input.value = '';
+  }
+
+  typeBtn.addEventListener('click', handleSend);
+
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
   });
 }
 
-function handleInput() {
-  const input = document.getElementById("morphText");
-  const text = input.value.trim();
-  if (!text) return;
-
-  addUserMessage(text);
-  morphToText(text);
-
-  // Option : cacher le chat pendant l’animation
-  hideChatTemporarily();
-
-  input.value = "";
-}
-
-/* ============================================================
-   CHAT (AJOUT MESSAGES)
-============================================================ */
+/* ====== CHAT 2D ====== */
 
 function addUserMessage(text) {
-  const zone = document.getElementById("chatMessages");
+  const chatMessages = document.getElementById('chatMessages');
+  if (!chatMessages) return;
 
-  const bubble = document.createElement("div");
-  bubble.className = "chat-bubble";
-  bubble.style.background = "rgba(0,191,255,0.25)";
+  const wrapper = document.createElement('div');
+  wrapper.className = 'chat-message chat-message-user';
 
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble';
   bubble.textContent = text;
 
-  const wrap = document.createElement("div");
-  wrap.className = "chat-message";
-  wrap.appendChild(bubble);
+  wrapper.appendChild(bubble);
+  chatMessages.appendChild(wrapper);
 
-  zone.appendChild(wrap);
-  zone.scrollTop = zone.scrollHeight;
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/* ============================================================
-   EFFET DISSIMULATION TEMPORAIRE DU CHAT
-============================================================ */
+/* ====== LOGIQUE ORBE : cacher le chat + jouer mot par mot ====== */
 
-function hideChatTemporarily() {
-  const wrapper = document.querySelector(".chat-wrapper");
+function triggerOrbWithHide(text) {
+  const chatZone = document.querySelector('.chat-zone');
+  if (chatZone) chatZone.classList.add('chat-hidden');
 
-  wrapper.style.opacity = "0";
-  wrapper.style.pointerEvents = "none";
+  const words = text.split(/\s+/).filter(Boolean);
+  // on limite pour pas que ça dure 1 minute sur un texte énorme
+  const maxWords = 12;
+  const sequence = words.slice(0, maxWords);
 
-  setTimeout(() => {
-    wrapper.style.opacity = "1";
-    wrapper.style.pointerEvents = "auto";
-  }, 2800); // durée synchro animation
+  playWordSequence(sequence, 0, () => {
+    // une fois terminé, on repasse en sphère et on réaffiche le chat
+    morphToCircleFast(() => {
+      if (chatZone) chatZone.classList.remove('chat-hidden');
+    });
+  });
 }
 
-/* ============================================================
-   TEXTE → POINTS
-============================================================ */
+/**
+ * Joue les mots les uns après les autres dans l'orbe.
+ * Chaque mot :
+ *  - morph rapide vers le texte
+ *  - petit temps de pause
+ *  - retour rapide en sphère
+ */
+function playWordSequence(words, index, onDone) {
+  if (index >= words.length) {
+    if (onDone) onDone();
+    return;
+  }
+
+  const word = words[index];
+
+  // Durées (en secondes) : rapide
+  const morphDuration = 0.35;
+  const holdDuration = 0.12;
+  const backDuration = 0.25;
+
+  morphToText(word, morphDuration, holdDuration, () => {
+    morphToCircleFast(() => {
+      // enchaîne sur le mot suivant très vite
+      setTimeout(() => {
+        playWordSequence(words, index + 1, onDone);
+      }, backDuration * 350); // petit délai pour la fluidité
+    }, backDuration);
+  });
+}
+
+/* =========================
+   Génération des points du texte
+   (1 seul mot, donc on peut le rendre gros)
+   ========================= */
 
 function createTextPoints(text) {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
 
-  const fontSize = 120;
+  // Ici on veut un mot bien gros
+  const baseSize = 180;
+  const minSize = 80;
+  const fontSize = Math.max(minSize, baseSize - text.length * 4);
+
+  const padding = 40;
+
   ctx.font = `bold ${fontSize}px Arial`;
+  const textMetrics = ctx.measureText(text);
+  const textWidth = textMetrics.width;
+  const textHeight = fontSize;
 
-  const metrics = ctx.measureText(text);
-  canvas.width = metrics.width + 40;
-  canvas.height = fontSize + 40;
+  canvas.width = textWidth + padding * 2;
+  canvas.height = textHeight + padding * 2;
 
-  ctx.fillStyle = "white";
+  ctx.fillStyle = 'white';
   ctx.font = `bold ${fontSize}px Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
   ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
-  const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const pixels = img.data;
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const pixels = imageData.data;
   const points = [];
+  const threshold = 128;
+
+  // largeur max du mot dans la scène (plus petit = mot plus gros)
+  const targetWorldWidth = 11;
+  const scale = targetWorldWidth / canvas.width;
 
   for (let i = 0; i < pixels.length; i += 4) {
-    if (pixels[i] > 150 && Math.random() < 0.28) {
+    if (pixels[i] > threshold) {
       const x = (i / 4) % canvas.width;
       const y = Math.floor(i / 4 / canvas.width);
 
-      points.push({
-        x: (x - canvas.width / 2) / 10,
-        y: -(y - canvas.height / 2) / 10,
-      });
+      if (Math.random() < 0.4) {
+        points.push({
+          x: (x - canvas.width / 2) * scale,
+          y: -(y - canvas.height / 2) * scale
+        });
+      }
     }
   }
 
   return points;
 }
 
-/* ============================================================
-   MORPH → TEXTE
-============================================================ */
-
-function morphToText(text) {
-  currentState = "text";
-  const target = createTextPoints(text);
-
+/**
+ * Morph vers le texte (un mot), puis appelle onComplete après
+ */
+function morphToText(text, morphDuration = 0.35, holdDuration = 0.12, onComplete) {
+  currentState = 'text';
+  const textPoints = createTextPoints(text);
   const positions = particles.geometry.attributes.position.array;
-  const newPos = new Float32Array(count * 3);
+  const targetPositions = new Float32Array(count * 3);
+
+  gsap.to(particles.rotation, {
+    x: 0,
+    y: 0,
+    z: 0,
+    duration: morphDuration * 0.8
+  });
 
   for (let i = 0; i < count; i++) {
-    if (i < target.length) {
-      newPos[i * 3] = target[i].x;
-      newPos[i * 3 + 1] = target[i].y;
-      newPos[i * 3 + 2] = 0;
+    if (i < textPoints.length) {
+      targetPositions[i * 3] = textPoints[i].x;
+      targetPositions[i * 3 + 1] = textPoints[i].y;
+      targetPositions[i * 3 + 2] = 0;
     } else {
       const angle = Math.random() * Math.PI * 2;
-      newPos[i * 3] = Math.cos(angle) * 20;
-      newPos[i * 3 + 1] = Math.sin(angle) * 20;
-      newPos[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      const radius = Math.random() * 20 + 10;
+      targetPositions[i * 3] = Math.cos(angle) * radius;
+      targetPositions[i * 3 + 1] = Math.sin(angle) * radius;
+      targetPositions[i * 3 + 2] = (Math.random() - 0.5) * 10;
     }
   }
 
   for (let i = 0; i < positions.length; i += 3) {
-    gsap.to(positions, {
-      [i]: newPos[i],
-      [i + 1]: newPos[i + 1],
-      [i + 2]: newPos[i + 2],
-      duration: 1.6,
-      ease: "power2.inOut",
-      onUpdate: () => (particles.geometry.attributes.position.needsUpdate = true),
+    gsap.to(particles.geometry.attributes.position.array, {
+      [i]: targetPositions[i],
+      [i + 1]: targetPositions[i + 1],
+      [i + 2]: targetPositions[i + 2],
+      duration: morphDuration,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        particles.geometry.attributes.position.needsUpdate = true;
+      }
     });
   }
 
-  setTimeout(() => morphToSphere(), 2200);
+  // callback après morph + petit temps de pause
+  const totalMs = (morphDuration + holdDuration) * 1000;
+  setTimeout(() => {
+    if (onComplete) onComplete();
+  }, totalMs);
 }
 
-/* ============================================================
-   MORPH → SPHERE
-============================================================ */
-
-function morphToSphere() {
-  currentState = "sphere";
-
+/**
+ * Retour rapide à la sphère
+ */
+function morphToCircleFast(onComplete, duration = 0.25) {
+  currentState = 'sphere';
   const positions = particles.geometry.attributes.position.array;
-  const newPos = new Float32Array(count * 3);
+  const targetPositions = new Float32Array(count * 3);
+  const colors = particles.geometry.attributes.color.array;
 
-  function distrib(i) {
+  function sphericalDistribution(i) {
     const phi = Math.acos(-1 + (2 * i) / count);
     const theta = Math.sqrt(count * Math.PI) * phi;
 
     return {
       x: 8 * Math.cos(theta) * Math.sin(phi),
       y: 8 * Math.sin(theta) * Math.sin(phi),
-      z: 8 * Math.cos(phi),
+      z: 8 * Math.cos(phi)
     };
   }
 
   for (let i = 0; i < count; i++) {
-    const p = distrib(i);
-    newPos[i * 3] = p.x;
-    newPos[i * 3 + 1] = p.y;
-    newPos[i * 3 + 2] = p.z;
+    const point = sphericalDistribution(i);
+
+    targetPositions[i * 3] =
+      point.x + (Math.random() - 0.5) * 0.5;
+    targetPositions[i * 3 + 1] =
+      point.y + (Math.random() - 0.5) * 0.5;
+    targetPositions[i * 3 + 2] =
+      point.z + (Math.random() - 0.5) * 0.5;
+
+    const depth =
+      Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z) /
+      8;
+    const color = new THREE.Color();
+    color.setHSL(0.5 + depth * 0.2, 0.7, 0.4 + depth * 0.3);
+
+    colors[i * 3] = color.r;
+    colors[i * 3 + 1] = color.g;
+    colors[i * 3 + 2] = color.b;
   }
 
   for (let i = 0; i < positions.length; i += 3) {
-    gsap.to(positions, {
-      [i]: newPos[i],
-      [i + 1]: newPos[i + 1],
-      [i + 2]: newPos[i + 2],
-      duration: 1.8,
-      ease: "power2.inOut",
-      onUpdate: () => (particles.geometry.attributes.position.needsUpdate = true),
+    gsap.to(particles.geometry.attributes.position.array, {
+      [i]: targetPositions[i],
+      [i + 1]: targetPositions[i + 1],
+      [i + 2]: targetPositions[i + 2],
+      duration,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        particles.geometry.attributes.position.needsUpdate = true;
+      }
     });
+  }
+
+  for (let i = 0; i < colors.length; i += 3) {
+    gsap.to(particles.geometry.attributes.color.array, {
+      [i]: colors[i],
+      [i + 1]: colors[i + 1],
+      [i + 2]: colors[i + 2],
+      duration,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        particles.geometry.attributes.color.needsUpdate = true;
+      }
+    });
+  }
+
+  if (onComplete) {
+    setTimeout(onComplete, duration * 1000 + 80);
   }
 }
 
-/* ============================================================
-   ANIMATION DE LA SPHÈRE
-============================================================ */
+/* ====== LOOP ====== */
 
 function animate() {
   requestAnimationFrame(animate);
 
-  if (currentState === "sphere") {
-    particles.rotation.y += 0.0028;
+  if (currentState === 'sphere') {
+    particles.rotation.y += 0.004; // un peu plus rapide
   }
 
   renderer.render(scene, camera);
 }
-
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
 
 init();

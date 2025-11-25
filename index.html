@@ -1,187 +1,100 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Ecommind – Démo IA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>Ecommind – Démo IA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Polices -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
-
-
-  <!-- Libs 3D / Anim -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js" defer></script>
-
-  <!-- Orbe + chat -->
-  <script src="app.js" defer></script>
+    <!-- Style global -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- ================================================== -->
-  <!-- ===================== HEADER ====================== -->
-  <!-- ================================================== -->
+    <!-- ===================================================== -->
+    <!-- =============== 1. BACKGROUND GLOBAL ================= -->
+    <!-- ===================================================== -->
+    <div id="global-background"></div>
 
-  <header id="site-header" class="hero-header">
-    <div class="hero-inner">
-      <h1 class="hero-title">
-        <span class="hero-brand">Ecommind</span> écoute.
-      </h1>
-      <p class="hero-subtitle">
-        Dites ce que vous voulez automatiser. L’orbe écoute. Le système s’adapte.
-      </p>
-    </div>
-  </header>
 
-  <!-- ================================================== -->
-  <!-- ====================== HERO ======================= -->
-  <!--  Orbe 3D + Chat écrit à droite                     -->
-  <!-- ================================================== -->
 
-  <main id="page-main">
+    <!-- ===================================================== -->
+    <!-- ======================= 2. HEADER ==================== -->
+    <!-- ===================================================== -->
+    <header id="site-header">
+        <!-- Ton header viendra ici (logo / menu / titre) -->
+    </header>
 
-    <!-- Orbe 3D (ne pas toucher l’ID #container) -->
+
+
+    <!-- ===================================================== -->
+    <!-- ======================== 3. HERO ====================== -->
+    <!-- =============== (ORBE + TITRE + CTA HERO) ============ -->
+    <!-- ===================================================== -->
     <section id="hero-section">
-      <section class="orb-hero">
-        <div id="container"></div>
-      </section>
 
-      <!-- Chat écrit (structure et IDs conservés) -->
-      <section class="chat-wrapper">
-        <div class="chat-zone">
-
-          <div class="chat-card">
-            <div class="chat-message chat-message-bot">
-              <div class="chat-bubble">
-                Bonjour, je vous écoute. Décrivez ce que vous voulez automatiser
-                et je vous route vers votre futur système Ecommind.
-              </div>
-            </div>
-
-            <div id="chatMessages" class="chat-messages"></div>
-          </div>
-
-          <form
-            class="chat-input-row"
-            onsubmit="event.preventDefault(); document.getElementById('typeBtn').click();"
-          >
-            <input
-              type="text"
-              id="morphText"
-              class="chat-input"
-              placeholder="Message..."
-              autocomplete="off"
-            >
-            <button type="button" id="typeBtn" class="chat-send-btn">
-              <span class="chat-send-inner">→</span>
-            </button>
-          </form>
-
+        <!-- ORBE -->
+        <div id="orb-wrapper">
+            <div id="container"></div> <!-- Three.js -->
         </div>
-      </section>
+
+        <!-- HERO TEXT -->
+        <div id="hero-content">
+            <!-- Titre, sous-titre, CTA hero -->
+        </div>
+
     </section>
 
-    <!-- ================================================== -->
-    <!-- ===================== FOOTER ====================== -->
-    <!--      CTA abonnement Ecommind (déjà prêt)          -->
-    <!-- ================================================== -->
 
+
+    <!-- ===================================================== -->
+    <!-- ======================== 4. CHAT ====================== -->
+    <!-- =================== (Chat écrit à droite) ============ -->
+    <!-- ===================================================== -->
+    <section id="chat-section">
+
+        <div id="chat-wrapper">
+            <div id="chat-messages-area">
+                <!-- Messages du chat -->
+            </div>
+
+            <form id="chat-input-row">
+                <!-- input + bouton -->
+            </form>
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- ====================== 5. FOOTER ====================== -->
+    <!-- ===================== (CTA ECOMMIND) ================= -->
+    <!-- ===================================================== -->
     <footer id="site-footer">
-      <section class="cta-section fade-up" data-animate>
 
-        <div class="cta-badges">
+        <section id="cta-section">
+            <!-- CTA Ecommind (cartes + bouton) -->
+        </section>
 
-          <!-- ARGUMENT 1 -->
-          <article class="feature-card">
-            <div class="feature-icon">🛠</div>
-            <h3 class="feature-title">
-              Maintenance illimitée, <span class="gold">sans frais cachés</span>
-            </h3>
-            <p class="feature-quote">
-              « Chaque bug, chaque mise à jour est incluse dans votre abonnement. »
-            </p>
-            <p class="feature-text">
-              Correctifs, mises à jour et optimisations sont pris en charge en continu.
-              Vous n’achetez plus des heures d’intervention : vous achetez un système
-              qui reste opérationnel.
-            </p>
-          </article>
-
-          <!-- ARGUMENT 2 -->
-          <article class="feature-card">
-            <div class="feature-icon">🛡</div>
-            <h3 class="feature-title">
-              Cybersécurité intégrée, <span class="blue">pilotée par IA</span>
-            </h3>
-            <p class="feature-quote">
-              « Votre boutique reste en ligne, vos données restent protégées. »
-            </p>
-            <p class="feature-text">
-              Pare-feu, surveillance temps réel, sauvegardes chiffrées et
-              plan de reprise après incident : l’abonnement inclut une défense
-              active, pas seulement un antivirus symbolique.
-            </p>
-          </article>
-
-          <!-- ARGUMENT 3 -->
-          <article class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3 class="feature-title">
-              SLA clair, <span class="gold">réponse en quelques minutes</span>
-            </h3>
-            <p class="feature-quote">
-              « Quand quelque chose bloque, vous n’êtes plus seul. »
-            </p>
-            <p class="feature-text">
-              Canal prioritaire, temps de réponse garanti et suivi des incidents :
-              vous savez qui surveille votre business, quand nous intervenons
-              et ce qui a été résolu.
-            </p>
-          </article>
-
-        </div>
-
-        <div class="cta-main-block">
-          <h2 class="cta-title">
-            Avec l’abonnement <span class="brand">Ecommind</span>, votre système est
-            maintenu, sécurisé et surveillé en continu.
-          </h2>
-          <p class="cta-subtitle">
-            Pas de factures surprises, pas de prestataires différents pour chaque problème.
-            Un abonnement clair. Une équipe qui prend la responsabilité technique.
-          </p>
-
-          <div class="cta-button-wrapper">
-            <button class="cta-main" id="cta-subscribe">
-              <span class="cta-main-icon">⚡</span>
-              <span>Sécuriser mon business avec Ecommind</span>
-            </button>
-          </div>
-
-          <p class="cta-reassurance">
-            Inclus : maintenance illimitée, monitoring 24/7, cybersécurité avancée, sauvegardes automatisées.
-          </p>
-        </div>
-
-      </section>
     </footer>
 
-  </main>
 
-  <!-- JS CTA -->
-  <script src="cta.js" defer></script>
+
+    <!-- ===================================================== -->
+    <!-- =================== 6. SCRIPTS ======================= -->
+    <!-- ===================================================== -->
+
+    <!-- Three.js + GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+
+    <!-- Ton JS perso (orb + chat) -->
+    <script src="app.js"></script>
+
 </body>
 </html>
