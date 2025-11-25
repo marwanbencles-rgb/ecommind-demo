@@ -1,110 +1,57 @@
-// header.js – Logique du header Ecommind (CTA + nav + mobile)
+// header.js – Logique simple du header (menu mobile + nav active + CTA)
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ==========================
-  // CONFIG
-  // ==========================
-  // Mets ici l’URL de ta démo (Netlify / autre).
-  // Si tu laisses vide, le CTA scrolle juste en haut de page.
-  const DEMO_URL = ""; // ex: "https://ecommind-demo.netlify.app"
-
-  const header = document.querySelector(".header");
-  const primaryCta = document.querySelector(".btn-primary");
-  const navLinks = document.querySelectorAll(".nav-link");
   const mobileToggle = document.querySelector(".header-mobile-toggle");
   const nav = document.querySelector(".nav");
+  const navLinks = document.querySelectorAll(".nav-link");
+  const cta = document.querySelector(".btn-primary");
 
-  // ==========================
-  // CTA "Lancer la démo"
-  // ==========================
-  function handleDemoClick(event) {
-    event.preventDefault();
-
-    if (DEMO_URL && DEMO_URL.trim() !== "") {
-      window.open(DEMO_URL, "_blank", "noopener");
-      return;
-    }
-
-    // Fallback : remonte en haut de page (ou plus tard, scroll vers le hero)
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+  // ===== MENU MOBILE =====
+  if (mobileToggle && nav) {
+    mobileToggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      nav.classList.toggle("nav--open");
     });
-
-    // Petit effet visuel possible plus tard (GSAP, etc.)
   }
 
-  if (primaryCta) {
-    primaryCta.addEventListener("click", handleDemoClick);
-  }
-
-  // ==========================
-  // NAV ACTIVE (desktop)
-  // ==========================
-  function setActiveLink(clickedLink) {
-    navLinks.forEach((link) => {
-      link.classList.remove("nav-link--active");
-    });
-    if (clickedLink) {
-      clickedLink.classList.add("nav-link--active");
-    }
-  }
-
+  // ===== NAV ACTIVE =====
   navLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      setActiveLink(link);
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
 
-      const label = link.textContent?.trim().toLowerCase();
+      // état visuel actif
+      navLinks.forEach((l) => l.classList.remove("nav-link--active"));
+      link.classList.add("nav-link--active");
 
-      // Ici tu pourras brancher un scroll vers des sections :
-      // ex: if (label.includes("tarifs")) { document.querySelector("#tarifs").scrollIntoView(...) }
-      // Pour l’instant, ça ne fait que gérer l’état visuel.
-    });
-  });
+      // plus tard : brancher ici le scroll vers les sections
+      // ex:
+      // const targetId = link.dataset.target; // si tu ajoutes data-target
+      // document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
 
-  // ==========================
-  // MENU MOBILE
-  // ==========================
-  function toggleMobileMenu() {
-    if (!nav || !mobileToggle) return;
-
-    const isOpen = nav.classList.toggle("nav--open");
-    document.body.classList.toggle("menu-open", isOpen);
-
-    mobileToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  }
-
-  if (mobileToggle) {
-    mobileToggle.addEventListener("click", (event) => {
-      event.preventDefault();
-      toggleMobileMenu();
-    });
-  }
-
-  // Fermer le menu mobile quand on clique sur un lien
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
+      // ferme le menu sur mobile après clic
       if (nav.classList.contains("nav--open")) {
         nav.classList.remove("nav--open");
-        document.body.classList.remove("menu-open");
-        if (mobileToggle) {
-          mobileToggle.setAttribute("aria-expanded", "false");
-        }
       }
     });
   });
 
-  // ==========================
-  // EFFET SCROLL SUR LE HEADER
-  // ==========================
-  function handleScroll() {
-    if (!header) return;
+  // ===== CTA "Essayer la démo" =====
+  if (cta) {
+    cta.addEventListener("click", (e) => {
+      e.preventDefault();
 
-    const scrolled = window.scrollY > 10;
-    header.classList.toggle("header--scrolled", scrolled);
+      // 👉 Remplace par l’URL de ta démo Netlify ou autre
+      const DEMO_URL = ""; // ex: "https://ecommind-demo.netlify.app"
+
+      if (DEMO_URL && DEMO_URL.trim() !== "") {
+        window.open(DEMO_URL, "_blank", "noopener");
+      } else {
+        // Fallback : léger scroll vers le haut (ou futur hero)
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    });
   }
-
-  window.addEventListener("scroll", handleScroll);
-  handleScroll(); // état initial
 });

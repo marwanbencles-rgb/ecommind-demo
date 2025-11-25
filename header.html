@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecommind – Header</title>
+  <title>Ecommind – Header simple</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -34,98 +34,104 @@
       color: inherit;
     }
 
-    /* ===== HEADER ===== */
+    /* ===== HEADER SIMPLE ===== */
 
     .header {
       position: sticky;
       top: 0;
       z-index: 40;
-      background-color: rgba(0, 0, 0, 0.94);
-      backdrop-filter: blur(18px);
+      background-color: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .header-inner {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1rem 1.5rem;
+      padding: 0.8rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1.25rem;
+      gap: 1rem;
     }
+
+    /* LOGO / MARQUE */
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 0.5rem;
     }
 
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      border: 1px solid rgba(201, 165, 94, 0.7);
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 191, 255, 0.7);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
       letter-spacing: 0.08em;
-      color: var(--gold);
-      box-shadow:
-        0 0 16px rgba(0, 191, 255, 0.45),
-        0 0 28px rgba(201, 165, 94, 0.4);
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
+      text-transform: uppercase;
+      color: var(--blue);
     }
 
     .brand-name {
       font-size: 0.98rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
-    .brand-tagline {
-      font-size: 0.78rem;
-      color: var(--muted);
-      max-width: 260px;
-    }
+    /* NAV */
 
     .nav {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1.3rem;
       font-size: 0.86rem;
     }
 
     .nav-link {
-      padding: 0.4rem 0.7rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
+      padding: 0.25rem 0;
       color: var(--muted);
+      position: relative;
       cursor: pointer;
-      transition: all 0.18s ease-out;
-      white-space: nowrap;
-      background-color: transparent;
+      border: none;
+      background: none;
+      font: inherit;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.2rem;
+      width: 0;
+      height: 1px;
+      background-color: var(--gold);
+      transition: width 0.18s ease-out;
     }
 
     .nav-link:hover {
       color: var(--text-main);
-      border-color: rgba(148, 163, 184, 0.4);
-      background-color: rgba(13, 27, 42, 0.95);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
     }
 
     .nav-link--active {
       color: var(--gold);
-      border-color: rgba(201, 165, 94, 0.8);
-      background-color: rgba(13, 27, 42, 1);
     }
+
+    .nav-link--active::after {
+      width: 100%;
+    }
+
+    /* CTA */
 
     .header-right {
       display: flex;
@@ -133,37 +139,17 @@
       gap: 0.8rem;
     }
 
-    .header-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.78rem;
-      color: var(--muted);
-      padding: 0.35rem 0.7rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      background-color: rgba(13, 27, 42, 1);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background-color: #22c55e;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
-    }
-
     .btn-primary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.45rem;
-      padding: 0.55rem 1.15rem;
+      gap: 0.4rem;
+      padding: 0.5rem 1.1rem;
       border-radius: 999px;
       border: 1px solid var(--gold);
       background-color: var(--gold);
       color: #050505;
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -172,7 +158,7 @@
     }
 
     .btn-primary span.icon {
-      font-size: 1.05rem;
+      font-size: 1rem;
       transform: translateY(1px);
     }
 
@@ -180,9 +166,11 @@
       filter: brightness(1.06);
       transform: translateY(-1px);
       box-shadow:
-        0 10px 22px rgba(201, 165, 94, 0.35),
-        0 0 26px rgba(0, 191, 255, 0.35);
+        0 8px 18px rgba(201, 165, 94, 0.3),
+        0 0 18px rgba(0, 191, 255, 0.25);
     }
+
+    /* BURGER MOBILE */
 
     .header-mobile-toggle {
       display: none;
@@ -192,25 +180,40 @@
       border: 1px solid rgba(148, 163, 184, 0.7);
       background-color: rgba(13, 27, 42, 1);
       color: var(--text-main);
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       align-items: center;
       justify-content: center;
       cursor: pointer;
     }
 
-    /* Placeholder de contenu pour voir le header en sticky */
-    .placeholder-content {
-      height: 200vh;
-      background-color: var(--bg-main);
-    }
+    /* NAV MOBILE ÉTAT OUVERT */
 
     @media (max-width: 900px) {
-      .nav {
-        display: none;
-      }
-
       .header-inner {
         padding-inline: 1rem;
+      }
+
+      .nav {
+        position: absolute;
+        inset: 56px 1rem auto 1rem;
+        padding: 0.9rem 1rem;
+        border-radius: 0.9rem;
+        background-color: rgba(0, 0, 0, 0.96);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        transform-origin: top right;
+        transform: scale(0.95);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.16s ease-out, transform 0.16s ease-out;
+      }
+
+      .nav.nav--open {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
       }
 
       .header-mobile-toggle {
@@ -219,54 +222,86 @@
     }
 
     @media (max-width: 600px) {
-      .brand-tagline {
-        display: none;
+      .btn-primary {
+        padding-inline: 0.9rem;
       }
+    }
 
-      .header-status {
-        display: none;
-      }
+    /* Juste pour voir quelque chose sous le header pendant tes tests */
+    .placeholder {
+      height: 200vh;
+      background: radial-gradient(circle at 0 0, rgba(0,191,255,0.15), transparent 55%), #000;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER ECOMMIND -->
+  <!-- HEADER SIMPLE ECOMMIND -->
   <header class="header">
     <div class="header-inner">
       <div class="brand">
-        <div class="brand-logo">EA</div>
-        <div class="brand-text">
-          <div class="brand-name">Ecommind Agency</div>
-          <div class="brand-tagline">Captiver. Déclencher. Convertir. Automatiquement.</div>
-        </div>
+        <div class="brand-mark">EA</div>
+        <div class="brand-name">Ecommind</div>
       </div>
 
       <nav class="nav">
-        <button class="nav-link nav-link--active" type="button">Démo IA</button>
-        <button class="nav-link" type="button">Automatisations</button>
-        <button class="nav-link" type="button">Secteurs</button>
-        <button class="nav-link" type="button">Tarifs</button>
+        <button class="nav-link nav-link--active" type="button">Démo</button>
+        <button class="nav-link" type="button">Offres</button>
+        <button class="nav-link" type="button">Contact</button>
       </nav>
 
       <div class="header-right">
-        <div class="header-status">
-          <span class="status-dot"></span>
-          IA prête à closer
-        </div>
         <button class="btn-primary" type="button">
           <span class="icon">▶</span>
-          Lancer la démo
+          Essayer la démo
         </button>
-        <button class="header-mobile-toggle" type="button" aria-label="Ouvrir le menu">
+        <button class="header-mobile-toggle" type="button" aria-label="Menu">
           ☰
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Contenu temporaire juste pour visualiser le header sticky -->
-  <div class="placeholder-content"></div>
+  <!-- Contenu temporaire pour tester le scroll -->
+  <div class="placeholder"></div>
 
+  <script>
+    // JS simple pour le menu mobile + CTA
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const mobileToggle = document.querySelector(".header-mobile-toggle");
+      const nav = document.querySelector(".nav");
+      const navLinks = document.querySelectorAll(".nav-link");
+      const cta = document.querySelector(".btn-primary");
+
+      // Menu mobile
+      if (mobileToggle && nav) {
+        mobileToggle.addEventListener("click", (e) => {
+          e.preventDefault();
+          nav.classList.toggle("nav--open");
+        });
+      }
+
+      // Active state nav
+      navLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          navLinks.forEach((l) => l.classList.remove("nav-link--active"));
+          link.classList.add("nav-link--active");
+
+          // Plus tard : scroll vers la bonne section
+        });
+      });
+
+      // CTA -> à brancher sur ta démo
+      if (cta) {
+        cta.addEventListener("click", (e) => {
+          e.preventDefault();
+          // Remplace par l’URL de ta démo Netlify
+          // window.open("https://ton-lien-demo.netlify.app", "_blank");
+        });
+      }
+    });
+  </script>
 </body>
 </html>
