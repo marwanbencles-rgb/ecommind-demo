@@ -1,21 +1,6 @@
-/* =========================================================
-   VARIABLES GLOBALES
-   ========================================================= */
-
-:root {
-  --bg-main: #000000;
-  --gold: #C9A55E;
-  --blue-tech: #00BFFF;
-  --white: #FFFFFF;
-  --muted: #9CAEC7;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --radius-lg: 24px;
-  --transition-fast: 0.2s ease-out;
-  --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
-}
-
-/* Reset */
-
+/* --------------------------------------------------
+   RESET GLOBAL
+-------------------------------------------------- */
 * {
   margin: 0;
   padding: 0;
@@ -26,101 +11,123 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: 'Inter', sans-serif;
   background: #000;
+  color: white;
 }
 
-
-/* =========================================================
-   BACKGROUND + ORBE
-   ========================================================= */
-
+/* --------------------------------------------------
+   BACKGROUND IMAGE
+-------------------------------------------------- */
 body {
   background-image: url("background.png");
   background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   background-position: center;
+  background-attachment: fixed;
 }
 
-/* Orbe 3D container */
+/* --------------------------------------------------
+   HERO TEXT
+-------------------------------------------------- */
+.hero-header {
+  width: 100%;
+  padding: 80px 40px 40px;
+  text-align: left;
+  position: relative;
+  z-index: 5;
+}
+
+.hero-inner {
+  max-width: 900px;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.hero-brand {
+  color: #ff7a7a;
+  filter: drop-shadow(0 0 20px rgba(255, 90, 90, 0.8));
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  margin-top: 10px;
+  max-width: 700px;
+  opacity: 0.9;
+}
+
+/* --------------------------------------------------
+   3D ORB CONTAINER
+-------------------------------------------------- */
 #container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
   pointer-events: none;
-  z-index: 1;
 }
 
-
-/* =========================================================
-   HERO
-   ========================================================= */
-
-.hero-header {
-  position: relative;
-  z-index: 10;
-  text-align: left;
-  padding: 40px 40px 0 40px;
-}
-
-.hero-title {
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
-  font-weight: 800;
-  color: var(--white);
-  text-transform: uppercase;
-}
-
-.hero-brand {
-  color: var(--gold);
-}
-
-.hero-subtitle {
-  margin-top: 8px;
-  font-size: 1.05rem;
-  color: var(--white);
-  opacity: 0.8;
-}
-
-
-/* =========================================================
-   CTA CARDS (laisse tel quel)
-   ========================================================= */
-
+/* --------------------------------------------------
+   CTA BLOCK (PLACÉ EN BAS DE PAGE)
+-------------------------------------------------- */
 main {
-  position: relative;
-  z-index: 15;
-  padding: 40px 20px 120px;
+  margin-top: 120px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .cta-section {
-  display: flex;
-  flex-direction: column;
-  gap: 56px;
+  width: 100%;
+  max-width: 1400px;
+  padding: 80px 40px;
+  margin-top: 150px;
+  position: relative;
+  z-index: 5;
 }
 
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: 0.7s ease-out;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------
+   CTA CARDS
+-------------------------------------------------- */
 .cta-badges {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
 }
 
 .feature-card {
-  position: relative;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--card-border);
-  background: radial-gradient(circle at 0% 0%, rgba(0,191,255,0.18), transparent 55%),
-              linear-gradient(145deg, rgba(5,13,30,0.98), rgba(3,6,18,0.98));
-  padding: 26px 24px 28px;
-  box-shadow: var(--shadow-soft);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  width: 340px;
+  padding: 28px;
+  border-radius: 22px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 40px rgba(0,0,0,0.7);
+  transition: 0.3s ease;
 }
 
 .feature-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 34px 90px rgba(0,0,0,0.85), 0 0 22px rgba(0,191,255,0.55);
+  transform: translateY(-6px);
+  border-color: #00BFFF;
+  box-shadow: 0 0 30px rgba(0,191,255,0.5);
 }
 
 .feature-title {
@@ -129,184 +136,164 @@ main {
   margin-bottom: 10px;
 }
 
-.feature-title .gold { color: var(--gold); }
-.feature-title .blue { color: var(--blue-tech); }
+.gold { color: #C9A55E; }
+.blue { color: #00BFFF; }
 
-.feature-text {
-  color: var(--muted);
-  font-size: 0.95rem;
+.feature-text,
+.feature-quote {
+  opacity: 0.8;
   line-height: 1.45;
 }
 
-
-/* CTA Main block */
-
+/* --------------------------------------------------
+   CTA MAIN MESSAGE
+-------------------------------------------------- */
 .cta-main-block {
   text-align: center;
-  max-width: 850px;
-  margin: 0 auto;
-  padding-top: 40px;
+  margin-top: 40px;
 }
 
 .cta-title {
-  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
-  margin-bottom: 12px;
-  color: var(--white);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
 }
 
 .cta-title .brand {
-  color: var(--gold);
+  color: #C9A55E;
 }
 
 .cta-subtitle {
-  max-width: 650px;
-  margin: 0 auto 28px;
-  font-size: 1rem;
-  color: var(--muted);
+  max-width: 800px;
+  margin: 20px auto 30px;
+  opacity: 0.85;
+}
+
+.cta-button-wrapper {
+  margin-top: 20px;
 }
 
 .cta-main {
-  background: rgba(0, 0, 0, 0.85);
-  border: 1px solid var(--gold);
+  padding: 18px 45px;
   border-radius: 999px;
-  padding: 18px 42px;
-  font-weight: 600;
+  border: 1px solid #C9A55E;
+  background: rgba(0,0,0,0.8);
+  color: white;
   font-size: 1rem;
-  color: var(--white);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   cursor: pointer;
-  box-shadow: 0 22px 40px rgba(0,0,0,0.75), 0 0 22px rgba(201,165,94,0.6);
-  transition: 0.26s ease;
+  transition: 0.3s;
+  box-shadow: 0 0 25px rgba(201,165,94,0.4);
 }
 
 .cta-main:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 28px 60px rgba(0,0,0,0.95), 0 0 32px rgba(201,165,94,0.85);
+  background: rgba(10,10,10,0.95);
+  transform: translateY(-4px);
+  box-shadow: 0 0 40px rgba(201,165,94,0.8);
 }
 
-
-/* =========================================================
-   CHAT FLOTTANT À DROITE (STYLE iOS Vision Pro)
-   ========================================================= */
-
+/* --------------------------------------------------
+   CHAT — APPLE STYLE RIGHT PANEL
+-------------------------------------------------- */
 .chat-wrapper {
   position: fixed;
-  top: 16vh;
-  right: 3vw;
-  width: min(420px, 92vw);
-  z-index: 50;
+  right: 40px;
+  top: 180px;
+  width: 420px;
+  z-index: 20;
 }
 
 .chat-zone {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  backdrop-filter: blur(22px);
+  gap: 14px;
 }
 
-/* Carte du chat */
 .chat-card {
-  background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.1), transparent 60%),
-              linear-gradient(135deg, rgba(5,5,20,0.95), rgba(10,10,25,0.95));
-  padding: 18px 18px 16px;
-  border-radius: 20px;
+  background: rgba(0,0,0,0.65);
+  border-radius: 22px;
+  padding: 20px;
+  backdrop-filter: blur(18px);
   border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.95), 0 0 28px rgba(0,191,255,0.45);
+  box-shadow: 0 0 40px rgba(0,191,255,0.45);
 }
 
 .chat-bubble {
-  padding: 10px 14px;
-  border-radius: 14px;
-  font-size: 0.92rem;
-  background: rgba(0, 0, 0, 0.55);
-  color: white;
-  line-height: 1.45;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 .chat-messages {
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 180px;
+  gap: 10px;
+  margin-top: 12px;
+  max-height: 200px;
   overflow-y: auto;
 }
 
-.chat-message-user {
-  align-self: flex-end;
-}
-
-.chat-message-user .chat-bubble {
-  background: linear-gradient(135deg, #00bfff, #0080ff);
-  color: white;
-  border-radius: 999px;
-  padding: 8px 14px;
-  max-width: 70%;
-}
-
-
-/* Barre de saisie */
 .chat-input-row {
   display: flex;
-  align-items: center;
   gap: 10px;
-  background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.2), transparent 60%),
-              linear-gradient(135deg, rgba(15,15,35,0.96), rgba(5,5,20,0.98));
+  align-items: center;
+  background: rgba(0,0,0,0.55);
+  padding: 10px 14px;
   border-radius: 999px;
-  padding: 8px 16px;
-  border: 1px solid rgba(255,255,255,0.16);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.9), 0 0 26px rgba(0,191,255,0.45);
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 30px rgba(0,191,255,0.35);
 }
 
 .chat-input {
   flex: 1;
   background: transparent;
   border: none;
-  color: #fff;
+  outline: none;
+  color: white;
   font-size: 1rem;
 }
 
-.chat-input:focus { outline: none; }
-
 .chat-send-btn {
+  background: linear-gradient(135deg, #0af, #0cf);
+  border: none;
   width: 42px;
   height: 42px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 30% 0%, #32f5ff, #0078ff);
-  border: none;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
-  color: #fff;
   cursor: pointer;
-  transition: 0.16s ease-out;
+  color: white;
+  font-size: 1.3rem;
+  box-shadow: 0 0 20px rgba(0,160,255,0.7);
 }
 
 .chat-send-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 44px rgba(0,0,0,1), 0 0 32px rgba(0,191,255,0.9);
 }
 
-
-/* =========================================================
-   RESPONSIVE MOBILE
-   ========================================================= */
+/* --------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
+@media (max-width: 1100px) {
+  .chat-wrapper {
+    transform: scale(0.8);
+    right: 10px;
+  }
+}
 
 @media (max-width: 900px) {
-
   .chat-wrapper {
-    position: fixed;
-    bottom: 18px;
-    top: auto;
+    position: relative;
+    margin: 20px auto;
+    transform: scale(1);
     right: 0;
-    left: 0;
-    width: 100%;
-    padding: 0 12px;
-  }
-
-  .chat-card {
-    max-height: 200px;
-    overflow-y: auto;
+    top: 0;
   }
 }
-
