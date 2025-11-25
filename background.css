@@ -1,0 +1,68 @@
+/* ========================================= */
+/* BACKGROUND GLOBAL FULLSCREEN ECOMMIND     */
+/* ========================================= */
+
+.bg-ecommind {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  /* Fond noir profond + lueurs bleues/or */
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0, 191, 255, 0.25), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(201, 165, 94, 0.22), transparent 55%),
+    radial-gradient(circle at 50% 100%, rgba(0, 191, 255, 0.18), transparent 70%),
+    #000000;
+
+  /* motif grille futuriste */
+  mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+  z-index: -1;
+}
+
+/* Grille animée façon Apple / tech luxueux */
+.bg-ecommind::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      rgba(148, 163, 184, 0.08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(148, 163, 184, 0.08) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+  opacity: 0.45;
+
+  animation: gridFloat 18s linear infinite;
+  z-index: 1;
+}
+
+/* Particules légères + flottement */
+.bg-ecommind::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%),
+    radial-gradient(circle at 70% 30%, rgba(0,191,255,0.08), transparent 60%);
+
+  opacity: 0.55;
+  animation: softGlow 7s ease-in-out infinite alternate;
+  z-index: 2;
+}
+
+/* Animations propres Ecommind */
+@keyframes gridFloat {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-80px); }
+}
+
+@keyframes softGlow {
+  0%   { opacity: 0.45; }
+  100% { opacity: 0.75; }
+}
